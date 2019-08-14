@@ -1,4 +1,4 @@
-package objects;
+package me.perotin.privatetalk.objects;
 
 /* Created by Perotin on 8/14/19 */
 

@@ -1,0 +1,6 @@
+name: PrivateTalk
+main: me.perotin.privatetalk.PrivateTalk
+author: Perotin
+version: 3.0
+api-version: 1.14
+description: The ultimate chatroom solution.
