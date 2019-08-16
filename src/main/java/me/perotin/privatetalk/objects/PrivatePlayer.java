@@ -42,6 +42,7 @@ public class PrivatePlayer {
         return chatrooms;
     }
 
+
     public void addChatroom(Chatroom chatroom) {
         if(!chatrooms.contains(chatroom)) chatrooms.add(chatroom);
     }
