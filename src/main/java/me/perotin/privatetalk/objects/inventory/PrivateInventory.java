@@ -1,4 +1,4 @@
-package me.perotin.privatetalk.objects;
+package me.perotin.privatetalk.objects.inventory;
 
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;

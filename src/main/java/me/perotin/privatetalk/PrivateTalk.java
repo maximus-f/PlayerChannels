@@ -32,6 +32,7 @@ public class PrivateTalk extends JavaPlugin {
         this.players = new ArrayList<>();
         instance = this;
         PrivateFile.loadFiles();
+        saveDefaultConfig();
 
     }
 
