@@ -1,5 +1,6 @@
 package me.perotin.privatetalk;
 
+import com.github.stefvanschie.inventoryframework.Gui;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.storage.files.PrivateFile;

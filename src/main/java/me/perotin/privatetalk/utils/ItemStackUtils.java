@@ -20,7 +20,7 @@ public class ItemStackUtils {
     private String name;
     private List<String> lore;
 
-    private ItemStackUtils(Material type) {
+    public ItemStackUtils(Material type) {
         this.item = new ItemStack(type);
         this.meta = item.getItemMeta();
         this.name = item.getItemMeta().getDisplayName();

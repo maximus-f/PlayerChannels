@@ -14,7 +14,6 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <!--Bungeecord Repo-->
-        <!--Only include if using the Spigot API dependency-->
         <repository>
             <id>bungeecord-repo</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -22,13 +21,41 @@
     </repositories>
     <dependencies>
         <!--Spigot API-->
-        <!--You only need one of the two, don't put both. Spigot is recommended.-->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.14.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Inventory Framework Dependency-->
+        <dependency>
+            <groupId>com.github.stefvanschie.inventoryframework</groupId>
+            <artifactId>IF</artifactId>
+            <version>0.5.8</version>
+        </dependency>
 
     </dependencies>
+<!-- Shading in IF -->
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+            <relocations>
+                <relocation>
+                    <pattern>com.github.stefvanschie.inventoryframework</pattern>
+                    <shadedPattern>me.perotin.privatetalk.inventoryframework</shadedPattern>
+                </relocation>
+            </relocations>
+        </configuration>
+        <executions>
+            <execution>
+                <phase>package</phase>
+                <goals>
+                    <goal>shade</goal>
+                </goals>
+            </execution>
+        </executions>
+    </plugin>
 </project>

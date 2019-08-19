@@ -1,7 +1,5 @@
 package me.perotin.privatetalk.objects.inventory;
 
-import me.perotin.privatetalk.storage.files.PrivateFile;
-
 import java.util.List;
 
 /* Created by Perotin on 8/16/19 */

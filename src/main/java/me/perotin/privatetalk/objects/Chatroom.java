@@ -2,6 +2,9 @@ package me.perotin.privatetalk.objects;
 
 /* Created by Perotin on 8/14/19 */
 
+import javafx.util.Pair;
+import me.perotin.privatetalk.storage.files.FileType;
+import me.perotin.privatetalk.storage.files.PrivateFile;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -13,7 +16,7 @@ import java.util.stream.Collectors;
  */
 public class Chatroom {
 
-    private List<UUID> members;
+    private Map<UUID, ChatRole> members;
     /**@apiNote used to identify chatroom me.perotin.privatetalk.objects. Distinct value.*/
     private final UUID uuid;
     // owner of chatroom
@@ -24,20 +27,25 @@ public class Chatroom {
     private boolean isPublic;
     private List<UUID> bannedMembers;
     private HashMap<UUID, String> nickNames;
+    private PrivateFile messages;
 
     public Chatroom(UUID owner, String name, List<String> description, boolean isPublic) {
-        this.members = new ArrayList<>();
-        this.members.add(owner);
+        this.members = new HashMap<>();
+        this.members.put(owner, ChatRole.OWNER);
         this.owner = owner;
         this.name = name;
         this.description = description;
         this.isPublic = isPublic;
         this.uuid = UUID.randomUUID();
+        this.messages = new PrivateFile(FileType.MESSAGES);
     }
 
 
-    public List<UUID> getMembers() {
+    public Map<UUID, ChatRole> getMemberMap(){
         return members;
+    }
+    public Set<UUID> getMembers() {
+        return members.keySet();
     }
 
     /**
@@ -47,8 +55,8 @@ public class Chatroom {
        return getMembers().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
-    public void setMembers(List<UUID> members) {
-        this.members = members;
+    public void addMember(Pair<UUID, ChatRole> value) {
+        this.members.put(value.getKey(), value.getValue());
     }
 
     public UUID getUuid() {
@@ -101,5 +109,20 @@ public class Chatroom {
 
     public void setNickNames(HashMap<UUID, String> nickNames) {
         this.nickNames = nickNames;
+    }
+
+    public boolean isInChatroom(UUID uuid){
+        return getMembers().contains(uuid);
+    }
+    public String getRole(UUID member){
+        if(isInChatroom(member)){
+            ChatRole value = getMemberMap().get(member);
+            switch(value){
+                case OWNER: messages.getString("owner");
+                case MODERATOR: messages.getString("moderator");
+                case MEMBER: messages.getString("member");
+            }
+        }
+        return "";
     }
 }
