@@ -5,3 +5,8 @@
 #
 # Having issues? Contact me on discord @ Perotin#3447
 
+
+command-name: "privatetalk"
+alias:
+   - "pt"
+   - "chatrooms"

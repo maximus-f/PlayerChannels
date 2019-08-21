@@ -1,6 +1,7 @@
 package me.perotin.privatetalk.objects.inventory.paging_objects;
 
 import com.github.stefvanschie.inventoryframework.Gui;
+import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.inventory.PagingMenu;
@@ -27,10 +28,12 @@ public class ChatroomPager extends PagingMenu {
 
     private Chatroom chatroom;
     private PrivateFile messages;
-    public ChatroomPager(String identifier, Chatroom chatroom){
+    private Player viewer;
+    public ChatroomPager(String identifier, Chatroom chatroom, Player viewer){
         super(identifier);
         this.chatroom = chatroom;
          this.messages = new PrivateFile(FileType.MESSAGES);
+         this.viewer = viewer;
 
     }
 
@@ -39,13 +42,13 @@ public class ChatroomPager extends PagingMenu {
     }
 
     //TODO
-    public Gui getBlankInventory() {
-        Gui gui = new Gui(PrivateTalk.getInstance(), 6, messages.getString("chatroom-name").replace("$name$", getChatroom().getName()).replace("$page$", ""+getPageNumber()));
+    public StaticPane getBlankInventory() {
+        Gui gui = new Gui(PrivateTalk.getInstance(), 6, messages.getString("chatroom-name").replace("$name$", getChatroom().getName()).replace("$page$", ""+getPane().getPage()));
 
 
 
 
-        return gui;
+        return null;
     }
 
     private List<ItemStack> getHeads(){
@@ -66,5 +69,6 @@ public class ChatroomPager extends PagingMenu {
                         .replace("$connected$", messages.getString("offline")).replace("$role$", chatroom.getRole(uuid)));
             }
         }
+        return heads;
     }
 }

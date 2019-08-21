@@ -1,9 +1,11 @@
 package me.perotin.privatetalk;
 
-import com.github.stefvanschie.inventoryframework.Gui;
+import me.perotin.privatetalk.commands.PrivateTalkCommand;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.storage.files.PrivateFile;
+import me.perotin.privatetalk.utils.PrivateUtils;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -35,6 +37,11 @@ public class PrivateTalk extends JavaPlugin {
         PrivateFile.loadFiles();
         saveDefaultConfig();
 
+    }
+
+    private void init(){
+        FileConfiguration config = getConfig();
+        PrivateUtils.registerCommand(new PrivateTalkCommand(config.getString("command-name"), "Base command for PrivateTalk", "/"+config.getString("command-name"), config.getStringList("aliases"), this));
     }
 
     public static PrivateTalk getInstance(){
