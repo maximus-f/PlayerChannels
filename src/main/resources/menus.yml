@@ -1,0 +1,25 @@
+#######################################################
+#
+#      𝓟𝓻𝓲𝓿𝓪𝓽𝓮𝓣𝓪𝓵𝓴
+#   "The ultimate chat solution"
+#
+# Having issues? Contact me on discord @ Perotin#3447
+
+
+# The following file is to give YOU the power to decorate the menus within PrivateTalk however you would like.
+
+# This file is sorted by section of items, some sections appear in menus with other sections. It is not by inventory.
+# NOTE: Only what appears in the default config can be configured. Do not try to add config keys where they do not already exist
+# For getting materials, use this: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+
+
+# Global items that will be used in multiple places:
+deco-item:
+   display: ""
+   material: "BLACK_STAINED_GLASS_PANE"
+# Navigation-bar items
+# This is the row that appears at the top of most menus displaying things like player-profile, and create a chatroom
+
+player-profile-head:
+   slot: 4
+   display: "&e$name$"

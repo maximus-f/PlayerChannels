@@ -7,6 +7,11 @@ import org.bukkit.command.CommandMap;
 import java.lang.reflect.Field;
 
 /* Created by Perotin on 8/21/19 */
+
+
+/**
+ * Random util class for static methods that are useful
+ */
 public class PrivateUtils {
 
     private PrivateUtils(){}

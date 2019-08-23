@@ -1,15 +1,16 @@
 package me.perotin.privatetalk.objects.inventory;
 
-import com.github.stefvanschie.inventoryframework.Gui;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 
-import java.util.List;
-
 /* Created by Perotin on 8/16/19 */
+
+
+/** Base class for all paging menus in PrivateTalk, wrapper for PaginatedPane object primarily **/
 public abstract class PagingMenu {
 
-    private PaginatedPane pane;
+    protected PaginatedPane pane;
+    private PrivateInventory menu;
     /** Used in the title of every menu, for identifying what type of paging menu it is **/
     private String identifier;
 
@@ -38,9 +39,9 @@ public abstract class PagingMenu {
      * Implement to the required design for each paging menu.
      * @return an inventory formatted specifically for each (#PagingMenu)
      */
-    public abstract StaticPane getBlankInventory();
+    public abstract StaticPane getNewSlide();
 
-    public PaginatedPane getPane(){
+    protected PaginatedPane getPane(){
         return this.pane;
     }
 

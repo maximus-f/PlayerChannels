@@ -34,12 +34,13 @@ public class PrivateTalk extends JavaPlugin {
         this.chatrooms = new ArrayList<>();
         this.players = new ArrayList<>();
         instance = this;
-        PrivateFile.loadFiles();
-        saveDefaultConfig();
+        init();
 
     }
 
     private void init(){
+        PrivateFile.loadFiles();
+        saveDefaultConfig();
         FileConfiguration config = getConfig();
         PrivateUtils.registerCommand(new PrivateTalkCommand(config.getString("command-name"), "Base command for PrivateTalk", "/"+config.getString("command-name"), config.getStringList("aliases"), this));
     }

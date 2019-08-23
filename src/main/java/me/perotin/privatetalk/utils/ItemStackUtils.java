@@ -1,5 +1,8 @@
 package me.perotin.privatetalk.utils;
 
+import me.perotin.privatetalk.PrivateTalk;
+import me.perotin.privatetalk.storage.files.FileType;
+import me.perotin.privatetalk.storage.files.PrivateFile;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -15,10 +18,12 @@ import java.util.List;
  */
 public class ItemStackUtils {
 
+
     private ItemStack item;
     private ItemMeta meta;
     private String name;
     private List<String> lore;
+
 
     public ItemStackUtils(Material type) {
         this.item = new ItemStack(type);
@@ -47,6 +52,12 @@ public class ItemStackUtils {
 
     }
 
+    public static ItemStack DECO_ITEM(){
+        PrivateFile items = new PrivateFile(FileType.MENUS);
+        ItemStackUtils item = new ItemStackUtils(Material.getMaterial(items.getString("deco-item.material")));
+        item.setName(items.getString("deco-item.material"));
+        return item.build();
+    }
 
 
 

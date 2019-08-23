@@ -9,6 +9,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /* Created by Perotin on 8/20/19 */
+
+/**
+ * Base command for PrivateTalk, extends Command for ability to set custom command names, aliases etc.
+ */
 public class PrivateTalkCommand extends Command implements CommandExecutor  {
 
 
@@ -27,6 +31,8 @@ public class PrivateTalkCommand extends Command implements CommandExecutor  {
         return true;
     }
 
+
+    // ignored
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         return false;

@@ -27,6 +27,9 @@ public class PrivateFile {
             case MESSAGES:
                 file = new File(PrivateTalk.getInstance().getDataFolder(), "messages.yml");
                 configuration = YamlConfiguration.loadConfiguration(file);
+            case MENUS:
+                file = new File(PrivateTalk.getInstance().getDataFolder(), "menus.yml");
+                configuration = YamlConfiguration.loadConfiguration(file);
         }
     }
     public void save() {
@@ -73,6 +76,10 @@ public class PrivateFile {
             case MESSAGES:
                 lang = new File(PrivateTalk.getInstance().getDataFolder(), "messages.yml");
                 defLangStream = PrivateTalk.getInstance().getResource("messages.yml");
+                break;
+            case MENUS:
+                lang = new File(PrivateTalk.getInstance().getDataFolder(), "menus.yml");
+                defLangStream = PrivateTalk.getInstance().getResource("menus.yml");
                 break;
 
         }
