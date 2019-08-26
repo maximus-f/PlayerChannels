@@ -2,6 +2,9 @@ package me.perotin.privatetalk.objects.inventory;
 
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 /* Created by Perotin on 8/16/19 */
 
@@ -11,11 +14,14 @@ public abstract class PagingMenu {
 
     protected PaginatedPane pane;
     private PrivateInventory menu;
+    private Player viewer;
     /** Used in the title of every menu, for identifying what type of paging menu it is **/
     private String identifier;
 
-    public PagingMenu(String identifier){
+    public PagingMenu(String identifier, int rows, Player viewer){
         this.identifier = identifier;
+        this.menu = new PrivateInventory(identifier, rows);
+        this.viewer = viewer;
     }
     /**
      * Gives the next inventory in the sequence, null if it is the last inventory
@@ -37,12 +43,19 @@ public abstract class PagingMenu {
 
     /**
      * Implement to the required design for each paging menu.
-     * @return an inventory formatted specifically for each (#PagingMenu)
+     * @return a list of inventorsy formatted specifically for each (#PagingMenu)
      */
-    public abstract StaticPane getNewSlide();
+    protected abstract List<StaticPane> generatePages();
 
     protected PaginatedPane getPane(){
         return this.pane;
+    }
+
+    /**
+     * @return player viewing the pane
+     */
+    public Player getViewer(){
+        return viewer;
     }
 
 }

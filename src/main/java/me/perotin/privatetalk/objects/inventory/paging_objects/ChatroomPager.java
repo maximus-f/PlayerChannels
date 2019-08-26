@@ -1,5 +1,6 @@
 package me.perotin.privatetalk.objects.inventory.paging_objects;
 
+import com.github.stefvanschie.inventoryframework.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.objects.ChatRole;
@@ -30,13 +31,16 @@ public class ChatroomPager extends PagingMenu {
 
     private Chatroom chatroom;
     private PrivateFile messages;
-    private Player viewer;
     public ChatroomPager(String identifier, Chatroom chatroom, Player viewer){
-        super(identifier);
+        super(identifier, 6, viewer);
         this.chatroom = chatroom;
          this.messages = new PrivateFile(FileType.MESSAGES);
-         this.viewer = viewer;
          this.pane = new PaginatedPane(2, 1, 7, 3);
+         int page = 0;
+         for(StaticPane pane : generatePages()){
+             getPane().addPane(page, pane);
+             page++;
+         }
 
     }
 
@@ -44,12 +48,30 @@ public class ChatroomPager extends PagingMenu {
         return chatroom;
     }
 
-    //TODO
-    public StaticPane getNewSlide() {
+    /**
+     * @return a list of static panes that are the pages in the PaginatedPane
+     */
+    protected List<StaticPane> generatePages() {
+        List<StaticPane> panes = new ArrayList<>();
+        StaticPane def = new StaticPane(1, 3, 7, 3);
+        int x = 0;
+        int y = 0;
+        for(ItemStack i : getHeads()){
+            if(def.getItems().size() == 21){
+                // new pane
+                panes.add(def);
+                def = new StaticPane(1, 3, 7, 3);
+            }
+            def.addItem(new GuiItem(i), x, y);
+            if(x != 7) {
+                x++;
+            } else {
+                x = 0;
+                y++;
+            }
 
-
-
-        return null;
+        }
+        return panes;
     }
 
 
@@ -77,7 +99,7 @@ public class ChatroomPager extends PagingMenu {
 
             }
         }
-        return heads;
+        return sortListByRank(heads);
     }
 
     /**
