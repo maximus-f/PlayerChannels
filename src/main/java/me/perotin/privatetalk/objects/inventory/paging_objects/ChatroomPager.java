@@ -36,11 +36,7 @@ public class ChatroomPager extends PagingMenu {
         this.chatroom = chatroom;
          this.messages = new PrivateFile(FileType.MESSAGES);
          this.pane = new PaginatedPane(2, 1, 7, 3);
-         int page = 0;
-         for(StaticPane pane : generatePages()){
-             getPane().addPane(page, pane);
-             page++;
-         }
+         getPaginatedPane().populateWithGuiItems(generatePages());
 
     }
 
@@ -49,29 +45,15 @@ public class ChatroomPager extends PagingMenu {
     }
 
     /**
-     * @return a list of static panes that are the pages in the PaginatedPane
+     * @return a list of items to be added to the pane
+     * TODO Write the function that attaches the heads to the player profiles
      */
-    protected List<StaticPane> generatePages() {
-        List<StaticPane> panes = new ArrayList<>();
-        StaticPane def = new StaticPane(1, 3, 7, 3);
-        int x = 0;
-        int y = 0;
-        for(ItemStack i : getHeads()){
-            if(def.getItems().size() == 21){
-                // new pane
-                panes.add(def);
-                def = new StaticPane(1, 3, 7, 3);
-            }
-            def.addItem(new GuiItem(i), x, y);
-            if(x != 7) {
-                x++;
-            } else {
-                x = 0;
-                y++;
-            }
-
+    protected List<GuiItem> generatePages() {
+        List<GuiItem> items = new ArrayList<>();
+        for(ItemStack i : getHeads()) {
+            items.add(new GuiItem(i));
         }
-        return panes;
+        return items;
     }
 
 
