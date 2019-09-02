@@ -20,6 +20,19 @@ deco-item:
 # Navigation-bar items
 # This is the row that appears at the top of most menus displaying things like player-profile, and create a chatroom
 
-player-profile-head:
-   slot: 4
-   display: "&e$name$"
+nav-bar:
+   player-profile-head:
+      slot: 4
+      display: "&e$name$"
+      lore:
+         - "&7&oClick to view your profile!"
+   create-chatroom:
+      slot: 5
+      display: "&eCreate a chatroom"
+      lore:
+         - "&7&oClick to create a chatroom"
+   manage-invites:
+      slot: 8
+      display: "&eView invites"
+      lore:
+         - "&7&oClick to view your invites"

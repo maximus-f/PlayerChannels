@@ -4,12 +4,15 @@ import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 /* Created by Perotin on 8/17/19 */
 
@@ -23,6 +26,7 @@ public class ItemStackUtils {
     private ItemMeta meta;
     private String name;
     private List<String> lore;
+    private OfflinePlayer owningPlayer;
 
 
     public ItemStackUtils(Material type) {
@@ -31,6 +35,11 @@ public class ItemStackUtils {
         this.name = item.getItemMeta().getDisplayName();
         this.lore = item.getItemMeta().getLore();
 
+    }
+
+    public ItemStackUtils(Material type, OfflinePlayer owner){
+        this(type);
+        this.owningPlayer = owner;
     }
 
     public ItemStackUtils setName(String name) {
@@ -44,10 +53,29 @@ public class ItemStackUtils {
         this.lore = lores;
         return this;
     }
+
+    public ItemStackUtils setOwner(OfflinePlayer owner){
+        this.owningPlayer = owner;
+        return this;
+    }
+
+    public ItemStackUtils setLore(List<String> lore) {
+        this.lore = lore;
+        return this;
+    }
+
+    // not sure if the SkullMeta part will work
     public ItemStack build(){
+        if(owningPlayer != null){
+            SkullMeta skullMeta = (SkullMeta) meta;
+            skullMeta.setOwningPlayer(owningPlayer);
+        }
         meta.setDisplayName(name);
         meta.setLore(lore);
+
+
         item.setItemMeta(meta);
+
         return item;
 
     }

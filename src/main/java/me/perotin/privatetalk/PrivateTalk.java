@@ -2,6 +2,7 @@ package me.perotin.privatetalk;
 
 import me.perotin.privatetalk.commands.PrivateTalkCommand;
 import me.perotin.privatetalk.objects.Chatroom;
+import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.PrivateUtils;
@@ -28,11 +29,13 @@ public class PrivateTalk extends JavaPlugin {
     private List<Chatroom> chatrooms;
     private List<PrivatePlayer> players;
     private static PrivateTalk instance;
+    private InventoryHelper helper;
 
     @Override
     public void onEnable(){
         this.chatrooms = new ArrayList<>();
         this.players = new ArrayList<>();
+        this.helper = new InventoryHelper();
         instance = this;
         init();
 
