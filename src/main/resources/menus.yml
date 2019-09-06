@@ -14,12 +14,19 @@
 
 
 # Global items that will be used in multiple places:
-deco-item:
-   display: ""
-   material: "BLACK_STAINED_GLASS_PANE"
+global-items:
+   deco-item:
+      display: ""
+      material: "BLACK_STAINED_GLASS_PANE"
+   next-item:
+      display: "&eNext >>"
+      material: "GREEN_STAINED_GLASS_PANE"
+   back-item:
+      display: "&e<< Back"
+      material: "RED_STAINED_GLASS_PANE"
+
 # Navigation-bar items
 # This is the row that appears at the top of most menus displaying things like player-profile, and create a chatroom
-
 nav-bar:
    player-profile-head:
       slot: 4
@@ -36,3 +43,11 @@ nav-bar:
       display: "&eView invites"
       lore:
          - "&7&oClick to view your invites"
+    deco-item:
+       slots:
+          - "0"
+          - "1"
+          - "2"
+          - "3"
+          - "6"
+          - "7"

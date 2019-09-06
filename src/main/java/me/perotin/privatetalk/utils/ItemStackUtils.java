@@ -80,12 +80,7 @@ public class ItemStackUtils {
 
     }
 
-    public static ItemStack DECO_ITEM(){
-        PrivateFile items = new PrivateFile(FileType.MENUS);
-        ItemStackUtils item = new ItemStackUtils(Material.getMaterial(items.getString("deco-item.material")));
-        item.setName(items.getString("deco-item.material"));
-        return item.build();
-    }
+
 
 
 
