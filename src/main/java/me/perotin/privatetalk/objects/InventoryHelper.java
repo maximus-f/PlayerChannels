@@ -12,9 +12,11 @@ import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.ItemStackUtils;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -24,12 +26,18 @@ public class InventoryHelper {
 
     private PrivateFile file;
     private StaticPane navBar;
+    private StaticPane pagingNavigationBar;
     private StaticPane creationMenu;
+    /** Consumer for making decoration items cancel the click event and nothing else **/
+    private Consumer<InventoryClickEvent> doNothing;
 
     public InventoryHelper(){
         this.file = new PrivateFile(FileType.MENUS);
         this.navBar = new StaticPane(0, 0, 9, 1);
+        this.pagingNavigationBar = new StaticPane(0, 6, 9, 1);
+        this.doNothing = (event) -> event.setCancelled(true);
         setNavBar();
+        setPagingNavigationBar();
     }
 
     /**
@@ -60,6 +68,9 @@ public class InventoryHelper {
 
     }
 
+    /**
+     * Sets the navigation bar that appears in most menus at the very top
+     */
     private void setNavBar(){
         PrivateFile file = new PrivateFile(FileType.MENUS);
         Pair head = getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", null);
@@ -68,11 +79,24 @@ public class InventoryHelper {
         navBar.addItem(new GuiItem((ItemStack) head.getFirst()), (int) head.getSecond(), 0);
         navBar.addItem(new GuiItem((ItemStack) createChatroom.getFirst()), (int) createChatroom.getSecond(), 0);
         navBar.addItem(new GuiItem((ItemStack) invites.getFirst()), (int) invites.getSecond(), 0);
-        GuiItem deco = new GuiItem(DECO_ITEM());
+        GuiItem deco = new GuiItem(DECO_ITEM(),  doNothing);
         List<Integer> slots = getAsInts(file.getConfiguration().getStringList("nav-bar.deco-item.slots"));
         for(int x : slots) {
             navBar.addItem(deco, x, 0);
         }
+
+    }
+
+    private void setPagingNavigationBar(){
+        PrivateFile file = new PrivateFile(FileType.MENUS);
+        List<Integer> decoSlots = getAsInts(file.getConfiguration().getStringList("paging-nav-bar.deco-item.slots"));
+        int nextSlot = file.getConfiguration().getInt("paging-nav-bar.next-item.slot");
+        int backSlot = file.getConfiguration().getInt("paging-nav-bar.back-item.slot");
+        for(int x : decoSlots) {
+            pagingNavigationBar.addItem(new GuiItem(DECO_ITEM(), doNothing), x, 6);
+        }
+        pagingNavigationBar.addItem(new GuiItem(BACK_ITEM()), backSlot, 6);
+        pagingNavigationBar.addItem(new GuiItem(NEXT_ITEM()), nextSlot, 6);
 
     }
 

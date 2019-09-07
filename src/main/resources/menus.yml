@@ -43,11 +43,25 @@ nav-bar:
       display: "&eView invites"
       lore:
          - "&7&oClick to view your invites"
-    deco-item:
-       slots:
-          - "0"
-          - "1"
-          - "2"
-          - "3"
-          - "6"
-          - "7"
+  deco-item:
+      slots:
+        - "0"
+        - "1"
+        - "2"
+        - "3"
+        - "6"
+        - "7"
+# Paging navigation-bar
+# This is the row at the bottom of menus where you can click to view multiple pages
+paging-nav-bar:
+   deco-item:
+      slots:
+         - "2"
+         - "3"
+         - "5"
+         - "6"
+         - "7"
+      next-item:
+         slot: 8
+      back-item:
+         slot: 0
