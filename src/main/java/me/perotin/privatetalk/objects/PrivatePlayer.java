@@ -2,6 +2,8 @@ package me.perotin.privatetalk.objects;
 
 /* Created by Perotin on 8/14/19 */
 
+import org.bukkit.entity.Player;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -25,6 +27,12 @@ public class PrivatePlayer {
         this.chatrooms = chatrooms;
     }
 
+    /**
+     * @param player to show player profile to
+     */
+    public void showProfileTo(Player player){
+
+    }
 
     public UUID getUuid() {
         return uuid;

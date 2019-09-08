@@ -59,6 +59,9 @@ public class PrivateFile {
         return ChatColor.translateAlternateColorCodes('&', configuration.getString(path));
     }
 
+    /**
+     * loads all files with defaults
+     */
     public void load() {
 
         File lang = null;

@@ -3,8 +3,10 @@ package me.perotin.privatetalk.objects.inventory.paging_objects;
 import com.github.stefvanschie.inventoryframework.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.ChatRole;
 import me.perotin.privatetalk.objects.Chatroom;
+import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.objects.inventory.PagingMenu;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
@@ -14,11 +16,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /* Created by Perotin on 8/17/19 */
@@ -50,18 +52,28 @@ public class ChatroomPager extends PagingMenu {
      */
     protected List<GuiItem> generatePages() {
         List<GuiItem> items = new ArrayList<>();
-        for(ItemStack i : getHeads()) {
-            items.add(new GuiItem(i));
+        for(ItemStack i : getHeads().keySet()) {
+            items.add(new GuiItem(i, goToProfile(getHeads().get(i))));
         }
         return items;
+    }
+
+    /**
+     *
+     * @param player to go to profile
+     * @return consumer action to go to param player's profile page
+     */
+    private Consumer<InventoryClickEvent> goToProfile(PrivatePlayer player){
+        return (InventoryClickEvent event) -> player.showProfileTo(getViewer());
     }
 
 
     /**
      * @return List of heads of every player in the chatroom
      */
-    private List<ItemStack> getHeads(){
-        List<ItemStack> heads = new ArrayList<>();
+    private Map<ItemStack, PrivatePlayer> getHeads(){
+        Map<ItemStack, PrivatePlayer> heads = new HashMap<>();
+        PrivateTalk plugin = PrivateTalk.getInstance();
         for(UUID uuid: chatroom.getMembers()){
             if(Bukkit.getPlayer(uuid) != null){
                 // online
@@ -70,14 +82,14 @@ public class ChatroomPager extends PagingMenu {
                 head.setName(messages.getString("chatroom-head-display").replace("$name$", player.getName()));
                 head.setLore(messages.getString("chatroom-head-lore1")
                 .replace("$connected$", messages.getString("online")).replace("$role$", chatroom.getRole(uuid)));
-                heads.add(head.build());
+                heads.put(head.build(), plugin.getPrivatePlayer(uuid));
             } else {
                 OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
                 ItemStackUtils head = new ItemStackUtils(Material.PLAYER_HEAD);
                 head.setName(messages.getString("chatroom-head-display").replace("$name$", player.getName()));
                 head.setLore(messages.getString("chatroom-head-lore1")
                         .replace("$connected$", messages.getString("offline")).replace("$role$", chatroom.getRole(uuid)));
-                heads.add(head.build());
+                heads.put(head.build(), plugin.getPrivatePlayer(uuid));
 
             }
         }
@@ -88,8 +100,9 @@ public class ChatroomPager extends PagingMenu {
      *
      * @param items to sort
      * @return sorted list of items by chat role
+     * TODO
      */
-    private List<ItemStack> sortListByRank(List<ItemStack> items){
-        return items.stream().sorted((i1, i2) -> new ChatRoleComparator().compare(ChatRole.getRoleFrom(i1), ChatRole.getRoleFrom(i2))).collect(Collectors.toList());
+    private Map<ItemStack, PrivatePlayer> sortListByRank(Map<ItemStack, PrivatePlayer> items){
+        return null;
     }
 }

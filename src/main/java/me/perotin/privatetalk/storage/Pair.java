@@ -1,6 +1,12 @@
 package me.perotin.privatetalk.storage;
 
 /* Created by Perotin on 8/31/19 */
+
+/**
+ * Used for
+ * @param <F>
+ * @param <S>
+ */
 public class Pair<F, S> {
     private F first; //first member of pair
     private S second; //second member of pair

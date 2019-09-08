@@ -53,6 +53,17 @@ public class InventoryHelper {
     }
 
 
+    /**
+     *
+     * @param inventory to set paging-nav-bar
+     * @return inventory with paging-navar bar
+     */
+    public PrivateInventory setPagingNavBar(PrivateInventory inventory){
+        inventory.getGui().addPane(pagingNavigationBar);
+        return inventory;
+    }
+
+
 
     /**
      *

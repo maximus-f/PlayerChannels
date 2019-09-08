@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /* Created by Perotin on 8/13/19 */
 
@@ -20,6 +21,11 @@ import java.util.List;
  *
  * This rewrite is meant to use better practices, more readable & maintainable code, and overall renew my joy
  * for writing PrivateTalk. This is my 3rd rewrite of this plugin, a project originally conceived early 2017, nearly 3 years ago.
+ */
+
+/*
+TODO List
+1. Write function for sorting HashMap by ChatRole
  */
 public class PrivateTalk extends JavaPlugin {
 
@@ -50,5 +56,9 @@ public class PrivateTalk extends JavaPlugin {
 
     public static PrivateTalk getInstance(){
         return instance;
+    }
+
+    public PrivatePlayer getPrivatePlayer(UUID uuid){
+        return null;
     }
 }

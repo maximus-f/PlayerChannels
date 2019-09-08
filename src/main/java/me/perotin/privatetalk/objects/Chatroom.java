@@ -2,7 +2,7 @@ package me.perotin.privatetalk.objects;
 
 /* Created by Perotin on 8/14/19 */
 
-import javafx.util.Pair;
+import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import org.bukkit.Bukkit;
@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
  */
 public class Chatroom {
 
+    /** @apiNote contains all members with their respective chat roles **/
     private Map<UUID, ChatRole> members;
     /**@apiNote used to identify chatroom me.perotin.privatetalk.objects. Distinct value.*/
     private final UUID uuid;
@@ -56,7 +57,7 @@ public class Chatroom {
     }
 
     public void addMember(Pair<UUID, ChatRole> value) {
-        this.members.put(value.getKey(), value.getValue());
+        this.members.put(value.getFirst(), value.getSecond());
     }
 
     public UUID getUuid() {
@@ -111,9 +112,16 @@ public class Chatroom {
         this.nickNames = nickNames;
     }
 
+
     public boolean isInChatroom(UUID uuid){
         return getMembers().contains(uuid);
     }
+
+    /**
+     *
+     * @param member of chatroom
+     * @return string version of their role, being either member, moderator, or owner
+     */
     public String getRole(UUID member){
         if(isInChatroom(member)){
             ChatRole value = getMemberMap().get(member);
