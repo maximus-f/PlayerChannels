@@ -98,11 +98,18 @@ public class ChatroomPager extends PagingMenu {
 
     /**
      *
+     * @apiNote This function may not work, in theory should work though.
      * @param items to sort
      * @return sorted list of items by chat role
-     * TODO
+     *
      */
     private Map<ItemStack, PrivatePlayer> sortListByRank(Map<ItemStack, PrivatePlayer> items){
-        return null;
+        Map<ItemStack, PrivatePlayer> sorted = new HashMap<>();
+        List<ItemStack> sortedList = items.keySet().stream().sorted(new ChatRoleComparator()).collect(Collectors.toList());
+        for(ItemStack item : sortedList){
+            PrivatePlayer value = items.get(item);
+            sorted.put(item, value);
+        }
+        return sorted;
     }
 }

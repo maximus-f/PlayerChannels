@@ -1,6 +1,7 @@
 package me.perotin.privatetalk.utils;
 
 import me.perotin.privatetalk.objects.ChatRole;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Comparator;
 
@@ -9,10 +10,12 @@ import java.util.Comparator;
 /**
  * Compare the Enum ranks of chat roles
  */
-public class ChatRoleComparator implements Comparator<ChatRole> {
+public class ChatRoleComparator implements Comparator<ItemStack> {
 
     @Override
-    public int compare(ChatRole o1, ChatRole o2) {
+    public int compare(ItemStack o4, ItemStack o5) {
+        ChatRole o1 = ChatRole.getRoleFrom(o4);
+        ChatRole o2 = ChatRole.getRoleFrom(o5);
        if(o1.getValue() == o2.getValue()) return 0;
        if(o1.getValue() > o2.getValue()) return 1;
        else return -1;
