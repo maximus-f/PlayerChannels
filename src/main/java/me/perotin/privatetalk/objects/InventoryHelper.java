@@ -28,6 +28,8 @@ public class InventoryHelper {
     private StaticPane navBar;
     private StaticPane pagingNavigationBar;
     private StaticPane creationMenu;
+    private StaticPane rightSideDecoSlots;
+    private StaticPane leftSideDecoSlots;
     /** Consumer for making decoration items cancel the click event and nothing else **/
     private Consumer<InventoryClickEvent> doNothing;
 
@@ -38,6 +40,8 @@ public class InventoryHelper {
         this.doNothing = (event) -> event.setCancelled(true);
         setNavBar();
         setPagingNavigationBar();
+        setCreationMenu();
+        setSideDecoSlots();
     }
 
     /**
@@ -52,6 +56,33 @@ public class InventoryHelper {
         return inventory;
     }
 
+    private void setCreationMenu(){
+        this.creationMenu = new StaticPane(1, 1, 7, 4);
+
+
+    }
+
+    /**
+     * @param inv to set
+     * @return inventory set with side decoration slots
+     */
+    public PrivateInventory setSideDecorationSlots(PrivateInventory inv){
+        inv.getGui().addPane(leftSideDecoSlots);
+        inv.getGui().addPane(rightSideDecoSlots);
+        return inv;
+
+    }
+
+    /**
+     * @apiNote sets the side decoration slots
+     */
+    private void setSideDecoSlots(){
+        this.rightSideDecoSlots = new StaticPane(6, 1, 1, 4);
+        this.leftSideDecoSlots = new StaticPane(0, 1, 1, 4);
+        rightSideDecoSlots.fillWith(DECO_ITEM());
+        leftSideDecoSlots.fillWith(DECO_ITEM());
+
+    }
 
     /**
      *
@@ -98,6 +129,9 @@ public class InventoryHelper {
 
     }
 
+    /**
+     * @apiNote Sets the next / back buttons at the bottom along with deco slots
+     */
     private void setPagingNavigationBar(){
         PrivateFile file = new PrivateFile(FileType.MENUS);
         List<Integer> decoSlots = getAsInts(file.getConfiguration().getStringList("paging-nav-bar.deco-item.slots"));

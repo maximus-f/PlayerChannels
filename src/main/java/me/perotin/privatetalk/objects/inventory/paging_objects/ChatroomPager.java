@@ -48,7 +48,6 @@ public class ChatroomPager extends PagingMenu {
 
     /**
      * @return a list of items to be added to the pane
-     * TODO Write the function that attaches the heads to the player profiles
      */
     protected List<GuiItem> generatePages() {
         List<GuiItem> items = new ArrayList<>();

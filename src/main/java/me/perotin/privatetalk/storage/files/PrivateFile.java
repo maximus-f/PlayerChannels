@@ -142,6 +142,7 @@ public class PrivateFile {
                 if(type == FileType.MESSAGES) PrivateTalk.getInstance().saveResource("messages.yml", false);
                 if(type == FileType.PLAYERS) PrivateTalk.getInstance().saveResource("players.yml", false);
                 if(type == FileType.CHATROOM) PrivateTalk.getInstance().saveResource("chatrooms.yml", false);
+                if(type == FileType.MENUS) PrivateTalk.getInstance().saveResource("menus.yml", false);
 
             }
             new PrivateFile(type).load();

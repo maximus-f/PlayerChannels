@@ -25,7 +25,8 @@ import java.util.UUID;
 
 /*
 TODO List
-1. Write function for sorting HashMap by ChatRole
+
+Make creation menu and test them out
  */
 public class PrivateTalk extends JavaPlugin {
 
@@ -41,9 +42,10 @@ public class PrivateTalk extends JavaPlugin {
     public void onEnable(){
         this.chatrooms = new ArrayList<>();
         this.players = new ArrayList<>();
-        this.helper = new InventoryHelper();
         instance = this;
         init();
+        this.helper = new InventoryHelper();
+
 
     }
 
@@ -60,5 +62,9 @@ public class PrivateTalk extends JavaPlugin {
 
     public PrivatePlayer getPrivatePlayer(UUID uuid){
         return null;
+    }
+
+    public InventoryHelper getHelper() {
+        return helper;
     }
 }

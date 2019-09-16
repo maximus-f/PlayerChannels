@@ -43,7 +43,7 @@ nav-bar:
       display: "&eView invites"
       lore:
          - "&7&oClick to view your invites"
-  deco-item:
+   deco-item:
       slots:
         - "0"
         - "1"
