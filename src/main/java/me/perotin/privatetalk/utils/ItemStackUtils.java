@@ -42,11 +42,19 @@ public class ItemStackUtils {
         this.owningPlayer = owner;
     }
 
+    /**
+     *
+     * @param name to set
+     * @return this with set name
+     */
     public ItemStackUtils setName(String name) {
         this.name = name;
         return this;
     }
 
+    /**
+     * @param lore to set, can be single string
+     */
     public ItemStackUtils setLore(String... lore) {
         List<String> lores = new ArrayList<>();
         Collections.addAll(lores, lore);
@@ -54,11 +62,17 @@ public class ItemStackUtils {
         return this;
     }
 
+    /**
+     * @param owner to set
+     **/
     public ItemStackUtils setOwner(OfflinePlayer owner){
         this.owningPlayer = owner;
         return this;
     }
 
+    /**
+     * @param lore to set in form of a list
+     */
     public ItemStackUtils setLore(List<String> lore) {
         this.lore = lore;
         return this;

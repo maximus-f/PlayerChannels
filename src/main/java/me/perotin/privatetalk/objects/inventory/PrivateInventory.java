@@ -9,6 +9,8 @@ import me.perotin.privatetalk.PrivateTalk;
 /**
  * Wrapper class for @Gui object
  */
+
+// Consider deleting this class, a bit useless IMO.
 public class PrivateInventory {
 
     private Gui gui;
@@ -24,10 +26,6 @@ public class PrivateInventory {
 
 
 
-    private void setNavBar(){
-        StaticPane pane = new StaticPane(0, 0,1, 1);
-
-    }
 
 
 }

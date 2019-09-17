@@ -17,6 +17,9 @@ public class PrivateUtils {
     private PrivateUtils(){}
 
 
+    /**
+     * @param command to register
+     */
     public static void registerCommand(Command command) {
         try {
             final Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");

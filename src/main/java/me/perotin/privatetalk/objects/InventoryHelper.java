@@ -170,6 +170,9 @@ public class InventoryHelper {
         return stringList.stream().map(Integer::parseInt).collect(Collectors.toList());
     }
 
+    /**
+     * @return blank decoration item used to fill white-space
+     */
     public static ItemStack DECO_ITEM(){
         PrivateFile items = new PrivateFile(FileType.MENUS);
         ItemStackUtils item = new ItemStackUtils(Material.getMaterial(items.getString("global-items.deco-item.material")));
@@ -177,12 +180,20 @@ public class InventoryHelper {
         return item.build();
     }
 
+
+    /**
+     * @return item used to navigate backwards in a menu
+     */
     public static ItemStack BACK_ITEM(){
         PrivateFile items = new PrivateFile(FileType.MENUS);
         ItemStackUtils item = new ItemStackUtils(Material.getMaterial(items.getString("global-items.back-item.material")));
         item.setName(items.getString("global-items.back-item.material"));
         return item.build();
     }
+
+    /**
+     * @return item used to navigate forwards in a menu
+     */
     public static ItemStack NEXT_ITEM(){
         PrivateFile items = new PrivateFile(FileType.MENUS);
         ItemStackUtils item = new ItemStackUtils(Material.getMaterial(items.getString("global-items.next-item.material")));

@@ -34,23 +34,38 @@ public class PrivatePlayer {
 
     }
 
+    /**
+     * @return player uuid
+     */
     public UUID getUuid() {
         return uuid;
     }
 
+    /**
+     * @return player name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * @param name to set, in case of a name change
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * @return all chatrooms that player is a a part of
+     */
     public List<Chatroom> getChatrooms() {
         return chatrooms;
     }
 
 
+    /**
+     * @param chatroom to add to their list
+     */
     public void addChatroom(Chatroom chatroom) {
         if(!chatrooms.contains(chatroom)) chatrooms.add(chatroom);
     }

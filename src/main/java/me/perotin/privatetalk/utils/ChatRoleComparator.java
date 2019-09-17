@@ -12,6 +12,12 @@ import java.util.Comparator;
  */
 public class ChatRoleComparator implements Comparator<ItemStack> {
 
+    /**
+     * Compares two item stacks by getting the chat roles from their lores
+     * @param o4
+     * @param o5
+     * @return int
+     */
     @Override
     public int compare(ItemStack o4, ItemStack o5) {
         ChatRole o1 = ChatRole.getRoleFrom(o4);
