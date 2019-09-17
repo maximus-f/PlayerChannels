@@ -56,15 +56,31 @@ public class InventoryHelper {
         return inventory;
     }
 
+    /**
+     * Sets the creation menu items
+     * TODO Functions attached to each item
+     */
     private void setCreationMenu(){
+        PrivateFile menus = new PrivateFile(FileType.MENUS);
         this.creationMenu = new StaticPane(1, 1, 7, 4);
+        Pair<ItemStack, Integer> name = getItemFrom(Material.valueOf(menus.getString("creation-menu.name.material")), "creation-menu.name", null);
+        Pair<ItemStack, Integer> description = getItemFrom(Material.valueOf(menus.getString("creation-menu.description.material")), "creation-menu.description", null);
+        Pair<ItemStack, Integer> status = getItemFrom(Material.valueOf(menus.getString("creation-menu.status.material")), "creation-menu.status", null);
+        Pair<ItemStack, Integer> saved = getItemFrom(Material.valueOf(menus.getString("creation-menu.saved.material")), "creation-menu.saved", null);
+        creationMenu.addItem(new GuiItem(name.getFirst()), name.getSecond(), 1);
+        creationMenu.addItem(new GuiItem(description.getFirst()), description.getSecond(), 1);
+        creationMenu.addItem(new GuiItem(status.getFirst()), status.getSecond(), 2);
+        creationMenu.addItem(new GuiItem(saved.getFirst()), saved.getSecond(), 2);
+
+
+
 
 
     }
 
     /**
      * @param inv to set
-     * @return inventory set with side decoration slots
+     * @return inventory set with side decoration slotsss
      */
     public PrivateInventory setSideDecorationSlots(PrivateInventory inv){
         inv.getGui().addPane(leftSideDecoSlots);
@@ -99,7 +115,7 @@ public class InventoryHelper {
     /**
      *
      * @param material path to the item in menus.yml, for example, "nav-bar.player-profile-head" will retrieve said path
-     * @return
+     * @return itemstack with integer slot
      */
     private Pair<ItemStack, Integer> getItemFrom(Material material, String path, OfflinePlayer owner){
         PrivateFile file = new PrivateFile(FileType.MENUS);

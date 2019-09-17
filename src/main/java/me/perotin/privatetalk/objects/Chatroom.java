@@ -23,14 +23,16 @@ public class Chatroom {
     // owner of chatroom
     private UUID owner;
     private String name;
-    private List<String> description;
+    private String description;
     // true if chatroom is public, false if private
     private boolean isPublic;
+    // true if saved, false if not
+    private boolean isSaved;
     private List<UUID> bannedMembers;
     private HashMap<UUID, String> nickNames;
     private PrivateFile messages;
 
-    public Chatroom(UUID owner, String name, List<String> description, boolean isPublic) {
+    public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved) {
         this.members = new HashMap<>();
         this.members.put(owner, ChatRole.OWNER);
         this.owner = owner;
@@ -39,6 +41,7 @@ public class Chatroom {
         this.isPublic = isPublic;
         this.uuid = UUID.randomUUID();
         this.messages = new PrivateFile(FileType.MESSAGES);
+        this.isSaved = isSaved;
     }
 
 
@@ -54,6 +57,13 @@ public class Chatroom {
      */
     public List<Player> getOnlinePlayers(){
        return getMembers().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    /**
+     * @return true if chatroom gets saved, false if not
+     */
+    public boolean isSaved() {
+        return isSaved;
     }
 
     public void addMember(Pair<UUID, ChatRole> value) {
@@ -80,11 +90,11 @@ public class Chatroom {
         this.name = name;
     }
 
-    public List<String> getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(List<String> description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
