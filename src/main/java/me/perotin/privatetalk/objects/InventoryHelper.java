@@ -5,7 +5,6 @@ package me.perotin.privatetalk.objects;
 import com.github.stefvanschie.inventoryframework.Gui;
 import com.github.stefvanschie.inventoryframework.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
-import me.perotin.privatetalk.objects.inventory.PrivateInventory;
 import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
@@ -49,10 +48,9 @@ public class InventoryHelper {
      * @param inventory to set
      * @return sets the nav bar for any given inventory
      */
-    public  PrivateInventory setNavigationBar(PrivateInventory inventory, OfflinePlayer owner){
-        Gui gui = inventory.getGui();
+    public  Gui setNavigationBar(Gui inventory, OfflinePlayer owner){
         navBar.addItem(new GuiItem(getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getFirst()), getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getSecond(), 0);
-        gui.addPane(navBar);
+        inventory.addPane(navBar);
         return inventory;
     }
 
@@ -71,20 +69,15 @@ public class InventoryHelper {
         creationMenu.addItem(new GuiItem(description.getFirst()), description.getSecond(), 1);
         creationMenu.addItem(new GuiItem(status.getFirst()), status.getSecond(), 2);
         creationMenu.addItem(new GuiItem(saved.getFirst()), saved.getSecond(), 2);
-
-
-
-
-
     }
 
     /**
      * @param inv to set
      * @return inventory set with side decoration slotsss
      */
-    public PrivateInventory setSideDecorationSlots(PrivateInventory inv){
-        inv.getGui().addPane(leftSideDecoSlots);
-        inv.getGui().addPane(rightSideDecoSlots);
+    public Gui setSideDecorationSlots(Gui inv){
+        inv.addPane(leftSideDecoSlots);
+        inv.addPane(rightSideDecoSlots);
         return inv;
 
     }
@@ -105,11 +98,18 @@ public class InventoryHelper {
      * @param inventory to set paging-nav-bar
      * @return inventory with paging-navar bar
      */
-    public PrivateInventory setPagingNavBar(PrivateInventory inventory){
-        inventory.getGui().addPane(pagingNavigationBar);
+    public Gui setPagingNavBar(Gui inventory){
+        inventory.addPane(pagingNavigationBar);
         return inventory;
     }
 
+    /**
+     * Sets the creation menu on an inventory
+     */
+    public Gui setCreationMenu(Gui toSet){
+        toSet.addPane(creationMenu);
+        return toSet;
+    }
 
 
     /**

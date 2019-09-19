@@ -47,7 +47,10 @@ public class PrivateTalkCommand extends Command implements CommandExecutor  {
 
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
-
+        Gui gui = new Gui(plugin, 6, "Test");
+        plugin.getHelper().setCreationMenu(gui);
+        Player clicker = (Player) sender;
+        gui.show(clicker);
         return true;
     }
 }
