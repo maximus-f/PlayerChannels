@@ -6,6 +6,7 @@ import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.PrivateUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -26,7 +27,6 @@ import java.util.UUID;
 /*
 TODO List
 
-Make creation menu and test them out
  */
 public class PrivateTalk extends JavaPlugin {
 
@@ -45,6 +45,8 @@ public class PrivateTalk extends JavaPlugin {
         instance = this;
         init();
         this.helper = new InventoryHelper();
+        FileConfiguration config = getConfig();
+        getCommand("privatetalk").setExecutor(new PrivateTalkCommand(config.getString("command-name"), "Base command for PrivateTalk", "/"+config.getString("command-name"), config.getStringList("aliases"), this));
 
 
     }
@@ -53,7 +55,7 @@ public class PrivateTalk extends JavaPlugin {
         PrivateFile.loadFiles();
         saveDefaultConfig();
         FileConfiguration config = getConfig();
-        PrivateUtils.registerCommand(new PrivateTalkCommand(config.getString("command-name"), "Base command for PrivateTalk", "/"+config.getString("command-name"), config.getStringList("aliases"), this));
+        //PrivateUtils.registerCommand(new PrivateTalkCommand(config.getString("command-name"), "Base command for PrivateTalk", "/"+config.getString("command-name"), config.getStringList("aliases"), this));
     }
 
     public static PrivateTalk getInstance(){

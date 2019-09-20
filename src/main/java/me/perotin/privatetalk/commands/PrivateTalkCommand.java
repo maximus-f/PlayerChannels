@@ -35,12 +35,11 @@ public class PrivateTalkCommand extends Command implements CommandExecutor  {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Gui gui = new Gui(plugin, 6, "Test");
-        StaticPane test = new StaticPane(1, 1, 4, 3);
-        test.fillWith(InventoryHelper.DECO_ITEM());
-        gui.addPane(test);
-        Player player = (Player) sender;
-        gui.show(player);
-        player.sendMessage("test");
+        plugin.getHelper().setCreationMenu(gui);
+        Player clicker = (Player) sender;
+        gui.show(clicker);
+        clicker.sendMessage("testt");
+
         return true;
     }
 
@@ -51,6 +50,8 @@ public class PrivateTalkCommand extends Command implements CommandExecutor  {
         plugin.getHelper().setCreationMenu(gui);
         Player clicker = (Player) sender;
         gui.show(clicker);
+        clicker.sendMessage("testt");
+
         return true;
     }
 }

@@ -88,5 +88,10 @@ creation-menu:
    saved:
       display: "&eSaved: "
       lore: "&7&oClick to toggle whether this should be saved or not."
-      material: "EMERALD_BLOCK"
+      material: "EYE_OF_ENDER"
       slot: 4
+   create-button:
+      display: "&e&lClick to create!"
+      lore: ""
+      material: "EMERALD_BLOCK"
+      slot: 3
