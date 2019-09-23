@@ -30,6 +30,7 @@ TODO List
  */
 public class PrivateTalk extends JavaPlugin {
 
+
     /**
      * Chatrooms loaded on the server
      */
@@ -69,4 +70,14 @@ public class PrivateTalk extends JavaPlugin {
     public InventoryHelper getHelper() {
         return helper;
     }
+
+    public List<Chatroom> getChatrooms() {
+        return chatrooms;
+    }
+
+    public List<PrivatePlayer> getPlayers() {
+        return players;
+    }
+
+
 }

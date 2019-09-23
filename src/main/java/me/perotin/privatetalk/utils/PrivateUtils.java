@@ -1,6 +1,9 @@
 package me.perotin.privatetalk.utils;
 
+import me.perotin.privatetalk.PrivateTalk;
+import me.perotin.privatetalk.objects.Chatroom;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 
@@ -31,5 +34,19 @@ public class PrivateUtils {
         } catch(final Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * @param name of chatroom
+     * @return chatroom with specific name
+     */
+    public static Chatroom getChatroomWith(String name){
+        PrivateTalk plugin = PrivateTalk.getInstance();
+        for(Chatroom chat : plugin.getChatrooms()){
+            if(ChatColor.stripColor( chat.getName()).equals(ChatColor.stripColor(name))){
+                return chat;
+            }
+        }
+        return null;
     }
 }

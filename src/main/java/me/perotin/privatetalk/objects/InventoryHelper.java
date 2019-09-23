@@ -5,6 +5,7 @@ package me.perotin.privatetalk.objects;
 import com.github.stefvanschie.inventoryframework.Gui;
 import com.github.stefvanschie.inventoryframework.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import me.perotin.privatetalk.objects.inventory.InventoryAction;
 import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
@@ -48,7 +49,7 @@ public class InventoryHelper {
      * @param inventory to set
      * @return sets the nav bar for any given inventory
      */
-    public  Gui setNavigationBar(Gui inventory, OfflinePlayer owner){
+    public Gui setNavigationBar(Gui inventory, OfflinePlayer owner){
         navBar.addItem(new GuiItem(getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getFirst()), getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getSecond(), 0);
         inventory.addPane(navBar);
         return inventory;
@@ -67,8 +68,8 @@ public class InventoryHelper {
         Pair<ItemStack, Integer> saved = getItemFrom(Material.valueOf(menus.getString("creation-menu.saved.material")), "creation-menu.saved", null);
         Pair<ItemStack, Integer> createButton = getItemFrom(Material.valueOf(menus.getString("creation-menu.create-button.material")), "creation-menu.create-button", null);
 
-        creationMenu.addItem(new GuiItem(name.getFirst()), name.getSecond(), 1);
-        creationMenu.addItem(new GuiItem(description.getFirst()), description.getSecond(), 1);
+        creationMenu.addItem(new GuiItem(name.getFirst(), InventoryAction.setNameConsumer()), name.getSecond(), 1);
+        creationMenu.addItem(new GuiItem(description.getFirst(), InventoryAction.setDescriptionConsumer()), description.getSecond(), 1);
         creationMenu.addItem(new GuiItem(status.getFirst()), status.getSecond(), 2);
         creationMenu.addItem(new GuiItem(saved.getFirst()), saved.getSecond(), 2);
         creationMenu.addItem(new GuiItem(saved.getFirst()), createButton.getSecond(), 3);
@@ -137,8 +138,6 @@ public class InventoryHelper {
         PrivateFile file = new PrivateFile(FileType.MENUS);
         Pair head = getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", null);
         Pair invites = getItemFrom(Material.PLAYER_HEAD, "nav-bar.manage-invites", null);
-
-
         Pair createChatroom = getItemFrom(Material.PLAYER_HEAD, "nav-bar.create-chatroom", null);
         navBar.addItem(new GuiItem((ItemStack) head.getFirst()), (int) head.getSecond(), 0);
         navBar.addItem(new GuiItem((ItemStack) createChatroom.getFirst()), (int) createChatroom.getSecond(), 0);
