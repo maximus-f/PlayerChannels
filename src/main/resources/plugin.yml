@@ -6,3 +6,6 @@ api-version: 1.14
 description: The ultimate chatroom solution.
 commands:
    privatetalk:
+      usage: /privatetalk
+      description: Base command
+      aliases: [pt, chatroom]

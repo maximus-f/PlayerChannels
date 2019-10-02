@@ -26,7 +26,8 @@ import java.util.UUID;
 
 /*
 TODO List
-
+1. PrivateTalkCommand is not working
+2. Working on CreateChatroomInputEvent
  */
 public class PrivateTalk extends JavaPlugin {
 
@@ -44,19 +45,17 @@ public class PrivateTalk extends JavaPlugin {
         this.chatrooms = new ArrayList<>();
         this.players = new ArrayList<>();
         instance = this;
-        init();
         this.helper = new InventoryHelper();
-        FileConfiguration config = getConfig();
-        getCommand("privatetalk").setExecutor(new PrivateTalkCommand(config.getString("command-name"), "Base command for PrivateTalk", "/"+config.getString("command-name"), config.getStringList("aliases"), this));
+        PrivateFile.loadFiles();
+        saveDefaultConfig();
+        getCommand("privatetalk").setExecutor(new PrivateTalkCommand(this));
+
 
 
     }
 
     private void init(){
-        PrivateFile.loadFiles();
-        saveDefaultConfig();
-        FileConfiguration config = getConfig();
-        //PrivateUtils.registerCommand(new PrivateTalkCommand(config.getString("command-name"), "Base command for PrivateTalk", "/"+config.getString("command-name"), config.getStringList("aliases"), this));
+
     }
 
     public static PrivateTalk getInstance(){

@@ -2,6 +2,7 @@ package me.perotin.privatetalk.events.chat_events;
 
 import me.perotin.privatetalk.objects.PreChatroom;
 import me.perotin.privatetalk.utils.PrivateUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,11 +33,13 @@ public class CreateChatroomInputEvent implements Listener {
 
         if (inCreation.containsKey(chatter.getUniqueId())) {
             PreChatroom preChatroom = inCreation.get(chatter.getUniqueId());
+            event.setCancelled(true);
             if (setName.contains(chatter.getUniqueId())) {
                 String name = event.getMessage();
                 // check if name is more than 1 word
                 if(name.split(" ").length > 1){
                     //too many words TODO come up with way to show messages, maybe big text on screen y'know what I mean
+                    chatter.sendTitle(ChatColor.RED+"Use only 1 word", "", 0, 20*3, 20);
                 }
                 if(isNameTaken(name)){
 
