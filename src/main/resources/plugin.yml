@@ -5,6 +5,10 @@ version: 3.0
 api-version: 1.14
 description: The ultimate chatroom solution.
 commands:
+   test:
+      usage: /test
+      description: test
+      aliases: [t]
    privatetalk:
       usage: /privatetalk
       description: Base command

@@ -1,6 +1,7 @@
 package me.perotin.privatetalk;
 
 import me.perotin.privatetalk.commands.PrivateTalkCommand;
+import me.perotin.privatetalk.commands.TestCommand;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PrivatePlayer;
@@ -28,6 +29,7 @@ import java.util.UUID;
 TODO List
 1. PrivateTalkCommand is not working
 2. Working on CreateChatroomInputEvent
+3. Finish Chatroom#saveToFile method
  */
 public class PrivateTalk extends JavaPlugin {
 
@@ -46,9 +48,10 @@ public class PrivateTalk extends JavaPlugin {
         this.players = new ArrayList<>();
         instance = this;
         this.helper = new InventoryHelper();
-        PrivateFile.loadFiles();
         saveDefaultConfig();
+        PrivateFile.loadFiles();
         getCommand("privatetalk").setExecutor(new PrivateTalkCommand(this));
+        getCommand("test").setExecutor(new TestCommand());
 
 
 

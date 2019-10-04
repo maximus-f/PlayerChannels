@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 /**
  * Captures a chatroom object.
  */
-public class Chatroom {
+public class Chatroom{
 
     /** @apiNote contains all members with their respective chat roles **/
     private Map<UUID, ChatRole> members;
@@ -142,5 +142,16 @@ public class Chatroom {
             }
         }
         return "";
+    }
+
+    /**
+     * @apiNote Used to save a chatroom to chatrooms.yml
+     * TODO Finish
+     */
+    public void saveToFile(){
+        PrivateFile chatrooms = new PrivateFile(FileType.CHATROOM);
+        chatrooms.set(uuid.toString()+".name", getName());
+        chatrooms.set(uuid.toString()+".members", getMembers());
+
     }
 }

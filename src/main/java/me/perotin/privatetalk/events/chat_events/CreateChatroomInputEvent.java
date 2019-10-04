@@ -40,10 +40,14 @@ public class CreateChatroomInputEvent implements Listener {
                 if(name.split(" ").length > 1){
                     //too many words TODO come up with way to show messages, maybe big text on screen y'know what I mean
                     chatter.sendTitle(ChatColor.RED+"Use only 1 word", "", 0, 20*3, 20);
+                    return;
                 }
                 if(isNameTaken(name)){
-
+                    // send message saying name is taken, tell them to say it again
+                    return;
                 }
+                // success condition, set name in PreChatroom
+
             } else if (setDescription.contains(chatter.getUniqueId())) {
                 String description = event.getMessage();
             }
