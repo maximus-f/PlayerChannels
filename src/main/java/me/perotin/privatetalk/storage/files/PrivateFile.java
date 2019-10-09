@@ -42,6 +42,9 @@ public class PrivateFile {
     }
 
     // some generic methods to speed up the process
+    public boolean getBool(String path){
+        return getConfiguration().getBoolean(path);
+    }
 
     public FileConfiguration getConfiguration() {
         return configuration;

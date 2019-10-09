@@ -19,7 +19,6 @@ public class Chatroom{
     /** @apiNote contains all members with their respective chat roles **/
     private Map<UUID, ChatRole> members;
     /**@apiNote used to identify chatroom me.perotin.privatetalk.objects. Distinct value.*/
-    private final UUID uuid;
     // owner of chatroom
     private UUID owner;
     private String name;
@@ -39,7 +38,6 @@ public class Chatroom{
         this.name = name;
         this.description = description;
         this.isPublic = isPublic;
-        this.uuid = UUID.randomUUID();
         this.messages = new PrivateFile(FileType.MESSAGES);
         this.isSaved = isSaved;
     }
@@ -68,10 +66,6 @@ public class Chatroom{
 
     public void addMember(Pair<UUID, ChatRole> value) {
         this.members.put(value.getFirst(), value.getSecond());
-    }
-
-    public UUID getUuid() {
-        return uuid;
     }
 
     public UUID getOwner() {
@@ -146,12 +140,31 @@ public class Chatroom{
 
     /**
      * @apiNote Used to save a chatroom to chatrooms.yml
-     * TODO Finish
      */
     public void saveToFile(){
         PrivateFile chatrooms = new PrivateFile(FileType.CHATROOM);
-        chatrooms.set(uuid.toString()+".name", getName());
-        chatrooms.set(uuid.toString()+".members", getMembers());
+        chatrooms.set(name+".members", getMembers());
+        chatrooms.set(name+".status", isPublic);
+        chatrooms.set(name+".saved", isSaved);
+        chatrooms.set(name+".owner", getOwner().toString());
+        chatrooms.set(name+".description", description);
+        chatrooms.save();
+    }
+
+
+    /**
+     * @param name of chatroom to load
+     * @return chatroom object
+     * TODO Unfinished, need to make another constructor for objects already made once. Also need to look into saving chat-roles with key map.
+     */
+    public static Chatroom loadChatroom(String name){
+        PrivateFile chatrooms = new PrivateFile(FileType.CHATROOM);
+        String description = chatrooms.getString(name+".description");
+        UUID owner = UUID.fromString(chatrooms.getString(name+".owner"));
+        boolean saved = chatrooms.getBool(name+".saved");
+        boolean isPublic = chatrooms.getBool(name+".status");
+        List<String> members = chatrooms.getConfiguration().getStringList(name+".members");
+        return null;
 
     }
 }
