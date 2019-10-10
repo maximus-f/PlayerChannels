@@ -6,6 +6,7 @@ import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -31,6 +32,9 @@ public class Chatroom{
     private HashMap<UUID, String> nickNames;
     private PrivateFile messages;
 
+    /**
+     * Initial chatroom constructor
+     */
     public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved) {
         this.members = new HashMap<>();
         this.members.put(owner, ChatRole.OWNER);
@@ -40,6 +44,16 @@ public class Chatroom{
         this.isPublic = isPublic;
         this.messages = new PrivateFile(FileType.MESSAGES);
         this.isSaved = isSaved;
+    }
+
+    /**
+     * Used for loading a chatroom from file with members
+     * @return chatroom
+     */
+    public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, Map<UUID, ChatRole> members) {
+        this(owner, name, description, isPublic, isSaved);
+        this.messages = new PrivateFile(FileType.MESSAGES);
+        this.members = members;
     }
 
 
@@ -143,11 +157,11 @@ public class Chatroom{
      */
     public void saveToFile(){
         PrivateFile chatrooms = new PrivateFile(FileType.CHATROOM);
-        chatrooms.set(name+".members", getMembers());
         chatrooms.set(name+".status", isPublic);
         chatrooms.set(name+".saved", isSaved);
         chatrooms.set(name+".owner", getOwner().toString());
         chatrooms.set(name+".description", description);
+        chatrooms.getConfiguration().createSection(name+".members", getMemberMap());
         chatrooms.save();
     }
 
@@ -155,7 +169,7 @@ public class Chatroom{
     /**
      * @param name of chatroom to load
      * @return chatroom object
-     * TODO Unfinished, need to make another constructor for objects already made once. Also need to look into saving chat-roles with key map.
+     *
      */
     public static Chatroom loadChatroom(String name){
         PrivateFile chatrooms = new PrivateFile(FileType.CHATROOM);
@@ -163,8 +177,17 @@ public class Chatroom{
         UUID owner = UUID.fromString(chatrooms.getString(name+".owner"));
         boolean saved = chatrooms.getBool(name+".saved");
         boolean isPublic = chatrooms.getBool(name+".status");
-        List<String> members = chatrooms.getConfiguration().getStringList(name+".members");
+        ConfigurationSection sec = chatrooms.getConfiguration().getConfigurationSection(name+".members");
+        Map<UUID, ChatRole> loadedRoles = new HashMap<>();
+        for(String key : sec.getKeys(false)){
+            String role = sec.get(key).toString();
+            ChatRole roleO = ChatRole.valueOf(role);
+            UUID uuid = UUID.fromString(key);
+            loadedRoles.put(uuid, roleO);
+        }
         return null;
 
     }
+
+
 }
