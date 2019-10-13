@@ -70,23 +70,23 @@ paging-nav-bar:
 # This is the menu that appears when creating a new chatroom
 creation-menu:
    name:
-      display: "&eName: "
+      display: "&eName: $name$"
       lore: "&7&oClick to set a name!"
       material: "ANVIL"
       # range is 0-2
       slot: 2
    description:
-      display: "&eDescription"
+      display: "&eDescription: $description$"
       lore: "&7&oClick to set the description!"
       material: "INK_SAC"
       slot: 4
    status:
-      display: "&ePublic: "
+      display: "&ePublic: $public$"
       lore: "&7&oClick to toggle public/private!"
       material: "IRON_DOOR"
       slot: 2
    saved:
-      display: "&eSaved: "
+      display: "&eSaved: $saved$"
       lore: "&7&oClick to toggle whether this should be saved or not."
       material: "EYE_OF_ENDER"
       slot: 4

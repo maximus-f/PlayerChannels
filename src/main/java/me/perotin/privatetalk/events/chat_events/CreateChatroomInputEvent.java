@@ -44,9 +44,11 @@ public class CreateChatroomInputEvent implements Listener {
                 }
                 if(isNameTaken(name)){
                     // send message saying name is taken, tell them to say it again
+                    chatter.sendTitle(ChatColor.RED+"That name is taken", "", 0, 20*3, 20);
                     return;
                 }
                 // success condition, set name in PreChatroom
+                preChatroom.setName(name);
 
             } else if (setDescription.contains(chatter.getUniqueId())) {
                 String description = event.getMessage();

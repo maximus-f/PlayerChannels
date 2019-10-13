@@ -11,11 +11,23 @@ public class PreChatroom {
 
     private String name;
     private String description;
-    private boolean isPrivate;
+    private boolean isPublic;
     private boolean isSaved;
     private UUID owner;
 
     public PreChatroom(UUID owner){
+        this.owner = owner;
+        this.name = "";
+        this.description="";
+        this.isPublic = false;
+        this.isSaved = false;
+    }
+
+    public PreChatroom(){
+        this(null);
+    }
+
+    public void setOwner(UUID owner) {
         this.owner = owner;
     }
 
@@ -35,12 +47,12 @@ public class PreChatroom {
         this.description = description;
     }
 
-    public boolean isPrivate() {
-        return isPrivate;
+    public boolean isPublic() {
+        return isPublic;
     }
 
-    public void setPrivate(boolean aPrivate) {
-        isPrivate = aPrivate;
+    public void setPublic(boolean isPublic) {
+        this.isPublic = isPublic;
     }
 
     public boolean isSaved() {
@@ -52,6 +64,6 @@ public class PreChatroom {
     }
 
     public Chatroom toChatroom(){
-        return new Chatroom(owner, name, description, isPrivate, isSaved);
+        return new Chatroom(owner, name, description, isPublic, isSaved);
     }
 }

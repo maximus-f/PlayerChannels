@@ -40,7 +40,7 @@ public class InventoryHelper {
         this.doNothing = (event) -> event.setCancelled(true);
         setNavBar();
         setPagingNavigationBar();
-        setCreationMenu();
+        setCreationMenu(new PreChatroom());
         setSideDecoSlots();
     }
 
@@ -59,7 +59,7 @@ public class InventoryHelper {
      * Sets the creation menu items
      * TODO Functions attached to each item
      */
-    private void setCreationMenu(){
+    private void setCreationMenu(PreChatroom chatroom){
         PrivateFile menus = new PrivateFile(FileType.MENUS);
         this.creationMenu = new StaticPane(1, 1, 7, 4);
         Pair<ItemStack, Integer> name = getItemFrom(Material.valueOf(menus.getString("creation-menu.name.material")), "creation-menu.name", null);
@@ -67,6 +67,19 @@ public class InventoryHelper {
         Pair<ItemStack, Integer> status = getItemFrom(Material.valueOf(menus.getString("creation-menu.status.material")), "creation-menu.status", null);
         Pair<ItemStack, Integer> saved = getItemFrom(Material.valueOf(menus.getString("creation-menu.saved.material")), "creation-menu.saved", null);
         Pair<ItemStack, Integer> createButton = getItemFrom(Material.valueOf(menus.getString("creation-menu.create-button.material")), "creation-menu.create-button", null);
+        // setting all the pair values to use the values from the PreChatroom
+        name.getFirst().getItemMeta().setDisplayName(name.getFirst().getItemMeta().getDisplayName().replace("$name$", chatroom.getName()));
+        name = new Pair<>(name.getFirst(), name.getSecond());
+
+        description.getFirst().getItemMeta().setDisplayName(description.getFirst().getItemMeta().getDisplayName().replace("$description$",chatroom.getDescription()));
+        description = new Pair<>(description.getFirst(), description.getSecond());
+
+        status.getFirst().getItemMeta().setDisplayName(status.getFirst().getItemMeta().getDisplayName().replace("$status$",chatroom.isPublic()+""));
+        status = new Pair<>(status.getFirst(), status.getSecond());
+
+        saved.getFirst().getItemMeta().setDisplayName(saved.getFirst().getItemMeta().getDisplayName().replace("$saved$",chatroom.isSaved()+""));
+        saved = new Pair<>(saved.getFirst(), saved.getSecond());
+
 
         creationMenu.addItem(new GuiItem(name.getFirst(), InventoryAction.setNameConsumer()), name.getSecond(), 1);
         creationMenu.addItem(new GuiItem(description.getFirst(), InventoryAction.setDescriptionConsumer()), description.getSecond(), 1);

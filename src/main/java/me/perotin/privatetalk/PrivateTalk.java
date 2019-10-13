@@ -29,7 +29,6 @@ import java.util.UUID;
 TODO List
 1. PrivateTalkCommand is not working
 2. Working on CreateChatroomInputEvent
-3. Finish Chatroom#saveToFile method
  */
 public class PrivateTalk extends JavaPlugin {
 
