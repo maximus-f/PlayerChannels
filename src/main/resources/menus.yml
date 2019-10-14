@@ -69,6 +69,7 @@ paging-nav-bar:
 # Creation Menu
 # This is the menu that appears when creating a new chatroom
 creation-menu:
+   display-name: "Create a chatroom:"
    name:
       display: "&eName: $name$"
       lore: "&7&oClick to set a name!"

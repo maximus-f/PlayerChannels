@@ -5,6 +5,7 @@ package me.perotin.privatetalk.objects;
 import com.github.stefvanschie.inventoryframework.Gui;
 import com.github.stefvanschie.inventoryframework.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.inventory.InventoryAction;
 import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
@@ -40,7 +41,6 @@ public class InventoryHelper {
         this.doNothing = (event) -> event.setCancelled(true);
         setNavBar();
         setPagingNavigationBar();
-        setCreationMenu(new PreChatroom());
         setSideDecoSlots();
     }
 
@@ -124,9 +124,18 @@ public class InventoryHelper {
     /**
      * Sets the creation menu on an inventory
      */
-    public Gui setCreationMenu(Gui toSet){
+    public Gui setCreationMenu(Gui toSet, PreChatroom chatroom){
+        setCreationMenu(chatroom);
         toSet.addPane(creationMenu);
         return toSet;
+    }
+
+    public Gui getCreationMenu(PreChatroom chatroom){
+        PrivateFile file = new PrivateFile(FileType.MENUS);
+        Gui gui = new Gui(PrivateTalk.getInstance(), 6, file.getString("chatroom-creation.display-name"));
+        setSideDecorationSlots(gui);
+        gui = setCreationMenu(gui, chatroom);
+        return gui;
     }
 
 

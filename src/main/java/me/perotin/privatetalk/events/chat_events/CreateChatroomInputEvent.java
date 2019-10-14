@@ -1,5 +1,7 @@
 package me.perotin.privatetalk.events.chat_events;
 
+import me.perotin.privatetalk.PrivateTalk;
+import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PreChatroom;
 import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.ChatColor;
@@ -20,11 +22,13 @@ public class CreateChatroomInputEvent implements Listener {
     private HashSet<UUID> setName = new HashSet<>();
     private HashSet<UUID> setDescription = new HashSet<>();
     private Map<UUID, PreChatroom> inCreation;
+    private PrivateTalk plugin;
 
 
-    public CreateChatroomInputEvent() {
+    public CreateChatroomInputEvent(PrivateTalk plugin) {
         this.inCreation = new HashMap<>();
         instance = this;
+        this.plugin = plugin;
     }
 
     @EventHandler
@@ -49,9 +53,11 @@ public class CreateChatroomInputEvent implements Listener {
                 }
                 // success condition, set name in PreChatroom
                 preChatroom.setName(name);
+                showUpdatedMenu(chatter, preChatroom);
 
             } else if (setDescription.contains(chatter.getUniqueId())) {
                 String description = event.getMessage();
+                // TODO
             }
         }
     }
@@ -72,9 +78,13 @@ public class CreateChatroomInputEvent implements Listener {
         return inCreation;
     }
 
-    //TODO Show updated menu after inputting certain fields
-    private void showUpdatedMenu(Player toShow, PreChatroom view){
 
+    /**
+     * Shows most updated menu of a chatroom in progress of being created
+     */
+    private void showUpdatedMenu(Player toShow, PreChatroom view){
+        InventoryHelper helper = plugin.getHelper();
+        helper.getCreationMenu(view).show(toShow);
     }
 
 

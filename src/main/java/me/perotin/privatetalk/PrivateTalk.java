@@ -2,6 +2,7 @@ package me.perotin.privatetalk;
 
 import me.perotin.privatetalk.commands.PrivateTalkCommand;
 import me.perotin.privatetalk.commands.TestCommand;
+import me.perotin.privatetalk.events.chat_events.CreateChatroomInputEvent;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PrivatePlayer;
@@ -51,13 +52,14 @@ public class PrivateTalk extends JavaPlugin {
         PrivateFile.loadFiles();
         getCommand("privatetalk").setExecutor(new PrivateTalkCommand(this));
         getCommand("test").setExecutor(new TestCommand());
+        init();
 
 
 
     }
 
     private void init(){
-
+        Bukkit.getPluginManager().registerEvents(new CreateChatroomInputEvent(this), this);
     }
 
     public static PrivateTalk getInstance(){
