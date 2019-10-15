@@ -6,7 +6,8 @@ import com.github.stefvanschie.inventoryframework.Gui;
 import com.github.stefvanschie.inventoryframework.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.PrivateTalk;
-import me.perotin.privatetalk.objects.inventory.InventoryAction;
+import me.perotin.privatetalk.events.chat_events.CreateChatroomInputEvent;
+import me.perotin.privatetalk.objects.inventory.actions.CreateChatroomAction;
 import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
@@ -81,11 +82,11 @@ public class InventoryHelper {
         saved = new Pair<>(saved.getFirst(), saved.getSecond());
 
 
-        creationMenu.addItem(new GuiItem(name.getFirst(), InventoryAction.setNameConsumer()), name.getSecond(), 1);
-        creationMenu.addItem(new GuiItem(description.getFirst(), InventoryAction.setDescriptionConsumer()), description.getSecond(), 1);
-        creationMenu.addItem(new GuiItem(status.getFirst()), status.getSecond(), 2);
-        creationMenu.addItem(new GuiItem(saved.getFirst()), saved.getSecond(), 2);
-        creationMenu.addItem(new GuiItem(saved.getFirst()), createButton.getSecond(), 3);
+        creationMenu.addItem(new GuiItem(name.getFirst(), CreateChatroomAction.setNameConsumer()), name.getSecond(), 1);
+        creationMenu.addItem(new GuiItem(description.getFirst(), CreateChatroomAction.setDescriptionConsumer()), description.getSecond(), 1);
+        creationMenu.addItem(new GuiItem(status.getFirst(), CreateChatroomAction.toggleStatusConsumer()), status.getSecond(), 2);
+        creationMenu.addItem(new GuiItem(saved.getFirst(), CreateChatroomAction.toggleSavedConsumer()), saved.getSecond(), 2);
+        creationMenu.addItem(new GuiItem(createButton.getFirst(), CreateChatroomAction.clickCreateButtonConsumer()), createButton.getSecond(), 3);
 
     }
 
@@ -124,7 +125,7 @@ public class InventoryHelper {
     /**
      * Sets the creation menu on an inventory
      */
-    public Gui setCreationMenu(Gui toSet, PreChatroom chatroom){
+    private Gui setCreationMenu(Gui toSet, PreChatroom chatroom){
         setCreationMenu(chatroom);
         toSet.addPane(creationMenu);
         return toSet;
@@ -162,7 +163,7 @@ public class InventoryHelper {
         Pair invites = getItemFrom(Material.PLAYER_HEAD, "nav-bar.manage-invites", null);
         Pair createChatroom = getItemFrom(Material.PLAYER_HEAD, "nav-bar.create-chatroom", null);
         navBar.addItem(new GuiItem((ItemStack) head.getFirst()), (int) head.getSecond(), 0);
-        navBar.addItem(new GuiItem((ItemStack) createChatroom.getFirst()), (int) createChatroom.getSecond(), 0);
+        navBar.addItem(new GuiItem((ItemStack) createChatroom.getFirst(), CreateChatroomAction.createChatroomConsumer()), (int) createChatroom.getSecond(), 0);
         navBar.addItem(new GuiItem((ItemStack) invites.getFirst()), (int) invites.getSecond(), 0);
         GuiItem deco = new GuiItem(DECO_ITEM(),  doNothing);
         List<Integer> slots = getAsInts(file.getConfiguration().getStringList("nav-bar.deco-item.slots"));
@@ -197,6 +198,10 @@ public class InventoryHelper {
         return stringList.stream().map(Integer::parseInt).collect(Collectors.toList());
     }
 
+
+
+
+    // STATIC ITEMS ------------------------------------------------------------------------------------------------------------------------------------------------
     /**
      * @return blank decoration item used to fill white-space
      */

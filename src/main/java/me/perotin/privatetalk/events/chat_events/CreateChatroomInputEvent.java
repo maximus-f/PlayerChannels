@@ -44,20 +44,29 @@ public class CreateChatroomInputEvent implements Listener {
                 if(name.split(" ").length > 1){
                     //too many words TODO come up with way to show messages, maybe big text on screen y'know what I mean
                     chatter.sendTitle(ChatColor.RED+"Use only 1 word", "", 0, 20*3, 20);
+                    showUpdatedMenu(chatter, preChatroom);
+                    setName.remove(chatter.getUniqueId());
                     return;
                 }
                 if(isNameTaken(name)){
                     // send message saying name is taken, tell them to say it again
                     chatter.sendTitle(ChatColor.RED+"That name is taken", "", 0, 20*3, 20);
+                    showUpdatedMenu(chatter, preChatroom);
+                    setName.remove(chatter.getUniqueId());
                     return;
                 }
                 // success condition, set name in PreChatroom
                 preChatroom.setName(name);
                 showUpdatedMenu(chatter, preChatroom);
+                setName.remove(chatter.getUniqueId());
+
 
             } else if (setDescription.contains(chatter.getUniqueId())) {
                 String description = event.getMessage();
-                // TODO
+                // no error conditions so continue
+                preChatroom.setDescription(description);
+                showUpdatedMenu(chatter, preChatroom);
+                setDescription.remove(chatter.getUniqueId());
             }
         }
     }
@@ -82,7 +91,7 @@ public class CreateChatroomInputEvent implements Listener {
     /**
      * Shows most updated menu of a chatroom in progress of being created
      */
-    private void showUpdatedMenu(Player toShow, PreChatroom view){
+    public void showUpdatedMenu(Player toShow, PreChatroom view){
         InventoryHelper helper = plugin.getHelper();
         helper.getCreationMenu(view).show(toShow);
     }

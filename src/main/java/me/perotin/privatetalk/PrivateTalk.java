@@ -5,6 +5,7 @@ import me.perotin.privatetalk.commands.TestCommand;
 import me.perotin.privatetalk.events.chat_events.CreateChatroomInputEvent;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.InventoryHelper;
+import me.perotin.privatetalk.objects.PreChatroom;
 import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.PrivateUtils;
@@ -38,9 +39,11 @@ public class PrivateTalk extends JavaPlugin {
      * Chatrooms loaded on the server
      */
     private List<Chatroom> chatrooms;
+
     private List<PrivatePlayer> players;
     private static PrivateTalk instance;
     private InventoryHelper helper;
+
 
     @Override
     public void onEnable(){
@@ -80,6 +83,10 @@ public class PrivateTalk extends JavaPlugin {
 
     public List<PrivatePlayer> getPlayers() {
         return players;
+    }
+
+    public void createChatroom(PreChatroom chatroom){
+        chatrooms.add(chatroom.toChatroom());
     }
 
 
