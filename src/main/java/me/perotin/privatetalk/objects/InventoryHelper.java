@@ -131,6 +131,9 @@ public class InventoryHelper {
         return toSet;
     }
 
+    /**
+     * Gets the GUI for any designed PreChatroom object
+     */
     public Gui getCreationMenu(PreChatroom chatroom){
         PrivateFile file = new PrivateFile(FileType.MENUS);
         Gui gui = new Gui(PrivateTalk.getInstance(), 6, file.getString("chatroom-creation.display-name"));

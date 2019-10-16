@@ -30,7 +30,11 @@ import java.util.UUID;
 /*
 TODO List
 1. PrivateTalkCommand is not working
-2. Working on CreateChatroomInputEvent
+
+
+Was working on the Inventory Actions and setting each item to an appropiate action, in theory, this MAY be done but very unlikely it will work first try.
+Goal is to get the creation menu up and the basic switches and toggles to be working... dive deep into that. Also, maybe spend a commit just commenting/refactoring
+since codebase is getting a bit messy
  */
 public class PrivateTalk extends JavaPlugin {
 

@@ -126,11 +126,17 @@ public class Chatroom{
         return nickNames;
     }
 
+    /**
+     *Sets the nickname map
+     */
     public void setNickNames(HashMap<UUID, String> nickNames) {
         this.nickNames = nickNames;
     }
 
 
+    /**
+     * Checks if a memmber is in this chatroom object
+     */
     public boolean isInChatroom(UUID uuid){
         return getMembers().contains(uuid);
     }

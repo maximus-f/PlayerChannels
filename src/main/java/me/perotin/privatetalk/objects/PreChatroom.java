@@ -63,6 +63,9 @@ public class PreChatroom {
         isSaved = saved;
     }
 
+    /**
+     * @return a chatroom
+     */
     public Chatroom toChatroom(){
         return new Chatroom(owner, name, description, isPublic, isSaved);
     }
