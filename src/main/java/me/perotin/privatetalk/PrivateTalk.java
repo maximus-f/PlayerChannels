@@ -36,6 +36,11 @@ Was working on the Inventory Actions and setting each item to an appropiate acti
 Goal is to get the creation menu up and the basic switches and toggles to be working... dive deep into that. Also, maybe spend a commit just commenting/refactoring
 since codebase is getting a bit messy
  */
+
+
+/*
+Finish PrivatePlayer.getPlayer(UUID)
+ */
 public class PrivateTalk extends JavaPlugin {
 
 

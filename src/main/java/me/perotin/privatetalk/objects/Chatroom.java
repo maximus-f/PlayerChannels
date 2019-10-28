@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 /**
  * Captures a chatroom object.
  */
-public class Chatroom{
+public class Chatroom {
 
     /** @apiNote contains all members with their respective chat roles **/
     private Map<UUID, ChatRole> members;

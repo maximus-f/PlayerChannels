@@ -2,10 +2,13 @@ package me.perotin.privatetalk.objects;
 
 /* Created by Perotin on 8/14/19 */
 
+import me.perotin.privatetalk.storage.files.FileType;
+import me.perotin.privatetalk.storage.files.PrivateFile;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Capture of a player instance with fields pertaining to chatrooms, statuses, and the like.
@@ -68,5 +71,27 @@ public class PrivatePlayer {
      */
     public void addChatroom(Chatroom chatroom) {
         if(!chatrooms.contains(chatroom)) chatrooms.add(chatroom);
+    }
+
+    /**
+     * Saves data to player file
+     */
+    public void savePlayer(){
+        PrivateFile playerFile = new PrivateFile(FileType.PLAYERS);
+        playerFile.set(uuid.toString()+".name", name);
+        playerFile.set(uuid.toString()+".name", name);
+        playerFile.set(uuid.toString()+".chatrooms", getChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList()));
+        playerFile.save();
+
+    }
+
+    /**
+     *
+     * @param uuid
+     * @return PrivatePlayer object
+     */
+    public static PrivatePlayer getPlayer(UUID uuid){
+        PrivateFile playerFile = new PrivateFile(FileType.PLAYERS);
+        return null;
     }
 }
