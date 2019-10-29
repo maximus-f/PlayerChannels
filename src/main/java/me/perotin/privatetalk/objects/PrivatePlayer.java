@@ -4,6 +4,7 @@ package me.perotin.privatetalk.objects;
 
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
+import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -79,7 +80,6 @@ public class PrivatePlayer {
     public void savePlayer(){
         PrivateFile playerFile = new PrivateFile(FileType.PLAYERS);
         playerFile.set(uuid.toString()+".name", name);
-        playerFile.set(uuid.toString()+".name", name);
         playerFile.set(uuid.toString()+".chatrooms", getChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList()));
         playerFile.save();
 
@@ -92,6 +92,11 @@ public class PrivatePlayer {
      */
     public static PrivatePlayer getPlayer(UUID uuid){
         PrivateFile playerFile = new PrivateFile(FileType.PLAYERS);
-        return null;
+        String name = playerFile.getString(uuid.toString()+".name");
+        // do some checking with chatrooms that aren't loaded
+        List<Chatroom> chatrooms = playerFile.getConfiguration().getStringList(uuid.toString()+".chatrooms")
+                .stream().map(PrivateUtils::getChatroomWith).collect(Collectors.toList());
+
+        return new PrivatePlayer(uuid, name, chatrooms);
     }
 }

@@ -39,6 +39,7 @@ public class PrivateUtils {
     /**
      * @param name of chatroom
      * @return chatroom with specific name
+     * TODO load in chatrooms from files
      */
     public static Chatroom getChatroomWith(String name){
         PrivateTalk plugin = PrivateTalk.getInstance();
