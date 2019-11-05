@@ -179,19 +179,21 @@ public class Chatroom {
      */
     public static Chatroom loadChatroom(String name){
         PrivateFile chatrooms = new PrivateFile(FileType.CHATROOM);
-        String description = chatrooms.getString(name+".description");
-        UUID owner = UUID.fromString(chatrooms.getString(name+".owner"));
-        boolean saved = chatrooms.getBool(name+".saved");
-        boolean isPublic = chatrooms.getBool(name+".status");
-        ConfigurationSection sec = chatrooms.getConfiguration().getConfigurationSection(name+".members");
-        Map<UUID, ChatRole> loadedRoles = new HashMap<>();
-        for(String key : sec.getKeys(false)){
-            String role = sec.get(key).toString();
-            ChatRole roleO = ChatRole.valueOf(role);
-            UUID uuid = UUID.fromString(key);
-            loadedRoles.put(uuid, roleO);
-        }
-        return null;
+        if(chatrooms.getConfiguration().contains(name)) {
+            String description = chatrooms.getString(name + ".description");
+            UUID owner = UUID.fromString(chatrooms.getString(name + ".owner"));
+            boolean saved = chatrooms.getBool(name + ".saved");
+            boolean isPublic = chatrooms.getBool(name + ".status");
+            ConfigurationSection sec = chatrooms.getConfiguration().getConfigurationSection(name + ".members");
+            Map<UUID, ChatRole> loadedRoles = new HashMap<>();
+            for (String key : sec.getKeys(false)) {
+                String role = sec.get(key).toString();
+                ChatRole roleO = ChatRole.valueOf(role);
+                UUID uuid = UUID.fromString(key);
+                loadedRoles.put(uuid, roleO);
+            }
+            return new Chatroom(owner, name, description, isPublic, saved, loadedRoles);
+        } else return null;
 
     }
 

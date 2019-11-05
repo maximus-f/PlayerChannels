@@ -39,7 +39,7 @@ public class PrivateUtils {
     /**
      * @param name of chatroom
      * @return chatroom with specific name
-     * TODO load in chatrooms from files
+     *
      */
     public static Chatroom getChatroomWith(String name){
         PrivateTalk plugin = PrivateTalk.getInstance();
@@ -48,6 +48,10 @@ public class PrivateUtils {
                 return chat;
             }
         }
-        return null;
+
+        // not found in loaded chatrooms
+        // check files
+        Chatroom chat = Chatroom.loadChatroom(name);
+        return chat; // may be null
     }
 }
