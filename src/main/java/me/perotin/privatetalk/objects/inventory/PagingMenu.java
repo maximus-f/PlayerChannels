@@ -36,13 +36,17 @@ public abstract class PagingMenu {
 
     }
     public void previous(){
-       pane.setPage(pane.getPage()+2);
+       pane.setPage(pane.getPage()-1);
     }
 
     public String getIdentifier() {
         return identifier;
     }
 
+
+    public void show(){
+        getMenu().show(viewer);
+    }
 
 
     /**

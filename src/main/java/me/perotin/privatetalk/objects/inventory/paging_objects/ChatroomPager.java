@@ -2,9 +2,7 @@ package me.perotin.privatetalk.objects.inventory.paging_objects;
 
 import com.github.stefvanschie.inventoryframework.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
-import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.PrivateTalk;
-import me.perotin.privatetalk.objects.ChatRole;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.objects.inventory.PagingMenu;
@@ -81,14 +79,14 @@ public class ChatroomPager extends PagingMenu {
                 head.setName(messages.getString("chatroom-head-display").replace("$name$", player.getName()));
                 head.setLore(messages.getString("chatroom-head-lore1")
                 .replace("$connected$", messages.getString("online")).replace("$role$", chatroom.getRole(uuid)));
-                heads.put(head.build(), plugin.getPrivatePlayer(uuid));
+                heads.put(head.build(), PrivatePlayer.getPlayer(uuid));
             } else {
                 OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
                 ItemStackUtils head = new ItemStackUtils(Material.PLAYER_HEAD);
                 head.setName(messages.getString("chatroom-head-display").replace("$name$", player.getName()));
                 head.setLore(messages.getString("chatroom-head-lore1")
                         .replace("$connected$", messages.getString("offline")).replace("$role$", chatroom.getRole(uuid)));
-                heads.put(head.build(), plugin.getPrivatePlayer(uuid));
+                heads.put(head.build(), PrivatePlayer.getPlayer(uuid));
 
             }
         }

@@ -48,7 +48,6 @@ public class PrivateUtils {
                 return chat;
             }
         }
-
         // not found in loaded chatrooms
         // check files
         Chatroom chat = Chatroom.loadChatroom(name);

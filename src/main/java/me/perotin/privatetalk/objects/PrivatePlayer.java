@@ -2,6 +2,7 @@ package me.perotin.privatetalk.objects;
 
 /* Created by Perotin on 8/14/19 */
 
+import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.PrivateUtils;
@@ -91,6 +92,12 @@ public class PrivatePlayer {
      * @return PrivatePlayer object
      */
     public static PrivatePlayer getPlayer(UUID uuid){
+        PrivateTalk instance = PrivateTalk.getInstance();
+        for(PrivatePlayer player : instance.getPlayers()){
+            if(uuid.equals(player.getUuid())){
+                return player;
+            }
+        }
         PrivateFile playerFile = new PrivateFile(FileType.PLAYERS);
         String name = playerFile.getString(uuid.toString()+".name");
         // do some checking with chatrooms that aren't loaded

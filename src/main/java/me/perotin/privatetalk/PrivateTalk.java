@@ -1,16 +1,13 @@
 package me.perotin.privatetalk;
 
 import me.perotin.privatetalk.commands.PrivateTalkCommand;
-import me.perotin.privatetalk.commands.TestCommand;
 import me.perotin.privatetalk.events.chat_events.CreateChatroomInputEvent;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PreChatroom;
 import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.storage.files.PrivateFile;
-import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -54,6 +51,7 @@ public class PrivateTalk extends JavaPlugin {
     private InventoryHelper helper;
 
 
+    // Enabling method
     @Override
     public void onEnable(){
         this.chatrooms = new ArrayList<>();
@@ -62,38 +60,56 @@ public class PrivateTalk extends JavaPlugin {
         this.helper = new InventoryHelper();
         saveDefaultConfig();
         PrivateFile.loadFiles();
-        getCommand("privatetalk").setExecutor(new PrivateTalkCommand(this));
-        getCommand("test").setExecutor(new TestCommand());
         init();
+        getCommand("privatetalk").setExecutor(new PrivateTalkCommand(this));
 
+    }
 
-
+    // Clean up collections
+    @Override
+    public void onDisable(){
+        this.players.clear();
+        this.chatrooms.clear();
+        this.helper = null;
+        instance = null;
     }
 
     private void init(){
         Bukkit.getPluginManager().registerEvents(new CreateChatroomInputEvent(this), this);
     }
 
+    /**
+     * @return instance of main class
+     */
     public static PrivateTalk getInstance(){
         return instance;
     }
 
-    public PrivatePlayer getPrivatePlayer(UUID uuid){
-        return null;
-    }
 
+    /**
+     * @return helper for inventory actions
+     */
     public InventoryHelper getHelper() {
         return helper;
     }
 
+    /**
+     * @return collection of chatrooms
+     */
     public List<Chatroom> getChatrooms() {
         return chatrooms;
     }
 
+    /**
+     * @return player collection of registered players
+     */
     public List<PrivatePlayer> getPlayers() {
         return players;
     }
 
+    /**
+     * @param chatroom to fully initialize as a chatroom
+     */
     public void createChatroom(PreChatroom chatroom){
         chatrooms.add(chatroom.toChatroom());
     }

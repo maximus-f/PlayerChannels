@@ -45,6 +45,9 @@ public class InventoryHelper {
         setSideDecoSlots();
     }
 
+    //----------------------- Navigation Bar Methods ----------------------------------------------------
+
+
     /**
      *
      * @param inventory to set
@@ -54,6 +57,38 @@ public class InventoryHelper {
         navBar.addItem(new GuiItem(getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getFirst()), getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getSecond(), 0);
         inventory.addPane(navBar);
         return inventory;
+    }
+
+
+    /**
+     * Sets the navigation bar that appears in most menus at the very top
+     */
+    private void setNavBar(){
+        PrivateFile file = new PrivateFile(FileType.MENUS);
+        Pair head = getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", null);
+        Pair invites = getItemFrom(Material.PLAYER_HEAD, "nav-bar.manage-invites", null);
+        Pair createChatroom = getItemFrom(Material.PLAYER_HEAD, "nav-bar.create-chatroom", null);
+        navBar.addItem(new GuiItem((ItemStack) head.getFirst()), (int) head.getSecond(), 0);
+        navBar.addItem(new GuiItem((ItemStack) createChatroom.getFirst(), CreateChatroomAction.createChatroomConsumer()), (int) createChatroom.getSecond(), 0);
+        navBar.addItem(new GuiItem((ItemStack) invites.getFirst()), (int) invites.getSecond(), 0);
+        GuiItem deco = new GuiItem(DECO_ITEM(),  doNothing);
+        List<Integer> slots = getAsInts(file.getConfiguration().getStringList("nav-bar.deco-item.slots"));
+        for(int x : slots) {
+            navBar.addItem(deco, x, 0);
+        }
+
+    }
+
+
+    //----------------------- Creation Menu Methods ----------------------------------------------------
+
+    /**
+     * Sets the creation menu on an inventory
+     */
+    private Gui setCreationMenu(Gui toSet, PreChatroom chatroom){
+        setCreationMenu(chatroom);
+        toSet.addPane(creationMenu);
+        return toSet;
     }
 
     /**
@@ -91,6 +126,17 @@ public class InventoryHelper {
     }
 
     /**
+     * Gets the GUI for any designed PreChatroom object
+     */
+    public Gui getCreationMenu(PreChatroom chatroom){
+        PrivateFile file = new PrivateFile(FileType.MENUS);
+        Gui gui = new Gui(PrivateTalk.getInstance(), 6, file.getString("chatroom-creation.display-name"));
+        setSideDecorationSlots(gui);
+        gui = setCreationMenu(gui, chatroom);
+        return gui;
+    }
+    //----------------------- Decoration Methods ----------------------------------------------------
+    /**
      * @param inv to set
      * @return inventory set with side decoration slotsss
      */
@@ -111,6 +157,8 @@ public class InventoryHelper {
         leftSideDecoSlots.fillWith(DECO_ITEM());
 
     }
+    //----------------------- Paging Buttons Methods ----------------------------------------------------
+
 
     /**
      *
@@ -122,59 +170,7 @@ public class InventoryHelper {
         return inventory;
     }
 
-    /**
-     * Sets the creation menu on an inventory
-     */
-    private Gui setCreationMenu(Gui toSet, PreChatroom chatroom){
-        setCreationMenu(chatroom);
-        toSet.addPane(creationMenu);
-        return toSet;
-    }
 
-    /**
-     * Gets the GUI for any designed PreChatroom object
-     */
-    public Gui getCreationMenu(PreChatroom chatroom){
-        PrivateFile file = new PrivateFile(FileType.MENUS);
-        Gui gui = new Gui(PrivateTalk.getInstance(), 6, file.getString("chatroom-creation.display-name"));
-        setSideDecorationSlots(gui);
-        gui = setCreationMenu(gui, chatroom);
-        return gui;
-    }
-
-
-    /**
-     *
-     * @param material path to the item in menus.yml, for example, "nav-bar.player-profile-head" will retrieve said path
-     * @return itemstack with integer slot
-     */
-    private Pair<ItemStack, Integer> getItemFrom(Material material, String path, OfflinePlayer owner){
-        PrivateFile file = new PrivateFile(FileType.MENUS);
-        ItemStackUtils builder = new ItemStackUtils(material, owner);
-        builder.setName(file.getString(path+".display"));
-        builder.setLore(file.getConfiguration().getStringList(path+".lore"));
-        return new Pair<>(builder.build(), file.getConfiguration().getInt(path+".slot"));
-
-    }
-
-    /**
-     * Sets the navigation bar that appears in most menus at the very top
-     */
-    private void setNavBar(){
-        PrivateFile file = new PrivateFile(FileType.MENUS);
-        Pair head = getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", null);
-        Pair invites = getItemFrom(Material.PLAYER_HEAD, "nav-bar.manage-invites", null);
-        Pair createChatroom = getItemFrom(Material.PLAYER_HEAD, "nav-bar.create-chatroom", null);
-        navBar.addItem(new GuiItem((ItemStack) head.getFirst()), (int) head.getSecond(), 0);
-        navBar.addItem(new GuiItem((ItemStack) createChatroom.getFirst(), CreateChatroomAction.createChatroomConsumer()), (int) createChatroom.getSecond(), 0);
-        navBar.addItem(new GuiItem((ItemStack) invites.getFirst()), (int) invites.getSecond(), 0);
-        GuiItem deco = new GuiItem(DECO_ITEM(),  doNothing);
-        List<Integer> slots = getAsInts(file.getConfiguration().getStringList("nav-bar.deco-item.slots"));
-        for(int x : slots) {
-            navBar.addItem(deco, x, 0);
-        }
-
-    }
 
     /**
      * @apiNote Sets the next / back buttons at the bottom along with deco slots
@@ -192,8 +188,30 @@ public class InventoryHelper {
 
     }
 
+
+    //----------------------- Utility Methods ----------------------------------------------------
+
+
+
     /**
-     * @apiNote will break if stringList doesn't mean parsing conditions
+     *
+     * @param material path to the item in menus.yml, for example, "nav-bar.player-profile-head" will retrieve said path
+     * @return itemstack with integer slot
+     */
+    private Pair<ItemStack, Integer> getItemFrom(Material material, String path, OfflinePlayer owner){
+        PrivateFile file = new PrivateFile(FileType.MENUS);
+        ItemStackUtils builder = new ItemStackUtils(material, owner);
+        builder.setName(file.getString(path+".display"));
+        builder.setLore(file.getConfiguration().getStringList(path+".lore"));
+        return new Pair<>(builder.build(), file.getConfiguration().getInt(path+".slot"));
+
+    }
+
+
+
+
+    /**
+     * @apiNote will break if stringList doesn't meet parsing conditions
      * @param stringList to convert
      * @return converted int list
      */

@@ -19,7 +19,6 @@ import java.util.function.Consumer;
  */
 public class CreateChatroomAction {
 
-    //TODO Check for perms for setting chatroom status to saved!
 
     /**
      * Actions after hitting the 'create chatroom' button

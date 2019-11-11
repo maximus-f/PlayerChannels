@@ -19,7 +19,6 @@ public class Chatroom {
 
     /** @apiNote contains all members with their respective chat roles **/
     private Map<UUID, ChatRole> members;
-    /**@apiNote used to identify chatroom me.perotin.privatetalk.objects. Distinct value.*/
     // owner of chatroom
     private UUID owner;
     private String name;
