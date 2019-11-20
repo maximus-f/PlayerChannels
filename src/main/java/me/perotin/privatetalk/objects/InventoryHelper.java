@@ -66,7 +66,7 @@ public class InventoryHelper {
     private void setNavBar(){
         PrivateFile file = new PrivateFile(FileType.MENUS);
         Pair head = getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", null);
-        Pair invites = getItemFrom(Material.PLAYER_HEAD, "nav-bar.manage-invites", null);
+       Pair invites = getItemFrom(Material.PLAYER_HEAD, "nav-bar.manage-invites", null);
         Pair createChatroom = getItemFrom(Material.PLAYER_HEAD, "nav-bar.create-chatroom", null);
         navBar.addItem(new GuiItem((ItemStack) head.getFirst()), (int) head.getSecond(), 0);
         navBar.addItem(new GuiItem((ItemStack) createChatroom.getFirst(), CreateChatroomAction.createChatroomConsumer()), (int) createChatroom.getSecond(), 0);
@@ -240,7 +240,7 @@ public class InventoryHelper {
     public static ItemStack BACK_ITEM(){
         PrivateFile items = new PrivateFile(FileType.MENUS);
         ItemStackUtils item = new ItemStackUtils(Material.getMaterial(items.getString("global-items.back-item.material")));
-        item.setName(items.getString("global-items.back-item.material"));
+             item.setName(items.getString("global-items.back-item.material"));
         return item.build();
     }
 

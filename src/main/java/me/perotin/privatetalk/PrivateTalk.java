@@ -10,6 +10,7 @@ import me.perotin.privatetalk.storage.files.PrivateFile;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -54,12 +55,12 @@ public class PrivateTalk extends JavaPlugin {
     // Enabling method
     @Override
     public void onEnable(){
+        instance = this;
+        saveDefaultConfig();
+       PrivateFile.loadFiles();
         this.chatrooms = new ArrayList<>();
         this.players = new ArrayList<>();
-        instance = this;
         this.helper = new InventoryHelper();
-        saveDefaultConfig();
-        PrivateFile.loadFiles();
         init();
         getCommand("privatetalk").setExecutor(new PrivateTalkCommand(this));
 

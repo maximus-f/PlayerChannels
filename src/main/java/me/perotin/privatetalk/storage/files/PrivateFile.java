@@ -140,17 +140,19 @@ public class PrivateFile {
         return this.file;
     }
     public static void loadFiles(){
-        for(FileType type : FileType.values()){
-            if(!new PrivateFile(type).getFile().exists()) {
-                if(type == FileType.MESSAGES) PrivateTalk.getInstance().saveResource("messages.yml", false);
-                if(type == FileType.PLAYERS) PrivateTalk.getInstance().saveResource("players.yml", false);
-                if(type == FileType.CHATROOM) PrivateTalk.getInstance().saveResource("chatrooms.yml", false);
-                if(type == FileType.MENUS) PrivateTalk.getInstance().saveResource("menus.yml", false);
-
-            }
-            new PrivateFile(type).load();
+        if (!new File( PrivateTalk.getInstance().getDataFolder(), "chatrooms.yml").exists()) {
+            PrivateTalk.getInstance().saveResource("chatrooms.yml", false);
+        }
+        if (!new File( PrivateTalk.getInstance().getDataFolder(), "messages.yml").exists()) {
+            PrivateTalk.getInstance().saveResource("messages.yml", false);
+        }  if (!new File( PrivateTalk.getInstance().getDataFolder(), "players.yml").exists()) {
+            PrivateTalk.getInstance().saveResource("players.yml", false);
+        } if (!new File( PrivateTalk.getInstance().getDataFolder(), "menus.yml").exists()) {
+            PrivateTalk.getInstance().saveResource("menus.yml", false);
         }
     }
+
+
 
 
 
