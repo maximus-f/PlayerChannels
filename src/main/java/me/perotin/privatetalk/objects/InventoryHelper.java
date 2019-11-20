@@ -12,10 +12,12 @@ import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.ItemStackUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -32,10 +34,12 @@ public class InventoryHelper {
     private StaticPane creationMenu;
     private StaticPane rightSideDecoSlots;
     private StaticPane leftSideDecoSlots;
-    /** Consumer for making decoration items cancel the click event and nothing else **/
+    /**
+     * Consumer for making decoration items cancel the click event and nothing else
+     **/
     private Consumer<InventoryClickEvent> doNothing;
 
-    public InventoryHelper(){
+    public InventoryHelper() {
         this.file = new PrivateFile(FileType.MENUS);
         this.navBar = new StaticPane(0, 0, 9, 1);
         this.pagingNavigationBar = new StaticPane(0, 6, 9, 1);
@@ -49,11 +53,10 @@ public class InventoryHelper {
 
 
     /**
-     *
      * @param inventory to set
      * @return sets the nav bar for any given inventory
      */
-    public Gui setNavigationBar(Gui inventory, OfflinePlayer owner){
+    public Gui setNavigationBar(Gui inventory, OfflinePlayer owner) {
         navBar.addItem(new GuiItem(getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getFirst()), getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getSecond(), 0);
         inventory.addPane(navBar);
         return inventory;
@@ -63,17 +66,17 @@ public class InventoryHelper {
     /**
      * Sets the navigation bar that appears in most menus at the very top
      */
-    private void setNavBar(){
+    private void setNavBar() {
         PrivateFile file = new PrivateFile(FileType.MENUS);
         Pair head = getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", null);
-       Pair invites = getItemFrom(Material.PLAYER_HEAD, "nav-bar.manage-invites", null);
+        Pair invites = getItemFrom(Material.PLAYER_HEAD, "nav-bar.manage-invites", null);
         Pair createChatroom = getItemFrom(Material.PLAYER_HEAD, "nav-bar.create-chatroom", null);
         navBar.addItem(new GuiItem((ItemStack) head.getFirst()), (int) head.getSecond(), 0);
         navBar.addItem(new GuiItem((ItemStack) createChatroom.getFirst(), CreateChatroomAction.createChatroomConsumer()), (int) createChatroom.getSecond(), 0);
         navBar.addItem(new GuiItem((ItemStack) invites.getFirst()), (int) invites.getSecond(), 0);
-        GuiItem deco = new GuiItem(DECO_ITEM(),  doNothing);
+        GuiItem deco = new GuiItem(DECO_ITEM(), doNothing);
         List<Integer> slots = getAsInts(file.getConfiguration().getStringList("nav-bar.deco-item.slots"));
-        for(int x : slots) {
+        for (int x : slots) {
             navBar.addItem(deco, x, 0);
         }
 
@@ -85,7 +88,7 @@ public class InventoryHelper {
     /**
      * Sets the creation menu on an inventory
      */
-    private Gui setCreationMenu(Gui toSet, PreChatroom chatroom){
+    private Gui setCreationMenu(Gui toSet, PreChatroom chatroom) {
         setCreationMenu(chatroom);
         toSet.addPane(creationMenu);
         return toSet;
@@ -95,7 +98,7 @@ public class InventoryHelper {
      * Sets the creation menu items
      * TODO Functions attached to each item
      */
-    private void setCreationMenu(PreChatroom chatroom){
+    private void setCreationMenu(PreChatroom chatroom) {
         PrivateFile menus = new PrivateFile(FileType.MENUS);
         this.creationMenu = new StaticPane(1, 1, 7, 4);
         Pair<ItemStack, Integer> name = getItemFrom(Material.valueOf(menus.getString("creation-menu.name.material")), "creation-menu.name", null);
@@ -104,17 +107,38 @@ public class InventoryHelper {
         Pair<ItemStack, Integer> saved = getItemFrom(Material.valueOf(menus.getString("creation-menu.saved.material")), "creation-menu.saved", null);
         Pair<ItemStack, Integer> createButton = getItemFrom(Material.valueOf(menus.getString("creation-menu.create-button.material")), "creation-menu.create-button", null);
         // setting all the pair values to use the values from the PreChatroom
-        name.getFirst().getItemMeta().setDisplayName(name.getFirst().getItemMeta().getDisplayName().replace("$name$", chatroom.getName()));
-        name = new Pair<>(name.getFirst(), name.getSecond());
+        ItemStack nameItem = name.getFirst();
+        if (chatroom.getName() != null) {
+            ItemMeta meta = name.getFirst().getItemMeta();
+            meta.setDisplayName(name.getFirst().getItemMeta().getDisplayName() + " " + chatroom.getName());
+            nameItem.setItemMeta(meta);
 
-        description.getFirst().getItemMeta().setDisplayName(description.getFirst().getItemMeta().getDisplayName().replace("$description$",chatroom.getDescription()));
-        description = new Pair<>(description.getFirst(), description.getSecond());
+        }
+        name = new Pair<>(nameItem, name.getSecond());
 
-        status.getFirst().getItemMeta().setDisplayName(status.getFirst().getItemMeta().getDisplayName().replace("$status$",chatroom.isPublic()+""));
-        status = new Pair<>(status.getFirst(), status.getSecond());
+        ItemStack descItem = description.getFirst();
+        if (chatroom.getDescription() != null) {
+            ItemMeta meta = description.getFirst().getItemMeta();
+            meta.setDisplayName(description.getFirst().getItemMeta().getDisplayName() + " " + chatroom.getDescription());
+            descItem.setItemMeta(meta);
 
-        saved.getFirst().getItemMeta().setDisplayName(saved.getFirst().getItemMeta().getDisplayName().replace("$saved$",chatroom.isSaved()+""));
-        saved = new Pair<>(saved.getFirst(), saved.getSecond());
+        }
+        description = new Pair<>(descItem, description.getSecond());
+
+        ItemStack statusItem = status.getFirst();
+        ItemMeta sMeta = statusItem.getItemMeta();
+        sMeta.setDisplayName(sMeta.getDisplayName() + " " + chatroom.isPublic());
+        statusItem.setItemMeta(sMeta);
+
+        status = new Pair<>(statusItem, status.getSecond());
+
+        ItemStack savedItem = saved.getFirst();
+        ItemMeta savedMeta = savedItem.getItemMeta();
+        savedMeta.setDisplayName(savedMeta.getDisplayName() + " " + chatroom.isSaved());
+        savedItem.setItemMeta(savedMeta);
+
+        status = new Pair<>(statusItem, status.getSecond());
+        saved = new Pair<>(savedItem, saved.getSecond());
 
 
         creationMenu.addItem(new GuiItem(name.getFirst(), CreateChatroomAction.setNameConsumer()), name.getSecond(), 1);
@@ -128,19 +152,20 @@ public class InventoryHelper {
     /**
      * Gets the GUI for any designed PreChatroom object
      */
-    public Gui getCreationMenu(PreChatroom chatroom){
+    public Gui getCreationMenu(PreChatroom chatroom) {
         PrivateFile file = new PrivateFile(FileType.MENUS);
-        Gui gui = new Gui(PrivateTalk.getInstance(), 6, file.getString("chatroom-creation.display-name"));
+        Gui gui = new Gui(PrivateTalk.getInstance(), 6, file.getString("creation-menu.display-name"));
         setSideDecorationSlots(gui);
         gui = setCreationMenu(gui, chatroom);
         return gui;
     }
     //----------------------- Decoration Methods ----------------------------------------------------
+
     /**
      * @param inv to set
      * @return inventory set with side decoration slotsss
      */
-    public Gui setSideDecorationSlots(Gui inv){
+    public Gui setSideDecorationSlots(Gui inv) {
         inv.addPane(leftSideDecoSlots);
         inv.addPane(rightSideDecoSlots);
         return inv;
@@ -150,7 +175,7 @@ public class InventoryHelper {
     /**
      * @apiNote sets the side decoration slots
      */
-    private void setSideDecoSlots(){
+    private void setSideDecoSlots() {
         this.rightSideDecoSlots = new StaticPane(6, 1, 1, 4);
         this.leftSideDecoSlots = new StaticPane(0, 1, 1, 4);
         rightSideDecoSlots.fillWith(DECO_ITEM());
@@ -161,26 +186,24 @@ public class InventoryHelper {
 
 
     /**
-     *
      * @param inventory to set paging-nav-bar
      * @return inventory with paging-navar bar
      */
-    public Gui setPagingNavBar(Gui inventory){
+    public Gui setPagingNavBar(Gui inventory) {
         inventory.addPane(pagingNavigationBar);
         return inventory;
     }
 
 
-
     /**
      * @apiNote Sets the next / back buttons at the bottom along with deco slots
      */
-    private void setPagingNavigationBar(){
+    private void setPagingNavigationBar() {
         PrivateFile file = new PrivateFile(FileType.MENUS);
         List<Integer> decoSlots = getAsInts(file.getConfiguration().getStringList("paging-nav-bar.deco-item.slots"));
         int nextSlot = file.getConfiguration().getInt("paging-nav-bar.next-item.slot");
         int backSlot = file.getConfiguration().getInt("paging-nav-bar.back-item.slot");
-        for(int x : decoSlots) {
+        for (int x : decoSlots) {
             pagingNavigationBar.addItem(new GuiItem(DECO_ITEM(), doNothing), x, 6);
         }
         pagingNavigationBar.addItem(new GuiItem(BACK_ITEM()), backSlot, 6);
@@ -192,41 +215,36 @@ public class InventoryHelper {
     //----------------------- Utility Methods ----------------------------------------------------
 
 
-
     /**
-     *
      * @param material path to the item in menus.yml, for example, "nav-bar.player-profile-head" will retrieve said path
      * @return itemstack with integer slot
      */
-    private Pair<ItemStack, Integer> getItemFrom(Material material, String path, OfflinePlayer owner){
+    private Pair<ItemStack, Integer> getItemFrom(Material material, String path, OfflinePlayer owner) {
         PrivateFile file = new PrivateFile(FileType.MENUS);
         ItemStackUtils builder = new ItemStackUtils(material, owner);
-        builder.setName(file.getString(path+".display"));
-        builder.setLore(file.getConfiguration().getStringList(path+".lore"));
-        return new Pair<>(builder.build(), file.getConfiguration().getInt(path+".slot"));
+        builder.setName(file.getString(path + ".display"));
+        builder.setLore(file.getConfiguration().getStringList(path + ".lore"));
+        return new Pair<>(builder.build(), file.getConfiguration().getInt(path + ".slot"));
 
     }
 
 
-
-
     /**
-     * @apiNote will break if stringList doesn't meet parsing conditions
      * @param stringList to convert
      * @return converted int list
+     * @apiNote will break if stringList doesn't meet parsing conditions
      */
     private List<Integer> getAsInts(List<String> stringList) {
         return stringList.stream().map(Integer::parseInt).collect(Collectors.toList());
     }
 
 
-
-
     // STATIC ITEMS ------------------------------------------------------------------------------------------------------------------------------------------------
+
     /**
      * @return blank decoration item used to fill white-space
      */
-    public static ItemStack DECO_ITEM(){
+    public static ItemStack DECO_ITEM() {
         PrivateFile items = new PrivateFile(FileType.MENUS);
         ItemStackUtils item = new ItemStackUtils(Material.getMaterial(items.getString("global-items.deco-item.material")));
         item.setName(items.getString("global-items.deco-item.material"));
@@ -237,17 +255,17 @@ public class InventoryHelper {
     /**
      * @return item used to navigate backwards in a menu
      */
-    public static ItemStack BACK_ITEM(){
+    public static ItemStack BACK_ITEM() {
         PrivateFile items = new PrivateFile(FileType.MENUS);
         ItemStackUtils item = new ItemStackUtils(Material.getMaterial(items.getString("global-items.back-item.material")));
-             item.setName(items.getString("global-items.back-item.material"));
+        item.setName(items.getString("global-items.back-item.material"));
         return item.build();
     }
 
     /**
      * @return item used to navigate forwards in a menu
      */
-    public static ItemStack NEXT_ITEM(){
+    public static ItemStack NEXT_ITEM() {
         PrivateFile items = new PrivateFile(FileType.MENUS);
         ItemStackUtils item = new ItemStackUtils(Material.getMaterial(items.getString("global-items.next-item.material")));
         item.setName(items.getString("global-items.next-item.material"));

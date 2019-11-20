@@ -21,15 +21,21 @@ public class PrivateFile {
             case PLAYERS:
                 file = new File(PrivateTalk.getInstance().getDataFolder(), "players.yml");
                 configuration = YamlConfiguration.loadConfiguration(file);
+                break;
             case CHATROOM:
                 file = new File(PrivateTalk.getInstance().getDataFolder(), "chatrooms.yml");
                 configuration = YamlConfiguration.loadConfiguration(file);
+                break;
+
             case MESSAGES:
                 file = new File(PrivateTalk.getInstance().getDataFolder(), "messages.yml");
                 configuration = YamlConfiguration.loadConfiguration(file);
+                break;
             case MENUS:
                 file = new File(PrivateTalk.getInstance().getDataFolder(), "menus.yml");
                 configuration = YamlConfiguration.loadConfiguration(file);
+                break;
+
         }
     }
     public void save() {
@@ -59,6 +65,11 @@ public class PrivateFile {
     }
 
     public String getString(String path) {
+        if(configuration.getString(path) == null){
+            Bukkit.getLogger().severe("Path " + path + " is null!");
+            Bukkit.getLogger().severe(file.getAbsolutePath() + " is the file that this occurred!");
+            return null;
+        }
         return ChatColor.translateAlternateColorCodes('&', configuration.getString(path));
     }
 

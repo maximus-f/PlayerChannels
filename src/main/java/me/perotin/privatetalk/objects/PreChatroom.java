@@ -17,8 +17,6 @@ public class PreChatroom {
 
     public PreChatroom(UUID owner){
         this.owner = owner;
-        this.name = "";
-        this.description="";
         this.isPublic = false;
         this.isSaved = false;
     }

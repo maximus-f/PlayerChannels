@@ -1,6 +1,8 @@
 package me.perotin.privatetalk.commands;
 
 import me.perotin.privatetalk.PrivateTalk;
+import me.perotin.privatetalk.events.chat_events.CreateChatroomInputEvent;
+import me.perotin.privatetalk.objects.PreChatroom;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,8 +29,9 @@ public class PrivateTalkCommand  implements CommandExecutor  {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
-        player.sendTitle(ChatColor.RED+"Use only 1 word", "", 0, 20*3, 20);
-        player.sendMessage("tt");
+        PreChatroom chat = new PreChatroom(player.getUniqueId());
+        plugin.getHelper().getCreationMenu(chat).show(player);
+        CreateChatroomInputEvent.getInstance().getInCreation().put(player.getUniqueId(), chat);
         return true;
     }
 

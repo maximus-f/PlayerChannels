@@ -8,6 +8,7 @@ import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PreChatroom;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -40,6 +41,11 @@ public class CreateChatroomAction {
             PrivateFile messages = new PrivateFile(FileType.MESSAGES);
             CreateChatroomInputEvent.getInstance().getSetName().add(clickEvent.getWhoClicked().getUniqueId());
             clickEvent.getWhoClicked().closeInventory();
+
+            if(messages.getString("set-name-message") == null) Bukkit.broadcastMessage("1");
+            if(messages.getString("cancel") == null) Bukkit.broadcastMessage("2");
+
+
             clickEvent.getWhoClicked().sendMessage(messages.getString("set-name-message")
             .replace("$cancel$", messages.getString("cancel")));
         };

@@ -4,11 +4,13 @@ import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PreChatroom;
 import me.perotin.privatetalk.utils.PrivateUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,18 +43,14 @@ public class CreateChatroomInputEvent implements Listener {
             if (setName.contains(chatter.getUniqueId())) {
                 String name = event.getMessage();
                 // check if name is more than 1 word
-                if(name.split(" ").length > 1){
+                if (name.split(" ").length > 1) {
                     //too many words TODO come up with way to show messages, maybe big text on screen y'know what I mean
-                    chatter.sendTitle(ChatColor.RED+"Use only 1 word", "", 0, 20*3, 20);
-                    showUpdatedMenu(chatter, preChatroom);
-                    setName.remove(chatter.getUniqueId());
+                    chatter.sendTitle(ChatColor.RED + "Use only 1 word", "", 0, 20 * 3, 20);
                     return;
                 }
-                if(isNameTaken(name)){
+                if (isNameTaken(name)) {
                     // send message saying name is taken, tell them to say it again
-                    chatter.sendTitle(ChatColor.RED+"That name is taken", "", 0, 20*3, 20);
-                    showUpdatedMenu(chatter, preChatroom);
-                    setName.remove(chatter.getUniqueId());
+                    chatter.sendTitle(ChatColor.RED + "That name is taken", "", 0, 20 * 3, 20);
                     return;
                 }
                 // success condition, set name in PreChatroom
@@ -91,18 +89,22 @@ public class CreateChatroomInputEvent implements Listener {
     /**
      * Shows most updated menu of a chatroom in progress of being created
      */
-    public void showUpdatedMenu(Player toShow, PreChatroom view){
-        InventoryHelper helper = plugin.getHelper();
-        helper.getCreationMenu(view).show(toShow);
+    public void showUpdatedMenu(Player toShow, PreChatroom view) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                InventoryHelper helper = plugin.getHelper();
+                helper.getCreationMenu(view).show(toShow);
+            }
+        }.runTask(plugin);
     }
 
 
     /**
-     *
      * @param name
      * @return true if name is used by another chatroom, false if not
      */
-    private boolean isNameTaken(String name){
+    private boolean isNameTaken(String name) {
         return PrivateUtils.getChatroomWith(name) != null;
     }
 }
