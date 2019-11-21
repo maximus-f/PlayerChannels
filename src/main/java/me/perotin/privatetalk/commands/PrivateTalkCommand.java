@@ -1,5 +1,6 @@
 package me.perotin.privatetalk.commands;
 
+import com.github.stefvanschie.inventoryframework.Gui;
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.events.chat_events.CreateChatroomInputEvent;
 import me.perotin.privatetalk.objects.PreChatroom;
@@ -30,7 +31,8 @@ public class PrivateTalkCommand  implements CommandExecutor  {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         PreChatroom chat = new PreChatroom(player.getUniqueId());
-        plugin.getHelper().getCreationMenu(chat).show(player);
+      Gui menu =  plugin.getHelper().getCreationMenu(chat);
+        plugin.getHelper().setNavigationBar(menu, player).show(player);
         CreateChatroomInputEvent.getInstance().getInCreation().put(player.getUniqueId(), chat);
         return true;
     }

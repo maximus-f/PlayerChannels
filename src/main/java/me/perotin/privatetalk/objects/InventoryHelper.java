@@ -100,6 +100,8 @@ public class InventoryHelper {
      */
     private void setCreationMenu(PreChatroom chatroom) {
         PrivateFile menus = new PrivateFile(FileType.MENUS);
+        PrivateFile messages = new PrivateFile(FileType.MESSAGES);
+
         this.creationMenu = new StaticPane(1, 1, 7, 4);
         Pair<ItemStack, Integer> name = getItemFrom(Material.valueOf(menus.getString("creation-menu.name.material")), "creation-menu.name", null);
         Pair<ItemStack, Integer> description = getItemFrom(Material.valueOf(menus.getString("creation-menu.description.material")), "creation-menu.description", null);
@@ -127,14 +129,22 @@ public class InventoryHelper {
 
         ItemStack statusItem = status.getFirst();
         ItemMeta sMeta = statusItem.getItemMeta();
-        sMeta.setDisplayName(sMeta.getDisplayName() + " " + chatroom.isPublic());
+        if(chatroom.isPublic()) {
+            sMeta.setDisplayName(sMeta.getDisplayName() + " " +messages.getString("public") );
+        } else {
+            sMeta.setDisplayName(sMeta.getDisplayName() + " " + messages.getString("private"));
+        }
         statusItem.setItemMeta(sMeta);
 
         status = new Pair<>(statusItem, status.getSecond());
 
         ItemStack savedItem = saved.getFirst();
         ItemMeta savedMeta = savedItem.getItemMeta();
-        savedMeta.setDisplayName(savedMeta.getDisplayName() + " " + chatroom.isSaved());
+        if(chatroom.isSaved()) {
+            sMeta.setDisplayName(sMeta.getDisplayName() + " " +messages.getString("true") );
+        } else {
+            sMeta.setDisplayName(sMeta.getDisplayName() + " " + messages.getString("false"));
+        }
         savedItem.setItemMeta(savedMeta);
 
         status = new Pair<>(statusItem, status.getSecond());
@@ -176,7 +186,7 @@ public class InventoryHelper {
      * @apiNote sets the side decoration slots
      */
     private void setSideDecoSlots() {
-        this.rightSideDecoSlots = new StaticPane(6, 1, 1, 4);
+        this.rightSideDecoSlots = new StaticPane(8, 1, 1, 4);
         this.leftSideDecoSlots = new StaticPane(0, 1, 1, 4);
         rightSideDecoSlots.fillWith(DECO_ITEM());
         leftSideDecoSlots.fillWith(DECO_ITEM());

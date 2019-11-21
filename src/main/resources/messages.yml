@@ -26,6 +26,10 @@ member: "&7Member"
 moderator: "&6Moderator"
 owner: "&cOwner"
 cancel: "cancel"
+true: "&atrue"
+false: "&cfalse"
+public: "&apublic"
+private: "&cprivate"
 
 # Messages related to creating a chatroom
 set-name-message: "&eType a one-word name for a chatroom, or type &c'$cancel$'&e to cancel."

@@ -27,17 +27,18 @@ import java.util.UUID;
 
 /*
 TODO List
-1. PrivateTalkCommand is not working
+Last time i coded i was messing around with the creation menu, fixing the consumer actions and syncing names and general debugging. The items are now functional
+in the menu, few thins:
+1. false/true does not show up as colored in the gui
+2. the border on the right side is off one row and so are the bottom and top.
+3. The create chatroom button is bugged
 
+I say get the point where this works fine and then move on to the main menu perhaps, good luck.
 
-Was working on the Inventory Actions and setting each item to an appropiate action, in theory, this MAY be done but very unlikely it will work first try.
-Goal is to get the creation menu up and the basic switches and toggles to be working... dive deep into that. Also, maybe spend a commit just commenting/refactoring
-since codebase is getting a bit messy
  */
 
 
 /*
-Finish PrivatePlayer.getPlayer(UUID)
  */
 public class PrivateTalk extends JavaPlugin {
 
