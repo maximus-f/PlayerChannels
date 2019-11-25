@@ -35,6 +35,12 @@ in the menu, few thins:
 
 I say get the point where this works fine and then move on to the main menu perhaps, good luck.
 
+
+NEW UPDATE:
+    Been a minute since I worked on this, but no worries.
+    So I think the creation menu is relatively funcitonal, the navigation bar uptop is broken however.
+    Try to potentially start the main menu/player profiles once you finish the nav bar uptop
+
  */
 
 

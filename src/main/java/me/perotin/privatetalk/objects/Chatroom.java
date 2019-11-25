@@ -55,6 +55,18 @@ public class Chatroom {
         this.members = members;
     }
 
+    /**
+     * @return Set of all Moderators
+     */
+    public List<UUID> getModerators(){
+        List<UUID> moderators = new ArrayList<>();
+        for(UUID uuid : members.keySet()){
+            if(members.get(uuid) == ChatRole.MODERATOR){
+                moderators.add(uuid);
+            }
+        }
+        return moderators;
+    }
 
     public Map<UUID, ChatRole> getMemberMap(){
         return members;
