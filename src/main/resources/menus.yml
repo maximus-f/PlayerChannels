@@ -96,3 +96,12 @@ creation-menu:
       lore: ""
       material: "EMERALD_BLOCK"
       slot: 3
+
+# Chatroom ItemStacks
+# Essentially, the messages that appear when you hover over the representations of Chatrooms in the form of items.
+chatroom-items:
+   name: "&eName: $name$"
+   description: "&eDescription: $description$"
+   status: "&eStatus: $status$"
+   owner: "&eOwner: $owner$"
+   members: "&eMembers (&f$member_count$&e)"

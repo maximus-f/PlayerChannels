@@ -2,15 +2,23 @@ package me.perotin.privatetalk.objects;
 
 /* Created by Perotin on 8/14/19 */
 
+import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Skull;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static me.perotin.privatetalk.storage.files.FileType.MESSAGES;
 
 /**
  * Captures a chatroom object.
@@ -30,6 +38,7 @@ public class Chatroom {
     private List<UUID> bannedMembers;
     private HashMap<UUID, String> nickNames;
     private PrivateFile messages;
+    private ItemStack display;
 
     /**
      * Initial chatroom constructor
@@ -41,8 +50,9 @@ public class Chatroom {
         this.name = name;
         this.description = description;
         this.isPublic = isPublic;
-        this.messages = new PrivateFile(FileType.MESSAGES);
+        this.messages = new PrivateFile(MESSAGES);
         this.isSaved = isSaved;
+        this.display = generateItem();
     }
 
     /**
@@ -51,7 +61,7 @@ public class Chatroom {
      */
     public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, Map<UUID, ChatRole> members) {
         this(owner, name, description, isPublic, isSaved);
-        this.messages = new PrivateFile(FileType.MESSAGES);
+        this.messages = new PrivateFile(MESSAGES);
         this.members = members;
     }
 
@@ -82,11 +92,73 @@ public class Chatroom {
        return getMembers().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
+
+    /**
+     * Called only once to generate the itemstack to represent the chatroom in player-profiles and the main menu
+     * @return Itemstack representation of the chatroom
+     */
+    private ItemStack generateItem(){
+        PrivateFile messages = new PrivateFile(FileType.MENUS);
+        ItemStack item;
+        if(isSaved){
+           String savedString = PrivateTalk.getInstance().getConfig().getString("saved-material");
+
+           Material saved;
+           try {
+                saved = Material.valueOf(savedString);
+           } catch (IllegalArgumentException ex){
+               // exception handling
+               Bukkit.getLogger().severe("The material id for the saved-material key in /PrivateTalk/config.yml is invalid! Make sure to use a correct value.");
+               return null;
+           }
+             item = new ItemStack(saved);
+
+        } else {
+            // player skin head
+            item = new ItemStack(Material.PLAYER_HEAD);
+            SkullMeta skull = (SkullMeta) item.getItemMeta();
+            skull.setOwningPlayer(Bukkit.getOfflinePlayer(getOwner()));
+            item.setItemMeta(skull);
+        }
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.setDisplayName(messages.getString("chatroom-items.name").replace("$name$", getName()));
+        itemMeta.setLore(Arrays.asList(messages.getString("chatroom-items.description").replace("$description$", getDescription()),
+                messages.getString("chatroom-items.status").replace("$status$", getStringStatus()),
+                messages.getString("chatroom-items.owner").replace("$owner$", Bukkit.getOfflinePlayer(getOwner()).getName()),
+                messages.getString("chatroom-items.members").replace("$member_count$", getMembers().size()+"" )));
+
+        item.setItemMeta(itemMeta);
+
+
+
+        return item;
+    }
+
+    /**
+     * @return String form of the status
+     */
+    private String getStringStatus(){
+        PrivateFile messages = new PrivateFile(MESSAGES);
+        if(isPublic){
+            return messages.getString("public");
+        } else {
+            return messages.getString("private");
+        }
+    }
+
     /**
      * @return true if chatroom gets saved, false if not
      */
+
     public boolean isSaved() {
         return isSaved;
+    }
+
+    /**
+     * @return Item representation of the chatroom
+     */
+    public ItemStack getItem(){
+        return display;
     }
 
     public void addMember(Pair<UUID, ChatRole> value) {

@@ -31,8 +31,8 @@ public class ChatroomPager extends PagingMenu {
 
     private Chatroom chatroom;
     private PrivateFile messages;
-    public ChatroomPager(String identifier, Chatroom chatroom, Player viewer){
-        super(identifier, 6, viewer);
+    public ChatroomPager(Chatroom chatroom, Player viewer){
+        super(viewer.getName()+"-chatroom", 6, viewer);
         this.chatroom = chatroom;
          this.messages = new PrivateFile(FileType.MESSAGES);
          this.pane = new PaginatedPane(2, 1, 7, 3);

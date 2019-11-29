@@ -37,9 +37,8 @@ I say get the point where this works fine and then move on to the main menu perh
 
 
 NEW UPDATE:
-    Been a minute since I worked on this, but no worries.
-    So I think the creation menu is relatively funcitonal, the navigation bar uptop is broken however.
-    Try to potentially start the main menu/player profiles once you finish the nav bar uptop
+   Navigation menu is looking better, currently, the issue is with the paging bar at the bottom not displaying at all for some weird reason
+
 
  */
 
