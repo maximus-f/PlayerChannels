@@ -45,9 +45,6 @@ public class CreateChatroomAction {
             CreateChatroomInputEvent.getInstance().getSetName().add(clickEvent.getWhoClicked().getUniqueId());
             clickEvent.getWhoClicked().closeInventory();
 
-            if(messages.getString("set-name-message") == null) Bukkit.broadcastMessage("1");
-            if(messages.getString("cancel") == null) Bukkit.broadcastMessage("2");
-
 
             clickEvent.getWhoClicked().sendMessage(messages.getString("set-name-message")
             .replace("$cancel$", messages.getString("cancel")));

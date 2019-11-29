@@ -8,9 +8,11 @@ import me.perotin.privatetalk.objects.inventory.PagingMenu;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /* Created by Perotin on 11/29/19 */
 
@@ -35,7 +37,7 @@ public class MainMenuPaging extends PagingMenu {
     @Override
     protected List<GuiItem> generatePages() {
         List<GuiItem> items = new ArrayList<>();
-        List<Chatroom> toDisplay = plugin.getChatrooms();
+        List<ItemStack> toDisplay = plugin.getChatrooms().stream().map(Chatroom::getItem).collect(Collectors.toList());
 
 
         return items;
