@@ -26,6 +26,7 @@ public class CreateChatroomAction {
      */
     public static Consumer<InventoryClickEvent> createChatroomConsumer(){
         return clickEvent -> {
+            clickEvent.setCancelled(true);
             PreChatroom chatroom = new PreChatroom(clickEvent.getWhoClicked().getUniqueId());
             InventoryHelper helper = PrivateTalk.getInstance().getHelper();
             CreateChatroomInputEvent.getInstance().getInCreation().put(clickEvent.getWhoClicked().getUniqueId(), chatroom);
@@ -38,6 +39,8 @@ public class CreateChatroomAction {
      */
     public static Consumer<InventoryClickEvent> setNameConsumer(){
         return clickEvent -> {
+            clickEvent.setCancelled(true);
+
             PrivateFile messages = new PrivateFile(FileType.MESSAGES);
             CreateChatroomInputEvent.getInstance().getSetName().add(clickEvent.getWhoClicked().getUniqueId());
             clickEvent.getWhoClicked().closeInventory();
@@ -56,10 +59,12 @@ public class CreateChatroomAction {
      */
     public static Consumer<InventoryClickEvent> setDescriptionConsumer(){
         return clickEvent -> {
+            clickEvent.setCancelled(true);
+
             CreateChatroomInputEvent.getInstance().getSetDescription().add(clickEvent.getWhoClicked().getUniqueId());
             PrivateFile messages = new PrivateFile(FileType.MESSAGES);
             clickEvent.getWhoClicked().closeInventory();
-            clickEvent.getWhoClicked().sendMessage(messages.getString("set-name-message")
+            clickEvent.getWhoClicked().sendMessage(messages.getString("set-description-message")
                     .replace("$cancel$", messages.getString("cancel")));
 
         };
@@ -71,6 +76,8 @@ public class CreateChatroomAction {
     public static Consumer<InventoryClickEvent> toggleStatusConsumer(){
         return clickEvent -> {
             // Can cast to player because will only be called in those scenarios
+            clickEvent.setCancelled(true);
+
             Player clicker = (Player) clickEvent.getWhoClicked();
             CreateChatroomInputEvent input = CreateChatroomInputEvent.getInstance();
             PreChatroom chatroom = input.getInCreation().get(clicker.getUniqueId());
@@ -89,6 +96,8 @@ public class CreateChatroomAction {
     public static Consumer<InventoryClickEvent> toggleSavedConsumer(){
         return clickEvent -> {
             // Can cast to player because will only be called in those scenarios
+            clickEvent.setCancelled(true);
+
             Player clicker = (Player) clickEvent.getWhoClicked();
             CreateChatroomInputEvent input = CreateChatroomInputEvent.getInstance();
             PreChatroom chatroom = input.getInCreation().get(clicker.getUniqueId());
@@ -106,6 +115,8 @@ public class CreateChatroomAction {
     public static Consumer<InventoryClickEvent> clickCreateButtonConsumer(){
         return clickEvent -> {
             // Can cast to player because will only be called in those scenarios
+            clickEvent.setCancelled(true);
+
             Player clicker = (Player) clickEvent.getWhoClicked();
             PrivateFile messages = new PrivateFile(FileType.MESSAGES);
             CreateChatroomInputEvent input = CreateChatroomInputEvent.getInstance();

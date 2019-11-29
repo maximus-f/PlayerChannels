@@ -6,13 +6,11 @@ import com.github.stefvanschie.inventoryframework.Gui;
 import com.github.stefvanschie.inventoryframework.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.PrivateTalk;
-import me.perotin.privatetalk.events.chat_events.CreateChatroomInputEvent;
 import me.perotin.privatetalk.objects.inventory.actions.CreateChatroomAction;
 import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.ItemStackUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -42,7 +40,7 @@ public class InventoryHelper {
     public InventoryHelper() {
         this.file = new PrivateFile(FileType.MENUS);
         this.navBar = new StaticPane(0, 0, 9, 1);
-        this.pagingNavigationBar = new StaticPane(0, 6, 9, 1);
+        this.pagingNavigationBar = new StaticPane(0, 5, 9, 1);
         this.doNothing = (event) -> event.setCancelled(true);
         setNavBar();
         setPagingNavigationBar();
@@ -57,6 +55,7 @@ public class InventoryHelper {
      * @return sets the nav bar for any given inventory
      */
     public Gui setNavigationBar(Gui inventory, OfflinePlayer owner) {
+
         navBar.addItem(new GuiItem(getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getFirst()), getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getSecond(), 0);
         inventory.addPane(navBar);
         return inventory;
@@ -69,8 +68,9 @@ public class InventoryHelper {
     private void setNavBar() {
         PrivateFile file = new PrivateFile(FileType.MENUS);
         Pair head = getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", null);
-        Pair invites = getItemFrom(Material.PLAYER_HEAD, "nav-bar.manage-invites", null);
-        Pair createChatroom = getItemFrom(Material.PLAYER_HEAD, "nav-bar.create-chatroom", null);
+        Pair invites = getItemFrom(Material.WRITABLE_BOOK, "nav-bar.manage-invites", null);
+        Pair createChatroom = getItemFrom(Material.ANVIL, "nav-bar.create-chatroom", null);
+
         navBar.addItem(new GuiItem((ItemStack) head.getFirst()), (int) head.getSecond(), 0);
         navBar.addItem(new GuiItem((ItemStack) createChatroom.getFirst(), CreateChatroomAction.createChatroomConsumer()), (int) createChatroom.getSecond(), 0);
         navBar.addItem(new GuiItem((ItemStack) invites.getFirst()), (int) invites.getSecond(), 0);
@@ -167,6 +167,7 @@ public class InventoryHelper {
         Gui gui = new Gui(PrivateTalk.getInstance(), 6, file.getString("creation-menu.display-name"));
         setSideDecorationSlots(gui);
         gui = setCreationMenu(gui, chatroom);
+      //  gui = setPagingNavBar(gui, false, true);
         return gui;
     }
     //----------------------- Decoration Methods ----------------------------------------------------
@@ -196,12 +197,26 @@ public class InventoryHelper {
 
 
     /**
-     * @param inventory to set paging-nav-bar
+     * @param inventory to set paging-nav-bar, next is whether a next button should appear and back is whether a back button should appear
      * @return inventory with paging-navar bar
      */
-    public Gui setPagingNavBar(Gui inventory) {
-        inventory.addPane(pagingNavigationBar);
-        return inventory;
+    public Gui setPagingNavBar(Gui inventory, boolean next, boolean back) {
+
+inventory.addPane(pagingNavigationBar);
+return inventory;
+//        if(next && back) {
+//            inventory.addPane(pagingNavigationBar);
+//            return inventory;
+//        } else {
+//            if(!back){
+//                pagingNavigationBar.removeItem(new GuiItem(BACK_ITEM()));
+//            }
+//            if(!next){
+//                pagingNavigationBar.removeItem(new GuiItem(NEXT_ITEM()));
+//            }
+//            inventory.addPane(pagingNavigationBar);
+//            return inventory;
+//        }
     }
 
 
@@ -214,10 +229,10 @@ public class InventoryHelper {
         int nextSlot = file.getConfiguration().getInt("paging-nav-bar.next-item.slot");
         int backSlot = file.getConfiguration().getInt("paging-nav-bar.back-item.slot");
         for (int x : decoSlots) {
-            pagingNavigationBar.addItem(new GuiItem(DECO_ITEM(), doNothing), x, 6);
+            pagingNavigationBar.addItem(new GuiItem(DECO_ITEM(), doNothing), x, 5);
         }
-        pagingNavigationBar.addItem(new GuiItem(BACK_ITEM()), backSlot, 6);
-        pagingNavigationBar.addItem(new GuiItem(NEXT_ITEM()), nextSlot, 6);
+        pagingNavigationBar.addItem(new GuiItem(BACK_ITEM()), backSlot, 5);
+        pagingNavigationBar.addItem(new GuiItem(NEXT_ITEM()), nextSlot, 5);
 
     }
 
