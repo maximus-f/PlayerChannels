@@ -53,4 +53,12 @@ public class PrivateUtils {
         Chatroom chat = Chatroom.loadChatroom(name);
         return chat; // may be null
     }
+
+
+    /**
+     * @param message of error
+     */
+    public static void sendErrorMessage(String message){
+
+    }
 }

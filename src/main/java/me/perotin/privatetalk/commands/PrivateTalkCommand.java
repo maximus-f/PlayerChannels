@@ -31,14 +31,12 @@ public class PrivateTalkCommand  implements CommandExecutor  {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
-        Gui menu = new Gui(plugin, 5, "Test");
-        plugin.getHelper().setPagingNavBar(menu, true, true).show((Player)sender);
+        PreChatroom chat = new PreChatroom(player.getUniqueId());
+        Gui menu =  plugin.getHelper().getCreationMenu(chat);
 
-//        PreChatroom chat = new PreChatroom(player.getUniqueId());
-//        Gui menu =  plugin.getHelper().getCreationMenu(chat);
-//        plugin.getHelper().setPagingNavBar(plugin.getHelper().setNavigationBar(menu, player), false, true).show(player);
-//
-//        CreateChatroomInputEvent.getInstance().getInCreation().put(player.getUniqueId(), chat);
+        plugin.getHelper().setPagingNavBar(plugin.getHelper().setNavigationBar(menu, player), false, true).show(player);
+
+        CreateChatroomInputEvent.getInstance().getInCreation().put(player.getUniqueId(), chat);
         return true;
     }
 

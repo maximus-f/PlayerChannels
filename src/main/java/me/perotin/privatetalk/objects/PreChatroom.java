@@ -11,12 +11,14 @@ public class PreChatroom {
 
     private String name;
     private String description;
-    private boolean isPublic;
-    private boolean isSaved;
+    private boolean isPublic = false;
+    private boolean isSaved = false;
     private UUID owner;
 
     public PreChatroom(UUID owner){
         this.owner = owner;
+        this.name = "";
+        this.description = "";
         this.isPublic = false;
         this.isSaved = false;
     }

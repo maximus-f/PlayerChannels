@@ -202,8 +202,8 @@ public class InventoryHelper {
      */
     public Gui setPagingNavBar(Gui inventory, boolean next, boolean back) {
 
-inventory.addPane(pagingNavigationBar);
-return inventory;
+        inventory.addPane(pagingNavigationBar);
+        return inventory;
 //        if(next && back) {
 //            inventory.addPane(pagingNavigationBar);
 //            return inventory;

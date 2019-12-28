@@ -27,13 +27,9 @@ import java.util.UUID;
 
 /*
 TODO List
-Last time i coded i was messing around with the creation menu, fixing the consumer actions and syncing names and general debugging. The items are now functional
-in the menu, few thins:
-1. false/true does not show up as colored in the gui
-2. the border on the right side is off one row and so are the bottom and top.
-3. The create chatroom button is bugged
+12/03/19
 
-I say get the point where this works fine and then move on to the main menu perhaps, good luck.
+Where I am at: Started the Main Menu page, it may in theory be done but definitely bugs. Creation menu & paging bar at the bottom still aini't showing though
 
 
 NEW UPDATE:
