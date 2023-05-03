@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Objects;
 
 /* Created by Perotin on 8/20/19 */
@@ -26,8 +27,8 @@ public class PrivateTalkCommand extends Command  {
     private PrivateTalk plugin;
 
 
-   public PrivateTalkCommand(PrivateTalk plugin){
-       super(Objects.requireNonNull(plugin.getConfig().getString("command-name")));
+   public PrivateTalkCommand(String name, List<String> aliases, PrivateTalk plugin){
+       super(name, "Main command for all chatrooms", "/" + name, aliases);
        this.plugin = plugin;
     }
 

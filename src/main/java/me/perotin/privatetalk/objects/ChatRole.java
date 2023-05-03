@@ -3,6 +3,8 @@ package me.perotin.privatetalk.objects;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Objects;
+
 /**
  * @Enum for types of roles in PT.
  */
@@ -25,6 +27,6 @@ public enum ChatRole {
      * @return chat role of itemstack
      */
     public static ChatRole getRoleFrom(ItemStack item){
-        return ChatRole.valueOf(ChatColor.stripColor(item.getItemMeta().getLore().get(0)));
+        return ChatRole.valueOf(ChatColor.stripColor(Objects.requireNonNull(item.getItemMeta()).getLore().get(0)));
     }
 }

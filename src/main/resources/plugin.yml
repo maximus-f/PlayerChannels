@@ -9,7 +9,3 @@ commands:
       usage: /test
       description: test
       aliases: [t]
-   privatetalk:
-      usage: /privatetalk
-      description: Base command
-      aliases: [pt, chatroom]

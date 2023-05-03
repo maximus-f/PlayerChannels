@@ -19,7 +19,7 @@ public abstract class PagingMenu {
     private Gui menu;
     private Player viewer;
     /** Used in the title of every menu, for identifying what type of paging menu it is **/
-    private String identifier;
+    private final String identifier;
 
     public PagingMenu(String identifier, int rows, Player viewer){
         this.identifier = identifier;

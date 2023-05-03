@@ -66,7 +66,6 @@ public class PrivateTalk extends JavaPlugin {
         this.helper = new InventoryHelper();
         init();
 
-        PrivateUtils.registerCommand(new PrivateTalkCommand(this));
     }
 
     // Clean up collections
@@ -80,6 +79,8 @@ public class PrivateTalk extends JavaPlugin {
 
     private void init(){
         Bukkit.getPluginManager().registerEvents(new CreateChatroomInputEvent(this), this);
+        PrivateUtils.registerCommand(new PrivateTalkCommand(getConfig().getString("command-name"), getConfig().getStringList("aliases"), this));
+
     }
 
     /**

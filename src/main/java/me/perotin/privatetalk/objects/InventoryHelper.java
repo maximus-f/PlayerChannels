@@ -91,8 +91,13 @@ public class InventoryHelper {
     private Gui setCreationMenu(Gui toSet, PreChatroom chatroom) {
         setCreationMenu(chatroom);
         toSet.addPane(creationMenu);
+        StaticPane bottomRow =  new StaticPane(0, 5, 9, 1);
+        bottomRow.addItem(BACK_ITEM(), 0, 0);
+        bottomRow.fillWith(DECO_ITEM());
+        toSet.addPane(bottomRow);
         return toSet;
     }
+
 
     /**
      * Sets the creation menu items
@@ -157,6 +162,7 @@ public class InventoryHelper {
         creationMenu.addItem(new GuiItem(saved.getFirst(), CreateChatroomAction.toggleSavedConsumer()), saved.getSecond(), 2);
         creationMenu.addItem(new GuiItem(createButton.getFirst(), CreateChatroomAction.clickCreateButtonConsumer()), createButton.getSecond(), 3);
 
+
     }
 
     /**
@@ -167,7 +173,7 @@ public class InventoryHelper {
         Gui gui = new Gui(PrivateTalk.getInstance(), 6, file.getString("creation-menu.display-name"));
         setSideDecorationSlots(gui);
         gui = setCreationMenu(gui, chatroom);
-      //  gui = setPagingNavBar(gui, false, true);
+
         return gui;
     }
     //----------------------- Decoration Methods ----------------------------------------------------
@@ -232,7 +238,7 @@ public class InventoryHelper {
         for (int x : decoSlots) {
             pagingNavigationBar.addItem(new GuiItem(DECO_ITEM(), doNothing), x, 5);
         }
-        pagingNavigationBar.addItem(new GuiItem(BACK_ITEM()), backSlot, 5);
+        pagingNavigationBar.addItem(BACK_ITEM(), backSlot, 5);
         pagingNavigationBar.addItem(new GuiItem(NEXT_ITEM()), nextSlot, 5);
 
     }
@@ -281,11 +287,13 @@ public class InventoryHelper {
     /**
      * @return item used to navigate backwards in a menu
      */
-    public static ItemStack BACK_ITEM() {
+    public static GuiItem BACK_ITEM() {
         PrivateFile items = new PrivateFile(FileType.MENUS);
         ItemStackUtils item = new ItemStackUtils(Material.getMaterial(items.getString("global-items.back-item.material")));
         item.setName(items.getString("global-items.back-item.material"));
-        return item.build();
+        GuiItem backItem = new GuiItem(item.build(), inventoryClickEvent -> inventoryClickEvent.getView().getPlayer().closeInventory());
+
+        return backItem;
     }
 
     /**
