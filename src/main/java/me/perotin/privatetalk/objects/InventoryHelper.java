@@ -11,6 +11,7 @@ import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.ItemStackUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -41,10 +42,9 @@ public class InventoryHelper {
     public InventoryHelper() {
         this.file = new PrivateFile(FileType.MENUS);
         this.navBar = new StaticPane(0, 0, 9, 1);
-        this.pagingNavigationBar = new StaticPane(0, 5, 9, 1);
+        this.pagingNavigationBar = new StaticPane(0, 0, 8, 1);
         this.doNothing = (event) -> event.setCancelled(true);
         setNavBar();
-        setPagingNavigationBar();
         setSideDecoSlots();
     }
 
@@ -210,6 +210,7 @@ public class InventoryHelper {
      */
     public Gui setPagingNavBar(Gui inventory, boolean next, boolean back) {
 
+        setPagingNavigationBar();
         inventory.addPane(pagingNavigationBar);
         return inventory;
 //        if(next && back) {
@@ -236,9 +237,13 @@ public class InventoryHelper {
         List<Integer> decoSlots = getAsInts(file.getConfiguration().getStringList("paging-nav-bar.deco-item.slots"));
         int nextSlot = file.getConfiguration().getInt("paging-nav-bar.next-item.slot");
         int backSlot = file.getConfiguration().getInt("paging-nav-bar.back-item.slot");
+
         for (int x : decoSlots) {
+            Bukkit.broadcastMessage("Set deco slot on "+ x);
+            PrivateTalk.getInstance().getLogger().info("TEST TEST!! " + x);
             pagingNavigationBar.addItem(new GuiItem(DECO_ITEM(), doNothing), x, 5);
         }
+        PrivateTalk.getInstance().getLogger().info("backSlot: " + backSlot + " nextSlot: " + nextSlot);
         pagingNavigationBar.addItem(BACK_ITEM(), backSlot, 5);
         pagingNavigationBar.addItem(new GuiItem(NEXT_ITEM()), nextSlot, 5);
 

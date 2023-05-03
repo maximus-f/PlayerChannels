@@ -55,6 +55,11 @@ public class ChatroomPager extends PagingMenu {
         return items;
     }
 
+    @Override
+    protected void setPaginatedPane() {
+
+    }
+
     /**
      *
      * @param player to go to profile

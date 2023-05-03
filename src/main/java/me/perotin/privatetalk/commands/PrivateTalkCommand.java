@@ -40,11 +40,15 @@ public class PrivateTalkCommand extends Command  {
     public boolean execute(@NotNull CommandSender commandSender, @NotNull String s, @NotNull String[] strings) {
         Player player = (Player) commandSender;
         PreChatroom chat = new PreChatroom(player.getUniqueId());
-        Gui menu =  plugin.getHelper().getCreationMenu(chat);
+//        Gui menu =  plugin.getHelper().getCreationMenu(chat);
+//
+//        plugin.getHelper().setPagingNavBar(plugin.getHelper().setNavigationBar(menu, player), false, true).show(player);
 
-        plugin.getHelper().setPagingNavBar(plugin.getHelper().setNavigationBar(menu, player), false, true).show(player);
+      //  CreateChatroomInputEvent.getInstance().getInCreation().put(player.getUniqueId(), chat);
 
-        CreateChatroomInputEvent.getInstance().getInCreation().put(player.getUniqueId(), chat);
+        MainMenuPaging mainMenuPaging = new MainMenuPaging(player, plugin);
+        if (mainMenuPaging.getMenu() == null) Bukkit.broadcastMessage("MENU IS NULL---");
+        mainMenuPaging.getMenu().show(player);
         return true;
    }
 }

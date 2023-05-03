@@ -7,16 +7,17 @@
 
 
 # Placeholders
-# $name$ - name of a player
+# $player-name$ - name of a player
+# $chatroom-name$ - name of a chatroom
 # $page$ - page number of a multiple-page menu
-# $connected$ - retuns Online or Offline based on if player is on the server or not
+# $connected$ - returns Online or Offline based on if player is on the server or not
 # $role$ - returns string value of player's role within the chatroom
 #
 #
 # NOTE: Do not use placeholders that do not appear in the default message! Only placeholders that appear in a message may be used in it!
 
-chatroom-name: "$name$: Page $page$"
-chatroom-head-display: "&e$name$"
+chatroom-name: "$chatroom-name$: Page $page$"
+chatroom-head-display: "&e$player-name$"
 chatroom-head-lore1: "$connected$ • $role$"
 
 # Short words that will appear in other messages

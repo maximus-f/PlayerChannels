@@ -61,10 +61,10 @@ paging-nav-bar:
          - "5"
          - "6"
          - "7"
-      next-item:
-         slot: 8
-      back-item:
-         slot: 0
+   next-item:
+      slot: 8
+   back-item:
+      slot: 0
 
 # Creation Menu
 # This is the menu that appears when creating a new chatroom
