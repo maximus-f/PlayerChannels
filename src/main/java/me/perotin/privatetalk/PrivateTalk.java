@@ -7,6 +7,7 @@ import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PreChatroom;
 import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.storage.files.PrivateFile;
+import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -59,13 +60,13 @@ public class PrivateTalk extends JavaPlugin {
     public void onEnable(){
         instance = this;
         saveDefaultConfig();
-       PrivateFile.loadFiles();
+        PrivateFile.loadFiles();
         this.chatrooms = new ArrayList<>();
         this.players = new ArrayList<>();
         this.helper = new InventoryHelper();
         init();
-        getCommand("privatetalk").setExecutor(new PrivateTalkCommand(this));
 
+        PrivateUtils.registerCommand(new PrivateTalkCommand(this));
     }
 
     // Clean up collections

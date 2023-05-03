@@ -67,13 +67,13 @@ public class InventoryHelper {
      */
     private void setNavBar() {
         PrivateFile file = new PrivateFile(FileType.MENUS);
-        Pair head = getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", null);
-        Pair invites = getItemFrom(Material.WRITABLE_BOOK, "nav-bar.manage-invites", null);
-        Pair createChatroom = getItemFrom(Material.ANVIL, "nav-bar.create-chatroom", null);
+        Pair<ItemStack, Integer> head = getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", null);
+        Pair<ItemStack, Integer> invites = getItemFrom(Material.WRITABLE_BOOK, "nav-bar.manage-invites", null);
+        Pair<ItemStack, Integer> createChatroom = getItemFrom(Material.ANVIL, "nav-bar.create-chatroom", null);
 
-        navBar.addItem(new GuiItem((ItemStack) head.getFirst()), (int) head.getSecond(), 0);
-        navBar.addItem(new GuiItem((ItemStack) createChatroom.getFirst(), CreateChatroomAction.createChatroomConsumer()), (int) createChatroom.getSecond(), 0);
-        navBar.addItem(new GuiItem((ItemStack) invites.getFirst()), (int) invites.getSecond(), 0);
+        navBar.addItem(new GuiItem(head.getFirst()), head.getSecond(), 0);
+        navBar.addItem(new GuiItem(createChatroom.getFirst(), CreateChatroomAction.createChatroomConsumer()), (int) createChatroom.getSecond(), 0);
+        navBar.addItem(new GuiItem(invites.getFirst()), (int) invites.getSecond(), 0);
         GuiItem deco = new GuiItem(DECO_ITEM(), doNothing);
         List<Integer> slots = getAsInts(file.getConfiguration().getStringList("nav-bar.deco-item.slots"));
         for (int x : slots) {
@@ -197,7 +197,8 @@ public class InventoryHelper {
 
 
     /**
-     * @param inventory to set paging-nav-bar, next is whether a next button should appear and back is whether a back button should appear
+     * @param inventory to set paging-nav-bar, next is whether a next button should appear
+     *         and back is whether a back button should appear
      * @return inventory with paging-navar bar
      */
     public Gui setPagingNavBar(Gui inventory, boolean next, boolean back) {
