@@ -26,7 +26,7 @@ public class ItemStackUtils {
     private ItemMeta meta;
     private String name;
     private List<String> lore;
-    private OfflinePlayer owningPlayer;
+    private OfflinePlayer owningPlayer; // used for skins in skull items
 
 
     public ItemStackUtils(Material type) {

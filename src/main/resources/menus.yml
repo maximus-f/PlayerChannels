@@ -72,28 +72,33 @@ creation-menu:
    display-name: "Create a chatroom:"
    name:
       display: "&eName:"
-      lore: "&7&oClick to set a name!"
+      lore:
+         - "&7&oClick to set a name!"
       material: "ANVIL"
       # range is 0-2
       slot: 2
    description:
       display: "&eDescription:"
-      lore: "&7&oClick to set the description!"
+      lore:
+         - "&7&oClick to set the description!"
       material: "INK_SAC"
       slot: 4
    status:
       display: "&ePublic:"
-      lore: "&7&oClick to toggle public/private!"
+      lore:
+         - "&7&oClick to toggle public/private!"
       material: "IRON_DOOR"
       slot: 2
    saved:
       display: "&eSaved:"
-      lore: "&7&oClick to toggle whether this should be saved or not."
+      lore:
+         - "&7&oClick to toggle whether this should be saved or not."
       material: "ENDER_EYE"
       slot: 4
    create-button:
       display: "&e&lClick to create!"
-      lore: ""
+      lore:
+         - ""
       material: "EMERALD_BLOCK"
       slot: 3
 

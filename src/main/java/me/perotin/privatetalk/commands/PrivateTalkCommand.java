@@ -4,6 +4,7 @@ import com.github.stefvanschie.inventoryframework.Gui;
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.events.chat_events.CreateChatroomInputEvent;
 import me.perotin.privatetalk.objects.PreChatroom;
+import me.perotin.privatetalk.objects.inventory.paging_objects.MainMenuPaging;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

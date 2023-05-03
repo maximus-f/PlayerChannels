@@ -78,9 +78,7 @@ public class CreateChatroomAction {
             Player clicker = (Player) clickEvent.getWhoClicked();
             CreateChatroomInputEvent input = CreateChatroomInputEvent.getInstance();
             PreChatroom chatroom = input.getInCreation().get(clicker.getUniqueId());
-            if(chatroom.isPublic()){
-                chatroom.setPublic(false);
-            } else  chatroom.setPublic(true);
+            chatroom.setPublic(!chatroom.isPublic());
 
             input.showUpdatedMenu(clicker, chatroom);
 
@@ -98,9 +96,8 @@ public class CreateChatroomAction {
             Player clicker = (Player) clickEvent.getWhoClicked();
             CreateChatroomInputEvent input = CreateChatroomInputEvent.getInstance();
             PreChatroom chatroom = input.getInCreation().get(clicker.getUniqueId());
-            if(chatroom.isSaved()){
-                chatroom.setSaved(false);
-            } else  chatroom.setSaved(true);
+            // Toggle saved status
+            chatroom.setSaved(!chatroom.isSaved());
 
             input.showUpdatedMenu(clicker, chatroom);
         };

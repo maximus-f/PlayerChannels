@@ -11,6 +11,7 @@ import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.ItemStackUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -146,9 +147,9 @@ public class InventoryHelper {
         ItemStack savedItem = saved.getFirst();
         ItemMeta savedMeta = savedItem.getItemMeta();
         if(chatroom.isSaved()) {
-            sMeta.setDisplayName(sMeta.getDisplayName() + " " +messages.getString("true") );
+            savedMeta.setDisplayName(sMeta.getDisplayName() + " " +messages.getString("true") );
         } else {
-            sMeta.setDisplayName(sMeta.getDisplayName() + " " + messages.getString("false"));
+            savedMeta.setDisplayName(sMeta.getDisplayName() + " " + messages.getString("false"));
         }
         savedItem.setItemMeta(savedMeta);
 
@@ -255,7 +256,9 @@ public class InventoryHelper {
         PrivateFile file = new PrivateFile(FileType.MENUS);
         ItemStackUtils builder = new ItemStackUtils(material, owner);
         builder.setName(file.getString(path + ".display"));
-        builder.setLore(file.getConfiguration().getStringList(path + ".lore"));
+        List<String> lores = file.getConfiguration().getStringList(path + ".lore");
+        lores.forEach(s -> ChatColor.translateAlternateColorCodes('&', s));
+        builder.setLore(lores);
         return new Pair<>(builder.build(), file.getConfiguration().getInt(path + ".slot"));
 
     }
