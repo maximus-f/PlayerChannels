@@ -1,6 +1,5 @@
 package me.perotin.privatetalk.commands;
 
-import com.github.stefvanschie.inventoryframework.Gui;
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.events.chat_events.CreateChatroomInputEvent;
 import me.perotin.privatetalk.objects.InventoryHelper;
@@ -52,7 +51,7 @@ public class PrivateTalkCommand extends Command  {
         mainMenuPaging.getMenu().getItems().forEach(
                 guiItem -> {
                     Bukkit.broadcastMessage(" ");
-                    Bukkit.broadcastMessage(guiItem.getItem().getType().toString() + " " + guiItem.getAction());
+                    Bukkit.broadcastMessage(guiItem.getItem().getType().toString() + " " + guiItem);
                 });
 
         return true;

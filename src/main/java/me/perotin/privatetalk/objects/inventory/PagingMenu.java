@@ -1,10 +1,10 @@
 package me.perotin.privatetalk.objects.inventory;
 
-import com.github.stefvanschie.inventoryframework.Gui;
-import com.github.stefvanschie.inventoryframework.GuiItem;
+
+import com.github.stefvanschie.inventoryframework.gui.GuiItem;
+import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
-import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.PrivateTalk;
 import org.bukkit.entity.Player;
 
@@ -17,14 +17,14 @@ import java.util.List;
 public abstract class PagingMenu {
 
     protected PaginatedPane pane;
-    private Gui menu;
+    private ChestGui menu;
     private Player viewer;
     /** Used in the title of every menu, for identifying what type of paging menu it is **/
     private final String identifier;
 
     public PagingMenu(String identifier, int rows, Player viewer){
         this.identifier = identifier;
-        this.menu = new Gui(PrivateTalk.getInstance(), rows, identifier);
+        this.menu = new ChestGui(rows, identifier);
       //  menu.addPane(pane);
         this.viewer = viewer;
         PrivateTalk.getInstance().getHelper().setPagingNavBar(menu, true, true);
@@ -61,7 +61,7 @@ public abstract class PagingMenu {
         return this.pane;
     }
 
-    public Gui getMenu(){
+    public ChestGui getMenu(){
         return this.menu;
     }
 

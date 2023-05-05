@@ -2,8 +2,10 @@ package me.perotin.privatetalk.objects;
 
 /* Created by Perotin on 8/27/19 */
 
-import com.github.stefvanschie.inventoryframework.Gui;
-import com.github.stefvanschie.inventoryframework.GuiItem;
+
+import com.github.stefvanschie.inventoryframework.gui.GuiItem;
+import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
+import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.inventory.actions.CreateChatroomAction;
@@ -43,7 +45,7 @@ public class InventoryHelper {
     public InventoryHelper() {
         this.file = new PrivateFile(FileType.MENUS);
         this.navBar = new StaticPane(0, 0, 9, 1);
-        this.pagingNavigationBar = new StaticPane(0, 0, 8, 1);
+        this.pagingNavigationBar = new StaticPane(0, 5, 8, 1);
         this.doNothing = (event) -> event.setCancelled(true);
         setNavBar();
         setSideDecoSlots();
@@ -56,10 +58,9 @@ public class InventoryHelper {
      * @param inventory to set
      * @return sets the nav bar for any given inventory
      */
-    public Gui setNavigationBar(Gui inventory, OfflinePlayer owner) {
-
+    public Gui setNavigationBar(ChestGui inventory, OfflinePlayer owner) {
         navBar.addItem(new GuiItem(getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getFirst()), getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getSecond(), 0);
-        inventory.addPane(navBar);
+       inventory.addPane(navBar);
         return inventory;
     }
 
@@ -90,7 +91,7 @@ public class InventoryHelper {
     /**
      * Sets the creation menu on an inventory
      */
-    private Gui setCreationMenu(Gui toSet, PreChatroom chatroom) {
+    private ChestGui setCreationMenu(ChestGui toSet, PreChatroom chatroom) {
         setCreationMenu(chatroom);
         toSet.addPane(creationMenu);
         StaticPane bottomRow =  new StaticPane(0, 5, 9, 1);
@@ -170,9 +171,9 @@ public class InventoryHelper {
     /**
      * Gets the GUI for any designed PreChatroom object
      */
-    public Gui getCreationMenu(PreChatroom chatroom) {
+    public ChestGui getCreationMenu(PreChatroom chatroom) {
         PrivateFile file = new PrivateFile(FileType.MENUS);
-        Gui gui = new Gui(PrivateTalk.getInstance(), 6, file.getString("creation-menu.display-name"));
+        ChestGui gui = new ChestGui( 6, file.getString("creation-menu.display-name"));
         setSideDecorationSlots(gui);
         gui = setCreationMenu(gui, chatroom);
 
@@ -184,7 +185,7 @@ public class InventoryHelper {
      * @param inv to set
      * @return inventory set with side decoration slotsss
      */
-    public Gui setSideDecorationSlots(Gui inv) {
+    public Gui setSideDecorationSlots(ChestGui inv) {
         inv.addPane(leftSideDecoSlots);
         inv.addPane(rightSideDecoSlots);
         return inv;
@@ -209,7 +210,7 @@ public class InventoryHelper {
      *         and back is whether a back button should appear
      * @return inventory with paging-navar bar
      */
-    public Gui setPagingNavBar(Gui inventory, boolean next, boolean back) {
+    public Gui setPagingNavBar(ChestGui inventory, boolean next, boolean back) {
 
         setPagingNavigationBar();
         inventory.addPane(pagingNavigationBar);
@@ -244,7 +245,7 @@ public class InventoryHelper {
 
         GuiItem decoItem = DECO_ITEM();
 
-        Bukkit.broadcastMessage("SetPagingNav decoItem action: " + decoItem.getAction());
+        Bukkit.broadcastMessage("SetPagingNav decoItem action: " + decoItem);
         for (int x : decoSlots) {
             Bukkit.broadcastMessage("adding deco item for " + x);
 
