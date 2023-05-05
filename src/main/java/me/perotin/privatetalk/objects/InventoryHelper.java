@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -75,7 +76,7 @@ public class InventoryHelper {
         navBar.addItem(new GuiItem(head.getFirst()), head.getSecond(), 0);
         navBar.addItem(new GuiItem(createChatroom.getFirst(), CreateChatroomAction.createChatroomConsumer()), (int) createChatroom.getSecond(), 0);
         navBar.addItem(new GuiItem(invites.getFirst()), (int) invites.getSecond(), 0);
-        GuiItem deco = new GuiItem(DECO_ITEM(), doNothing);
+        GuiItem deco = DECO_ITEM();
         List<Integer> slots = getAsInts(file.getConfiguration().getStringList("nav-bar.deco-item.slots"));
         for (int x : slots) {
             navBar.addItem(deco, x, 0);
@@ -94,7 +95,7 @@ public class InventoryHelper {
         toSet.addPane(creationMenu);
         StaticPane bottomRow =  new StaticPane(0, 5, 9, 1);
         bottomRow.addItem(BACK_ITEM(), 0, 0);
-        bottomRow.fillWith(DECO_ITEM());
+        bottomRow.fillWith(DECO_ITEM().getItem());
         toSet.addPane(bottomRow);
         return toSet;
     }
@@ -196,8 +197,8 @@ public class InventoryHelper {
     private void setSideDecoSlots() {
         this.rightSideDecoSlots = new StaticPane(8, 1, 1, 4);
         this.leftSideDecoSlots = new StaticPane(0, 1, 1, 4);
-        rightSideDecoSlots.fillWith(DECO_ITEM());
-        leftSideDecoSlots.fillWith(DECO_ITEM());
+        rightSideDecoSlots.fillWith(DECO_ITEM().getItem());
+        leftSideDecoSlots.fillWith(DECO_ITEM().getItem());
 
     }
     //----------------------- Paging Buttons Methods ----------------------------------------------------
@@ -238,14 +239,18 @@ public class InventoryHelper {
         int nextSlot = file.getConfiguration().getInt("paging-nav-bar.next-item.slot");
         int backSlot = file.getConfiguration().getInt("paging-nav-bar.back-item.slot");
 
-        for (int x : decoSlots) {
-            Bukkit.broadcastMessage("Set deco slot on "+ x);
-            PrivateTalk.getInstance().getLogger().info("TEST TEST!! " + x);
-            pagingNavigationBar.addItem(new GuiItem(DECO_ITEM(), doNothing), x, 5);
-        }
-        PrivateTalk.getInstance().getLogger().info("backSlot: " + backSlot + " nextSlot: " + nextSlot);
         pagingNavigationBar.addItem(BACK_ITEM(), backSlot, 5);
         pagingNavigationBar.addItem(new GuiItem(NEXT_ITEM()), nextSlot, 5);
+
+        GuiItem decoItem = DECO_ITEM();
+
+        Bukkit.broadcastMessage("SetPagingNav decoItem action: " + decoItem.getAction());
+        for (int x : decoSlots) {
+            Bukkit.broadcastMessage("adding deco item for " + x);
+
+            pagingNavigationBar.addItem(decoItem, x, 5);
+
+        }
 
     }
 
@@ -284,12 +289,18 @@ public class InventoryHelper {
     /**
      * @return blank decoration item used to fill white-space
      */
-    public static ItemStack DECO_ITEM() {
+    public static GuiItem DECO_ITEM() {
         PrivateFile items = new PrivateFile(FileType.MENUS);
         ItemStackUtils item = new ItemStackUtils(Material.getMaterial(items.getString("global-items.deco-item.material")));
-        item.setName(items.getString("global-items.deco-item.material"));
-        return item.build();
+        String displayName = items.getString("global-items.deco-item.display");
+
+
+        item.setName(displayName);
+        return new GuiItem(item.build(), inventoryClickEvent -> {
+            inventoryClickEvent.setCancelled(true);
+        });
     }
+
 
 
     /**
@@ -298,7 +309,7 @@ public class InventoryHelper {
     public static GuiItem BACK_ITEM() {
         PrivateFile items = new PrivateFile(FileType.MENUS);
         ItemStackUtils item = new ItemStackUtils(Material.getMaterial(items.getString("global-items.back-item.material")));
-        item.setName(items.getString("global-items.back-item.material"));
+        item.setName(items.getString("global-items.back-item.display"));
         GuiItem backItem = new GuiItem(item.build(), inventoryClickEvent -> inventoryClickEvent.getView().getPlayer().closeInventory());
 
         return backItem;
@@ -310,7 +321,7 @@ public class InventoryHelper {
     public static ItemStack NEXT_ITEM() {
         PrivateFile items = new PrivateFile(FileType.MENUS);
         ItemStackUtils item = new ItemStackUtils(Material.getMaterial(items.getString("global-items.next-item.material")));
-        item.setName(items.getString("global-items.next-item.material"));
+        item.setName(items.getString("global-items.next-item.display"));
         return item.build();
     }
 

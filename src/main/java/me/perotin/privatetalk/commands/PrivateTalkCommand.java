@@ -3,6 +3,7 @@ package me.perotin.privatetalk.commands;
 import com.github.stefvanschie.inventoryframework.Gui;
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.events.chat_events.CreateChatroomInputEvent;
+import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PreChatroom;
 import me.perotin.privatetalk.objects.inventory.paging_objects.MainMenuPaging;
 import org.bukkit.Bukkit;
@@ -47,8 +48,13 @@ public class PrivateTalkCommand extends Command  {
       //  CreateChatroomInputEvent.getInstance().getInCreation().put(player.getUniqueId(), chat);
 
         MainMenuPaging mainMenuPaging = new MainMenuPaging(player, plugin);
-        if (mainMenuPaging.getMenu() == null) Bukkit.broadcastMessage("MENU IS NULL---");
         mainMenuPaging.getMenu().show(player);
+        mainMenuPaging.getMenu().getItems().forEach(
+                guiItem -> {
+                    Bukkit.broadcastMessage(" ");
+                    Bukkit.broadcastMessage(guiItem.getItem().getType().toString() + " " + guiItem.getAction());
+                });
+
         return true;
    }
 }

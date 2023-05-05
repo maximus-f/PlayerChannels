@@ -16,7 +16,7 @@
 # Global items that will be used in multiple places:
 global-items:
    deco-item:
-      display: ""
+      display: " "
       material: "BLACK_STAINED_GLASS_PANE"
    next-item:
       display: "&eNext >>"

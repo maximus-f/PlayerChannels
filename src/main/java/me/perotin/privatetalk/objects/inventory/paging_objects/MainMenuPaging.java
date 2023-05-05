@@ -56,7 +56,6 @@ public class MainMenuPaging extends PagingMenu {
         for (int i = 0; i < 50; i++) {
             test.add(new GuiItem(new ItemStack(Material.APPLE)));
         }
-        //List<GuiItem> guiItems = toDisplay.stream().map(item -> new GuiItem(item, ChatroomItemStackAction.clickOnChatroom())).collect(Collectors.toList());
         return test;
     }
 

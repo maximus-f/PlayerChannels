@@ -6,10 +6,12 @@ import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.events.chat_events.CreateChatroomInputEvent;
 import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PreChatroom;
+import me.perotin.privatetalk.objects.inventory.paging_objects.MainMenuPaging;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -30,7 +32,7 @@ public class CreateChatroomAction {
             PreChatroom chatroom = new PreChatroom(clickEvent.getWhoClicked().getUniqueId());
             InventoryHelper helper = PrivateTalk.getInstance().getHelper();
             CreateChatroomInputEvent.getInstance().getInCreation().put(clickEvent.getWhoClicked().getUniqueId(), chatroom);
-            helper.getCreationMenu(chatroom).show(clickEvent.getWhoClicked());
+            helper.setNavigationBar(helper.getCreationMenu(chatroom), (OfflinePlayer) clickEvent.getWhoClicked()).show(clickEvent.getWhoClicked());
         };
     }
 
@@ -131,6 +133,7 @@ public class CreateChatroomAction {
             // create the chatroom
             PrivateTalk.getInstance().createChatroom(chatroom);
             input.getInCreation().remove(clicker.getUniqueId());
+            new MainMenuPaging(clicker, PrivateTalk.getInstance()).show();
 
         };
     }
