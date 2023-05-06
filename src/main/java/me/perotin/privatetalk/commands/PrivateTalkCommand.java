@@ -48,11 +48,7 @@ public class PrivateTalkCommand extends Command  {
 
         MainMenuPaging mainMenuPaging = new MainMenuPaging(player, plugin);
         mainMenuPaging.getMenu().show(player);
-        mainMenuPaging.getMenu().getItems().forEach(
-                guiItem -> {
-                    Bukkit.broadcastMessage(" ");
-                    Bukkit.broadcastMessage(guiItem.getItem().getType().toString() + " " + guiItem);
-                });
+
 
         return true;
    }

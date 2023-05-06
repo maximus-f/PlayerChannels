@@ -33,7 +33,7 @@ public class InventoryHelper {
 
     private PrivateFile file;
     private StaticPane navBar;
-    private StaticPane pagingNavigationBar;
+    private final StaticPane pagingNavigationBar;
     private StaticPane creationMenu;
     private StaticPane rightSideDecoSlots;
     private StaticPane leftSideDecoSlots;
@@ -45,7 +45,7 @@ public class InventoryHelper {
     public InventoryHelper() {
         this.file = new PrivateFile(FileType.MENUS);
         this.navBar = new StaticPane(0, 0, 9, 1);
-        this.pagingNavigationBar = new StaticPane(0, 5, 8, 1);
+        this.pagingNavigationBar = new StaticPane(0, 5, 9, 1);
         this.doNothing = (event) -> event.setCancelled(true);
         setNavBar();
         setSideDecoSlots();
@@ -210,38 +210,15 @@ public class InventoryHelper {
      *         and back is whether a back button should appear
      * @return inventory with paging-navar bar
      */
-    public Gui setPagingNavBar(ChestGui inventory, boolean next, boolean back) {
+    public StaticPane setPagingNavBar(ChestGui inventory) {
 
-        setPagingNavigationBar();
-        inventory.addPane(pagingNavigationBar);
-        return inventory;
-//        if(next && back) {
-//            inventory.addPane(pagingNavigationBar);
-//            return inventory;
-//        } else {
-//            if(!back){
-//                pagingNavigationBar.removeItem(new GuiItem(BACK_ITEM()));
-//            }
-//            if(!next){
-//                pagingNavigationBar.removeItem(new GuiItem(NEXT_ITEM()));
-//            }
-//            inventory.addPane(pagingNavigationBar);
-//            return inventory;
-//        }
-    }
-
-
-    /**
-     * @apiNote Sets the next / back buttons at the bottom along with deco slots
-     */
-    private void setPagingNavigationBar() {
         PrivateFile file = new PrivateFile(FileType.MENUS);
         List<Integer> decoSlots = getAsInts(file.getConfiguration().getStringList("paging-nav-bar.deco-item.slots"));
         int nextSlot = file.getConfiguration().getInt("paging-nav-bar.next-item.slot");
         int backSlot = file.getConfiguration().getInt("paging-nav-bar.back-item.slot");
 
-        pagingNavigationBar.addItem(BACK_ITEM(), backSlot, 5);
-        pagingNavigationBar.addItem(new GuiItem(NEXT_ITEM()), nextSlot, 5);
+        pagingNavigationBar.addItem(BACK_ITEM(), backSlot, 0);
+        pagingNavigationBar.addItem(new GuiItem(NEXT_ITEM()), nextSlot, 0);
 
         GuiItem decoItem = DECO_ITEM();
 
@@ -249,11 +226,13 @@ public class InventoryHelper {
         for (int x : decoSlots) {
             Bukkit.broadcastMessage("adding deco item for " + x);
 
-            pagingNavigationBar.addItem(decoItem, x, 5);
+            pagingNavigationBar.addItem(decoItem, x, 0);
 
         }
-
+        inventory.addPane(pagingNavigationBar);
+        return pagingNavigationBar;
     }
+
 
 
     //----------------------- Utility Methods ----------------------------------------------------

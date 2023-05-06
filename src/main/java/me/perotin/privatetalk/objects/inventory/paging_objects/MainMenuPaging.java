@@ -2,6 +2,7 @@ package me.perotin.privatetalk.objects.inventory.paging_objects;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
+import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.InventoryHelper;
@@ -31,7 +32,7 @@ public class MainMenuPaging extends PagingMenu {
         super(viewer.getName()+"-main", 6, viewer);
         this.messages = new PrivateFile(FileType.MESSAGES);
         this.plugin = plugin;
-        setPaginatedPane();
+        setMainPage();
         getPaginatedPane().populateWithGuiItems(generatePages());
 
 
@@ -57,15 +58,17 @@ public class MainMenuPaging extends PagingMenu {
         return test;
     }
 
-    @Override
-    protected void setPaginatedPane() {
-        this.pane = new PaginatedPane(1, 1, 7, 4);
+
+    private void setMainPage() {
         InventoryHelper helper = plugin.getHelper();
         helper.setNavigationBar(getMenu(), getViewer());
         helper.setSideDecorationSlots(getMenu());
-        addPaneToGui(pane);
+
+
 
     }
+
+
 
 
 
