@@ -86,9 +86,9 @@ public abstract class PagingMenu {
 
         GuiItem decoItem = InventoryHelper.DECO_ITEM();
 
-        Bukkit.broadcastMessage("SetPagingNav decoItem action: " + decoItem);
+        //Bukkit.broadcastMessage("SetPagingNav decoItem action: " + decoItem);
         for (int x : decoSlots) {
-            Bukkit.broadcastMessage("adding deco item for " + x);
+            //Bukkit.broadcastMessage("adding deco item for " + x);
 
             getPagingNavBar().addItem(decoItem, x, 0);
 

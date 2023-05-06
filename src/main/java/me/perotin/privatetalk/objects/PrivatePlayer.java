@@ -2,10 +2,12 @@ package me.perotin.privatetalk.objects;
 
 /* Created by Perotin on 8/14/19 */
 
+import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.PrivateUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -36,6 +38,7 @@ public class PrivatePlayer {
      * @param player to show player profile to
      */
     public void showProfileTo(Player player){
+        new ChestGui(6, getName() + "'s profile").show(player);
 
     }
 
@@ -99,11 +102,16 @@ public class PrivatePlayer {
             }
         }
         PrivateFile playerFile = new PrivateFile(FileType.PLAYERS);
-        String name = playerFile.getString(uuid.toString()+".name");
-        // do some checking with chatrooms that aren't loaded
-        List<Chatroom> chatrooms = playerFile.getConfiguration().getStringList(uuid.toString()+".chatrooms")
-                .stream().map(PrivateUtils::getChatroomWith).collect(Collectors.toList());
+        if (playerFile.getConfiguration().isSet(uuid.toString()+".name")) {
+            String name = playerFile.getString(uuid.toString() + ".name");
+            // do some checking with chatrooms that aren't loaded
+            List<Chatroom> chatrooms = playerFile.getConfiguration().getStringList(uuid.toString() + ".chatrooms")
+                    .stream().map(PrivateUtils::getChatroomWith).collect(Collectors.toList());
 
-        return new PrivatePlayer(uuid, name, chatrooms);
+            return new PrivatePlayer(uuid, name, chatrooms);
+        } else {
+            // New player so create new object
+            return new PrivatePlayer(uuid, Bukkit.getPlayer(uuid).getName());
+        }
     }
 }

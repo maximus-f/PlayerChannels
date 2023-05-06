@@ -2,6 +2,7 @@ package me.perotin.privatetalk;
 
 import me.perotin.privatetalk.commands.PrivateTalkCommand;
 import me.perotin.privatetalk.events.chat_events.CreateChatroomInputEvent;
+import me.perotin.privatetalk.events.join.PrivatePlayerJoinEvent;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PreChatroom;
@@ -9,6 +10,7 @@ import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -28,13 +30,14 @@ import java.util.UUID;
 
 /*
 TODO List
-12/03/19
+5/6/23 Finished barebones main page, chatroom creation menu, and chatroom pager
 
-Where I am at: Started the Main Menu page, it may in theory be done but definitely bugs. Creation menu & paging bar at the bottom still aini't showing though
+Focus on show player
+Inviting other players
+Chatting in chatroom
 
 
-NEW UPDATE:
-   Navigation menu is looking better, currently, the issue is with the paging bar at the bottom not displaying at all for some weird reason
+
 
 
  */
@@ -66,6 +69,11 @@ public class PrivateTalk extends JavaPlugin {
         this.helper = new InventoryHelper();
         init();
 
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            players.add(PrivatePlayer.getPlayer(player.getUniqueId()));
+            Bukkit.broadcastMessage("Added " + player.getName() + "! to pmemory");
+        }
+
     }
 
     // Clean up collections
@@ -79,6 +87,8 @@ public class PrivateTalk extends JavaPlugin {
 
     private void init(){
         Bukkit.getPluginManager().registerEvents(new CreateChatroomInputEvent(this), this);
+        Bukkit.getPluginManager().registerEvents(new PrivatePlayerJoinEvent(this), this);
+
         PrivateUtils.registerCommand(new PrivateTalkCommand(getConfig().getString("command-name"), getConfig().getStringList("aliases"), this));
 
     }
@@ -117,6 +127,15 @@ public class PrivateTalk extends JavaPlugin {
      */
     public void createChatroom(PreChatroom chatroom){
         chatrooms.add(chatroom.toChatroom());
+    }
+
+    /**
+     * @param player to add to private talk's memory
+     */
+    public void addPlayer(PrivatePlayer player){
+        if (!players.contains(player)) {
+            players.add(player);
+        }
     }
 
 

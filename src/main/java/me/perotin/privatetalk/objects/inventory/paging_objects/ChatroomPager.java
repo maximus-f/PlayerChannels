@@ -65,7 +65,10 @@ public class ChatroomPager extends PagingMenu {
      * @return consumer action to go to param player's profile page
      */
     private Consumer<InventoryClickEvent> goToProfile(PrivatePlayer player){
-        return (InventoryClickEvent event) -> player.showProfileTo(getViewer());
+        return (InventoryClickEvent event) -> {
+            event.setCancelled(true);
+            player.showProfileTo(getViewer());
+        };
     }
 
 
