@@ -4,8 +4,10 @@ package me.perotin.privatetalk.objects.inventory.actions;
 
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.events.chat_events.CreateChatroomInputEvent;
+import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PreChatroom;
+import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.objects.inventory.paging_objects.MainMenuPaging;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
@@ -114,6 +116,7 @@ public class CreateChatroomAction {
             clickEvent.setCancelled(true);
 
             Player clicker = (Player) clickEvent.getWhoClicked();
+            PrivatePlayer privatePlayer = PrivatePlayer.getPlayer(clicker.getUniqueId());
             PrivateFile messages = new PrivateFile(FileType.MESSAGES);
             CreateChatroomInputEvent input = CreateChatroomInputEvent.getInstance();
             PreChatroom chatroom = input.getInCreation().get(clicker.getUniqueId());
@@ -131,7 +134,8 @@ public class CreateChatroomAction {
                 return;
             }
             // create the chatroom
-            PrivateTalk.getInstance().createChatroom(chatroom);
+            Chatroom addedChatroom = PrivateTalk.getInstance().createChatroom(chatroom);
+            privatePlayer.addChatroom(addedChatroom);
             input.getInCreation().remove(clicker.getUniqueId());
             new MainMenuPaging(clicker, PrivateTalk.getInstance()).show();
 

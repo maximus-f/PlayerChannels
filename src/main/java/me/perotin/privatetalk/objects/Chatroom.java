@@ -7,6 +7,7 @@ import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Skull;
 import org.bukkit.configuration.ConfigurationSection;
@@ -39,6 +40,10 @@ public class Chatroom {
     private HashMap<UUID, String> nickNames;
     private PrivateFile messages;
     private ItemStack display;
+
+    /**
+     * Players that are currently chatting in the chatroom
+     */
 
     /**
      * Initial chatroom constructor
@@ -207,6 +212,24 @@ public class Chatroom {
 
     public HashMap<UUID, String> getNickNames() {
         return nickNames;
+    }
+
+    /**
+     * Main method for sending a chatroom message to all participents of the chatroom
+     * that are currently listening to messages
+     *
+     * In the future, members may be able to mute a chatroom so will have to account for this.
+     * @param message
+     */
+    public void chat(String sender, String message){
+        List<Player> members = getOnlinePlayers();
+        // Perform operations to format message accordingly
+        String chatroomFormat = ChatColor.translateAlternateColorCodes('&', PrivateTalk.getInstance().getConfig().getString("chatroom-message-format")
+                .replace("$chatroom$", getName())
+                .replace("$message$", message)
+                .replace("$name$", sender));
+
+        members.forEach(member -> member.sendMessage(chatroomFormat));
     }
 
     /**

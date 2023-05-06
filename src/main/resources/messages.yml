@@ -13,7 +13,6 @@
 # $connected$ - returns Online or Offline based on if player is on the server or not
 # $role$ - returns string value of player's role within the chatroom
 #
-#
 # NOTE: Do not use placeholders that do not appear in the default message! Only placeholders that appear in a message may be used in it!
 
 chatroom-name: "$chatroom-name$: Page $page$"

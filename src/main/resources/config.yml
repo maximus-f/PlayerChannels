@@ -14,5 +14,8 @@ aliases:
 
 saved-material: "OAK_SIGN"
 
+quickchat-prefix: "@"
+
+chatroom-message-format: "&7[$chatroom$] $name$ ➤ $message$"
 mysql: false
 

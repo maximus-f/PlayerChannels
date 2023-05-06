@@ -1,6 +1,7 @@
 package me.perotin.privatetalk;
 
 import me.perotin.privatetalk.commands.PrivateTalkCommand;
+import me.perotin.privatetalk.events.chat_events.ChatroomChatEvent;
 import me.perotin.privatetalk.events.chat_events.CreateChatroomInputEvent;
 import me.perotin.privatetalk.events.join.PrivatePlayerJoinEvent;
 import me.perotin.privatetalk.objects.Chatroom;
@@ -55,6 +56,8 @@ public class PrivateTalk extends JavaPlugin {
 
     private List<PrivatePlayer> players;
     private static PrivateTalk instance;
+
+    public static String QUICK_CHAT_PREFIX;
     private InventoryHelper helper;
 
 
@@ -67,7 +70,9 @@ public class PrivateTalk extends JavaPlugin {
         this.chatrooms = new ArrayList<>();
         this.players = new ArrayList<>();
         this.helper = new InventoryHelper();
+        QUICK_CHAT_PREFIX = getConfig().getString("quickchat-prefix");
         init();
+
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             players.add(PrivatePlayer.getPlayer(player.getUniqueId()));
@@ -87,6 +92,8 @@ public class PrivateTalk extends JavaPlugin {
 
     private void init(){
         Bukkit.getPluginManager().registerEvents(new CreateChatroomInputEvent(this), this);
+        Bukkit.getPluginManager().registerEvents(new ChatroomChatEvent(this), this);
+
         Bukkit.getPluginManager().registerEvents(new PrivatePlayerJoinEvent(this), this);
 
         PrivateUtils.registerCommand(new PrivateTalkCommand(getConfig().getString("command-name"), getConfig().getStringList("aliases"), this));
@@ -125,8 +132,9 @@ public class PrivateTalk extends JavaPlugin {
     /**
      * @param chatroom to fully initialize as a chatroom
      */
-    public void createChatroom(PreChatroom chatroom){
+    public Chatroom createChatroom(PreChatroom chatroom){
         chatrooms.add(chatroom.toChatroom());
+        return chatrooms.get(chatrooms.size() - 1);
     }
 
     /**

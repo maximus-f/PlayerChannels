@@ -10,6 +10,7 @@ import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -23,10 +24,13 @@ public class PrivatePlayer {
     private String name;
     private List<Chatroom> chatrooms;
 
+    private Chatroom focusedChatroom; //  null if none is focused
+
 
     public PrivatePlayer(UUID uuid, String name) {
         this.uuid = uuid;
         this.name = name;
+        this.chatrooms = new ArrayList<>();
     }
 
     public PrivatePlayer(UUID uuid, String name, List<Chatroom> chatrooms) {
@@ -87,6 +91,21 @@ public class PrivatePlayer {
         playerFile.set(uuid.toString()+".chatrooms", getChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList()));
         playerFile.save();
 
+    }
+
+    /**
+     * @return chatroom that the player is currently chatting in
+     */
+    public Chatroom getFocusedChatroom() {
+        return focusedChatroom;
+    }
+
+    /**
+     *
+     * @param sets the playeres current focused chatroom
+     */
+    public void setFocusedChatroom(Chatroom focusedChatroom) {
+        this.focusedChatroom = focusedChatroom;
     }
 
     /**
