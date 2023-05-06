@@ -9,6 +9,7 @@ import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.inventory.actions.CreateChatroomAction;
+import me.perotin.privatetalk.objects.inventory.paging_objects.MainMenuPaging;
 import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
@@ -96,7 +97,7 @@ public class InventoryHelper {
         toSet.addPane(creationMenu);
         StaticPane bottomRow =  new StaticPane(0, 5, 9, 1);
         bottomRow.addItem(BACK_ITEM(), 0, 0);
-        bottomRow.fillWith(DECO_ITEM().getItem());
+        bottomRow.fillWith(DECO_ITEM().getItem(), doNothing);
         toSet.addPane(bottomRow);
         return toSet;
     }
@@ -198,8 +199,8 @@ public class InventoryHelper {
     private void setSideDecoSlots() {
         this.rightSideDecoSlots = new StaticPane(8, 1, 1, 4);
         this.leftSideDecoSlots = new StaticPane(0, 1, 1, 4);
-        rightSideDecoSlots.fillWith(DECO_ITEM().getItem());
-        leftSideDecoSlots.fillWith(DECO_ITEM().getItem());
+        rightSideDecoSlots.fillWith(DECO_ITEM().getItem(), doNothing);
+        leftSideDecoSlots.fillWith(DECO_ITEM().getItem(), doNothing);
 
     }
     //----------------------- Paging Buttons Methods ----------------------------------------------------
@@ -282,6 +283,9 @@ public class InventoryHelper {
     }
 
 
+    // Probably need to refactor, kind of duplicate code with what is in
+    // PagingMenu. For now, setting action to send to main menu which will no longer keep this a
+    // generalized back button.
 
     /**
      * @return item used to navigate backwards in a menu
@@ -290,9 +294,10 @@ public class InventoryHelper {
         PrivateFile items = new PrivateFile(FileType.MENUS);
         ItemStackUtils item = new ItemStackUtils(Material.getMaterial(items.getString("global-items.back-item.material")));
         item.setName(items.getString("global-items.back-item.display"));
-        GuiItem backItem = new GuiItem(item.build(), inventoryClickEvent -> inventoryClickEvent.getView().getPlayer().closeInventory());
 
-        return backItem;
+        return new GuiItem(item.build(), inventoryClickEvent -> {
+            new MainMenuPaging((Player) inventoryClickEvent.getWhoClicked(), PrivateTalk.getInstance()).show();
+        });
     }
 
     /**

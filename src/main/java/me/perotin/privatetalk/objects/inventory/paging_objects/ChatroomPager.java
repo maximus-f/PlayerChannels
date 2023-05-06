@@ -4,6 +4,7 @@ import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.Chatroom;
+import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.objects.inventory.PagingMenu;
 import me.perotin.privatetalk.storage.files.FileType;
@@ -35,7 +36,8 @@ public class ChatroomPager extends PagingMenu {
         super(viewer.getName()+"-chatroom", 6, viewer);
         this.chatroom = chatroom;
          this.messages = new PrivateFile(FileType.MESSAGES);
-         this.pane = new PaginatedPane(2, 1, 7, 3);
+        PrivateTalk.getInstance().getHelper().setSideDecorationSlots(getMenu());
+        PrivateTalk.getInstance().getHelper().setNavigationBar(getMenu(), getViewer());
          getPaginatedPane().populateWithGuiItems(generatePages());
 
     }
@@ -55,10 +57,7 @@ public class ChatroomPager extends PagingMenu {
         return items;
     }
 
-    @Override
-    protected void setPaginatedPane() {
 
-    }
 
     /**
      *

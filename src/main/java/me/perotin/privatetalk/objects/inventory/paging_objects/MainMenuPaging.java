@@ -51,11 +51,11 @@ public class MainMenuPaging extends PagingMenu {
         toDisplay = toDisplay.stream().sorted(this::compare).collect(Collectors.toList());
         List<GuiItem> guiItems = toDisplay.stream().map(item -> new GuiItem(item, ChatroomItemStackAction.clickOnChatroom())).collect(Collectors.toList());
 
-        List<GuiItem> test = new ArrayList<>();
-        for (int i = 0; i < 50; i++) {
-            test.add(new GuiItem(new ItemStack(Material.APPLE)));
-        }
-        return test;
+//        List<GuiItem> test = new ArrayList<>();
+//        for (int i = 0; i < 150; i++) {
+//            test.add(new GuiItem(new ItemStack(Material.APPLE)));
+//        }
+        return guiItems;
     }
 
 
@@ -64,8 +64,6 @@ public class MainMenuPaging extends PagingMenu {
         helper.setNavigationBar(getMenu(), getViewer());
         helper.setSideDecorationSlots(getMenu());
 
-
-
     }
 
 
@@ -73,6 +71,7 @@ public class MainMenuPaging extends PagingMenu {
 
 
 
+    // TODO: Look into using PersistentDataContainers instead of Lore.
     /**
      * Sorts the itemstacks by whether or not they have the saved material type, sorting them from saved -> everything else
      * @param o

@@ -40,22 +40,28 @@ public abstract class PagingMenu {
         this.pagingNavBar = new StaticPane(0, 5, 9, 1);
 
         setPaginatedPane();
-        setPagingNavigation(menu);
+        setPagingNavigation(menu); // Refactor this to main menu perhaps
     }
     /**
-     * Gives the next inventory in the sequence, null if it is the last inventory
-     * @return the next inventory or null.
+     * Sets the current page to + 1 if within bounds
      */
     public void next(){
         if (pane.getPages() > pane.getPage() + 1) {
             pane.setPage(pane.getPage() + 1);
+            menu.setTitle(identifier + " Page: " + pane.getPage() + 1);
             menu.update();
         }
 
     }
+
+    /**
+     * Sets the current page to the previous page if one exists
+     */
     public void previous(){
         if (pane.getPage() > 0) {
             pane.setPage(pane.getPage() - 1);
+            menu.setTitle(identifier + " Page: " + pane.getPage() + 1);
+
             menu.update();
         }
     }
