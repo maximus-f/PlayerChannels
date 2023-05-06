@@ -33,7 +33,7 @@ public class ChatroomPager extends PagingMenu {
     private Chatroom chatroom;
     private PrivateFile messages;
     public ChatroomPager(Chatroom chatroom, Player viewer){
-        super(viewer.getName()+"-chatroom", 6, viewer);
+        super(viewer.getName()+"-chatroom", 6, viewer, new MainMenuPaging(viewer, PrivateTalk.getInstance()).getMenu());
         this.chatroom = chatroom;
          this.messages = new PrivateFile(FileType.MESSAGES);
         PrivateTalk.getInstance().getHelper().setSideDecorationSlots(getMenu());

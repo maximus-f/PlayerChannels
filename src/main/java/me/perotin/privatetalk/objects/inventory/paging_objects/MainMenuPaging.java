@@ -29,7 +29,7 @@ public class MainMenuPaging extends PagingMenu {
     private PrivateFile messages;
     private PrivateTalk plugin;
     public MainMenuPaging(Player viewer, PrivateTalk plugin){
-        super(viewer.getName()+"-main", 6, viewer);
+        super(viewer.getName()+"-main", 6, viewer, null);
         this.messages = new PrivateFile(FileType.MESSAGES);
         this.plugin = plugin;
         setMainPage();

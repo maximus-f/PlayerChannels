@@ -3,6 +3,7 @@ package me.perotin.privatetalk.objects.inventory;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
+import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
@@ -14,9 +15,11 @@ import me.perotin.privatetalk.utils.ItemStackUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /* Created by Perotin on 8/16/19 */
@@ -31,11 +34,17 @@ public abstract class PagingMenu {
     /** Used in the title of every menu, for identifying what type of paging menu it is **/
     private final String identifier;
 
+    /**
+     * Menu that player came from to reach this paging menu. Can be null if it does not exist
+     */
+    private Gui backMenu;
+
     private StaticPane pagingNavBar;
 
-    public PagingMenu(String identifier, int rows, Player viewer){
+    public PagingMenu(String identifier, int rows, Player viewer, Gui backMenu){
         this.identifier = identifier;
         this.menu = new ChestGui(rows, identifier);
+        this.backMenu = backMenu;
         this.viewer = viewer;
         this.pagingNavBar = new StaticPane(0, 5, 9, 1);
 
@@ -57,12 +66,19 @@ public abstract class PagingMenu {
     /**
      * Sets the current page to the previous page if one exists
      */
-    public void previous(){
+    public void previous(Gui backMenu){
         if (pane.getPage() > 0) {
             pane.setPage(pane.getPage() - 1);
             menu.setTitle(identifier + " Page: " + pane.getPage() + 1);
 
             menu.update();
+        } else {
+            Bukkit.broadcastMessage("1");
+            if (backMenu != null) {
+                Bukkit.broadcastMessage("2");
+
+                backMenu.show(viewer);
+            }
         }
     }
 
@@ -81,17 +97,13 @@ public abstract class PagingMenu {
         int nextSlot = file.getConfiguration().getInt("paging-nav-bar.next-item.slot");
         int backSlot = file.getConfiguration().getInt("paging-nav-bar.back-item.slot");
 
-        getPagingNavBar().addItem(back_item(), backSlot, 0);
+        getPagingNavBar().addItem(back_item(getBackMenu()), backSlot, 0);
         getPagingNavBar().addItem(next_item(), nextSlot, 0);
 
         GuiItem decoItem = InventoryHelper.DECO_ITEM();
 
-        //Bukkit.broadcastMessage("SetPagingNav decoItem action: " + decoItem);
         for (int x : decoSlots) {
-            //Bukkit.broadcastMessage("adding deco item for " + x);
-
             getPagingNavBar().addItem(decoItem, x, 0);
-
         }
         menu.addPane(getPagingNavBar());
     }
@@ -144,18 +156,25 @@ public abstract class PagingMenu {
         menu.addPane(pane);
     }
 
+    public Gui getBackMenu() {
+        return backMenu;
+    }
+
+    public void setBackMenu(Gui backMenu) {
+        this.backMenu = backMenu;
+    }
 
     /**
      * @return item used to navigate backwards in a menu
      */
-    private GuiItem back_item() {
+    private GuiItem back_item(Gui backMenu) {
         PrivateFile items = new PrivateFile(FileType.MENUS);
         ItemStackUtils item = new ItemStackUtils(Material.getMaterial(items.getString("global-items.back-item.material")));
         item.setName(items.getString("global-items.back-item.display"));
 
         return new GuiItem(item.build(), inventoryClickEvent ->{
             inventoryClickEvent.setCancelled(true);
-            previous();
+            previous(backMenu);
         });
     }
 
