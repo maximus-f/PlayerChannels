@@ -26,6 +26,8 @@ public class PrivatePlayer {
 
     private Chatroom focusedChatroom; //  null if none is focused
 
+    private List<Chatroom> invites; // Represent chatrooms that have invited this player
+
 
     public PrivatePlayer(UUID uuid, String name) {
         this.uuid = uuid;
@@ -80,6 +82,13 @@ public class PrivatePlayer {
      */
     public void addChatroom(Chatroom chatroom) {
         if(!chatrooms.contains(chatroom)) chatrooms.add(chatroom);
+    }
+
+    /**
+     * @param chatroom to leave
+     */
+    public void leaveChatroom(Chatroom chatroom) {
+        chatrooms.remove(chatroom);
     }
 
     /**
@@ -141,4 +150,5 @@ public class PrivatePlayer {
             return new PrivatePlayer(uuid, Bukkit.getPlayer(uuid).getName());
         }
     }
+
 }

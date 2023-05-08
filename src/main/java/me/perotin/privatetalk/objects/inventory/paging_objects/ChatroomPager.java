@@ -22,6 +22,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -78,17 +79,27 @@ public class ChatroomPager extends PagingMenu {
         Pair<ItemStack, Integer> inChat = InventoryHelper.getItem("chatroom-bar.in-chat", null);
 
 
+        ItemMeta inChatToggle =  inChat.getFirst().getItemMeta();
+
+        //TODO use messages.yml values
+        if (player.getFocusedChatroom() != null && player.getFocusedChatroom().equals(chatroom)) {
+            inChatToggle.setDisplayName(inChatToggle.getDisplayName() + " true");
+        } else {
+            inChatToggle.setDisplayName(inChatToggle.getDisplayName() + " false");
+
+        }
+        inChat.getFirst().setItemMeta(inChatToggle);
 
         GuiItem desc = new GuiItem(description.getFirst(), i -> i.setCancelled(true));
-        GuiItem joinItem = new GuiItem(join.getFirst(), i -> i.setCancelled(true));
-        GuiItem leaveItem = new GuiItem(leave.getFirst(), i -> i.setCancelled(true));
-        GuiItem inChatItem = new GuiItem(inChat.getFirst(), i -> i.setCancelled(true));
+        GuiItem joinItem = new GuiItem(join.getFirst(), joinOrLeaveEvent(true));
+        GuiItem leaveItem = new GuiItem(leave.getFirst(), joinOrLeaveEvent(false));
+        GuiItem inChatItem = new GuiItem(inChat.getFirst(), toggleFocusedChat());
 
         chatroomBar.addItem(desc, description.getSecond(), 0);
 
         PrivateTalk.getInstance().getLogger().info(description.getSecond() + " x --");
-
-
+        player.getChatrooms().forEach(c ->
+                PrivateTalk.getInstance().getLogger().info(c.getName() + " in this"));
         if (player.isMemberOf(chatroom)) {
             ChatRole role = chatroom.getMemberMap().get(player.getUuid());
             chatroomBar.addItem(leaveItem, leave.getSecond(), 0);
@@ -191,4 +202,58 @@ public class ChatroomPager extends PagingMenu {
         }
         return sorted;
     }
+
+    /**
+     * @param join true if joining, false if leaving
+     * @return
+     */
+    private Consumer<InventoryClickEvent> joinOrLeaveEvent(boolean join){
+
+        return inventoryClickEvent -> {
+            inventoryClickEvent.setCancelled(true);
+            Player clicker = (Player) inventoryClickEvent.getWhoClicked();
+            PrivatePlayer player = PrivatePlayer.getPlayer(clicker.getUniqueId());
+
+            if (join) {
+                // Currently not a member, so enter chatroom
+                PrivateTalk.getInstance().getLogger().info("Join!");
+                player.addChatroom(chatroom);
+                chatroom.addMember(new Pair<>(player.getUuid(), ChatRole.MEMBER));
+            } else {
+                // Leaving the chatroom
+                PrivateTalk.getInstance().getLogger().info("Leave!");
+
+                player.leaveChatroom(chatroom);
+                chatroom.removeMember(player.getUuid());
+
+            }
+            new ChatroomPager(chatroom, clicker).show();
+        };
+
+    }
+
+
+    /**
+     * @return consumer of inventory event of when player toggles focused chat mode
+     */
+    private Consumer<InventoryClickEvent> toggleFocusedChat() {
+        return inventoryClickEvent -> {
+          inventoryClickEvent.setCancelled(true);
+            Player clicker = (Player) inventoryClickEvent.getWhoClicked();
+            PrivatePlayer player = PrivatePlayer.getPlayer(clicker.getUniqueId());
+
+            if (player.getFocusedChatroom() == null ||
+            !player.getFocusedChatroom().equals(chatroom)) {
+                // Currently not focused on this chatroom, so set them to here
+                player.setFocusedChatroom(chatroom);
+            } else {
+                // Currently focused on this chatroom, so set it to null
+                player.setFocusedChatroom(null);
+            }
+            new ChatroomPager(chatroom, clicker).show();
+
+
+        };
+    }
 }
+

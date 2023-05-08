@@ -170,6 +170,11 @@ public class Chatroom {
         this.members.put(value.getFirst(), value.getSecond());
     }
 
+    public void removeMember(UUID key) {
+        this.members.remove(key);
+    }
+
+
     public UUID getOwner() {
         return owner;
     }
@@ -281,6 +286,14 @@ public class Chatroom {
         chatrooms.save();
     }
 
+    /**
+     * Chatroom names are unique so this is a good way for checking this.
+     * @param toCheck
+     * @return boolean if chatroom name are equal
+     */
+    public boolean equals(Chatroom toCheck) {
+        return this.name.equals(toCheck.getName());
+    }
 
     /**
      * @param name of chatroom to load
