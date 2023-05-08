@@ -310,5 +310,15 @@ public class InventoryHelper {
         return item.build();
     }
 
+    public static Pair<ItemStack, Integer> getItem(String path, OfflinePlayer owner) {
+        PrivateFile file = new PrivateFile(FileType.MENUS);
+        ItemStackUtils builder = new ItemStackUtils(Material.valueOf(file.getString(path+".material")), owner);
+        builder.setName(file.getString(path + ".display"));
+        List<String> lores = file.getConfiguration().getStringList(path + ".lore");
+        lores.forEach(s -> ChatColor.translateAlternateColorCodes('&', s));
+        builder.setLore(lores);
+        return new Pair<>(builder.build(), file.getConfiguration().getInt(path + ".slot"));
+
+    }
 
 }

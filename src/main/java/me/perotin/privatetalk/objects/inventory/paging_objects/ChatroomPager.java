@@ -1,12 +1,17 @@
 package me.perotin.privatetalk.objects.inventory.paging_objects;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
+import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
+import com.github.stefvanschie.inventoryframework.pane.Pane;
+import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.PrivateTalk;
+import me.perotin.privatetalk.objects.ChatRole;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.objects.inventory.PagingMenu;
+import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.ChatRoleComparator;
@@ -26,22 +31,82 @@ import java.util.stream.Collectors;
 
 /**
  * Paging object for all chatroom objects
+ *
+ * Different views of the chatroom that may occur
+ *
+ * 1: Owner is viewing the chatroom
+ * 2: Moderator is viewing the chatroom
+ * 3: Regular member is viewing the chatroom
+ * 4: Non-member is viewing the chatroom
+ *
+ * The difference for each of these views is the first row that is shown that is consistent on all pages.
  */
 public class ChatroomPager extends PagingMenu {
 
 
-    private Chatroom chatroom;
+    private Chatroom chatroom; /** Chatroom to show the paging for **/
+
     private PrivateFile messages;
+    private StaticPane chatroomBar; /** Items that appear directly beneath nav bar**/
     public ChatroomPager(Chatroom chatroom, Player viewer){
         super(viewer.getName()+"-chatroom", 6, viewer, new MainMenuPaging(viewer, PrivateTalk.getInstance()).getMenu());
         this.chatroom = chatroom;
          this.messages = new PrivateFile(FileType.MESSAGES);
+         this.chatroomBar = new StaticPane(2, 1, 5, 1);
+         chatroomBar.setPriority(Pane.Priority.HIGH);
         PrivateTalk.getInstance().getHelper().setSideDecorationSlots(getMenu());
         PrivateTalk.getInstance().getHelper().setNavigationBar(getMenu(), getViewer());
-         getPaginatedPane().populateWithGuiItems(generatePages());
+        setPaginatedPane();
+
+        getPaginatedPane().populateWithGuiItems(generatePages());
+        setChatroomBar();
+      //  getMenu().getPanes().forEach(p -> p.getItems().forEach(i ->
+              //  PrivateTalk.getInstance().getLogger().info(i.getItem().toString())));
+
 
     }
 
+    /**
+     * Sets the chatroom items beneath the navigation bar depending on relationship to chatroom
+     * TODO add rest of items (toggling saved, global) Make based on role as well
+     */
+    private void setChatroomBar() {
+        PrivatePlayer player = PrivatePlayer.getPlayer(getViewer().getUniqueId());
+        Pair<ItemStack, Integer> description = InventoryHelper.getItem("chatroom-bar.description", null);
+        Pair<ItemStack, Integer> join = InventoryHelper.getItem("chatroom-bar.join-chatroom", null);
+        Pair<ItemStack, Integer> leave = InventoryHelper.getItem("chatroom-bar.leave-chatroom", null);
+        Pair<ItemStack, Integer> inChat = InventoryHelper.getItem("chatroom-bar.in-chat", null);
+
+
+
+        GuiItem desc = new GuiItem(description.getFirst(), i -> i.setCancelled(true));
+        GuiItem joinItem = new GuiItem(join.getFirst(), i -> i.setCancelled(true));
+        GuiItem leaveItem = new GuiItem(leave.getFirst(), i -> i.setCancelled(true));
+        GuiItem inChatItem = new GuiItem(inChat.getFirst(), i -> i.setCancelled(true));
+
+        chatroomBar.addItem(desc, description.getSecond(), 0);
+
+        PrivateTalk.getInstance().getLogger().info(description.getSecond() + " x --");
+
+
+        if (player.isMemberOf(chatroom)) {
+            ChatRole role = chatroom.getMemberMap().get(player.getUuid());
+            chatroomBar.addItem(leaveItem, leave.getSecond(), 0);
+            chatroomBar.addItem(inChatItem, inChat.getSecond(), 0);
+
+        } else {
+            // Not a member
+            chatroomBar.addItem(joinItem, join.getSecond(), 0);
+
+
+        }
+        addPaneToGui(chatroomBar);
+
+    }
+
+    /**
+     * @return chatroom for the paging menu
+     */
     public Chatroom getChatroom() {
         return chatroom;
     }
@@ -71,6 +136,16 @@ public class ChatroomPager extends PagingMenu {
         };
     }
 
+    /**
+     * Overrides the parent PagingMenu paginated pane to start at y = 2 instead of y = 1
+     * Default PagingMenu begins at (1, 1). This may have to change however in general since the first row is used
+     * for other things as well.
+     */
+    @Override
+    protected void setPaginatedPane(){
+        pane = new PaginatedPane(1, 2, 7, 3);
+        getMenu().addPane(pane);
+    }
 
     /**
      * @return List of heads of every player in the chatroom

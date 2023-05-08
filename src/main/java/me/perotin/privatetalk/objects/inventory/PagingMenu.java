@@ -156,6 +156,13 @@ public abstract class PagingMenu {
         menu.addPane(pane);
     }
 
+    /**
+     * @param pane to add to Gui
+     */
+    public void addPane(Pane pane) {
+        menu.addPane(pane);
+    }
+
     public Gui getBackMenu() {
         return backMenu;
     }

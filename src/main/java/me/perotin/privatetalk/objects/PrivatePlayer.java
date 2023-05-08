@@ -94,6 +94,14 @@ public class PrivatePlayer {
     }
 
     /**
+     * @param chatroom to test
+     * @return whether is a member of
+     */
+    public boolean isMemberOf(Chatroom chatroom) {
+        return chatrooms.contains(chatroom);
+    }
+
+    /**
      * @return chatroom that the player is currently chatting in
      */
     public Chatroom getFocusedChatroom() {

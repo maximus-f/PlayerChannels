@@ -110,3 +110,25 @@ chatroom-items:
    status: "&eStatus: $status$"
    owner: "&eOwner: $owner$"
    members: "&eMembers (&f$member_count$&e)"
+
+
+# Chatroom Bar Items
+# The items that appear directly underneath the navigation bar when on a chatroom GUI
+# (Page where you can join, leave, a chatroom etc.
+chatroom-bar:
+   description:
+      display: "&e&lDescription: &f"
+      material: "OAK_SIGN"
+      slot: 0
+   join-chatroom:
+      display: "&a&lJoin"
+      material: "EMERALD_BLOCK"
+      slot: 1
+   leave-chatroom:
+      display: "&c7lLeave"
+      material: "REDSTONE_BLOCK"
+      slot: 1
+   in-chat:
+      display: "&e&lIn Chat: &f"
+      material: "NAME_TAG"
+      slot: 2
