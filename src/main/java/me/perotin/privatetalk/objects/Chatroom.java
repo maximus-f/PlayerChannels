@@ -269,11 +269,15 @@ public class Chatroom {
      */
     public void saveToFile(){
         PrivateFile chatrooms = new PrivateFile(FileType.CHATROOM);
+        HashMap<UUID, Integer> mappedToInt = new HashMap<>();
+        for (UUID uuid : getMemberMap().keySet()) {
+            mappedToInt.put(uuid, getMemberMap().get(uuid).getValue());
+        }
         chatrooms.set(name+".status", isPublic);
         chatrooms.set(name+".saved", isSaved);
         chatrooms.set(name+".owner", getOwner().toString());
         chatrooms.set(name+".description", description);
-        chatrooms.getConfiguration().createSection(name+".members", getMemberMap());
+        chatrooms.getConfiguration().createSection(name+".members", mappedToInt);
         chatrooms.save();
     }
 
@@ -293,8 +297,8 @@ public class Chatroom {
             ConfigurationSection sec = chatrooms.getConfiguration().getConfigurationSection(name + ".members");
             Map<UUID, ChatRole> loadedRoles = new HashMap<>();
             for (String key : sec.getKeys(false)) {
-                String role = sec.get(key).toString();
-                ChatRole roleO = ChatRole.valueOf(role);
+                int role = sec.getInt(key);
+                ChatRole roleO = ChatRole.getRole(role);
                 UUID uuid = UUID.fromString(key);
                 loadedRoles.put(uuid, roleO);
             }

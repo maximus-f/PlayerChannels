@@ -16,6 +16,6 @@ saved-material: "OAK_SIGN"
 
 quickchat-prefix: "@"
 
-chatroom-message-format: "&7[$chatroom$] $name$ ➤ $message$"
-mysql: false
+chatroom-message-format: "&7[&e$chatroom$&7] &e$role$ &7$name$ ➤ &e$message$"
+bungeecord: false
 

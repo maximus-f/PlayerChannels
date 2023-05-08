@@ -8,6 +8,7 @@ import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PreChatroom;
 import me.perotin.privatetalk.objects.PrivatePlayer;
+import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.Bukkit;
@@ -72,7 +73,7 @@ public class PrivateTalk extends JavaPlugin {
         this.helper = new InventoryHelper();
         QUICK_CHAT_PREFIX = getConfig().getString("quickchat-prefix");
         init();
-
+        loadChatrooms();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             players.add(PrivatePlayer.getPlayer(player.getUniqueId()));
@@ -84,6 +85,8 @@ public class PrivateTalk extends JavaPlugin {
     // Clean up collections
     @Override
     public void onDisable(){
+        // Save each to save chatroom to file, will worry about global chatrooms at another time
+        chatrooms.stream().filter(Chatroom::isSaved).forEach(Chatroom::saveToFile);
         this.players.clear();
         this.chatrooms.clear();
         this.helper = null;
@@ -146,5 +149,17 @@ public class PrivateTalk extends JavaPlugin {
         }
     }
 
+    /**
+     * Load all chatrooms stored in chatrooms.yml
+     */
+    private void loadChatrooms() {
+        PrivateFile chatroomsFile = new PrivateFile(FileType.CHATROOM);
+        for (String key : chatroomsFile.getConfiguration().getKeys(false)) {
+            // These should be the names
+            Chatroom toLoad = Chatroom.loadChatroom(key);
+            getLogger().info("Loaded " + toLoad.getName() + "!");
+            chatrooms.add(toLoad);
+        }
+    }
 
 }
