@@ -2,12 +2,14 @@ package me.perotin.privatetalk.objects.inventory.paging_objects;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
+import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.inventory.PagingMenu;
 import me.perotin.privatetalk.objects.inventory.actions.ChatroomItemStackAction;
+import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import org.bukkit.Material;
@@ -28,12 +30,18 @@ public class MainMenuPaging extends PagingMenu {
 
     private PrivateFile messages;
     private PrivateTalk plugin;
+
+    private StaticPane bottomRow; // Bottom row to contain button to view all players, join a random chatroom, leave all current chatrooms etc.
     public MainMenuPaging(Player viewer, PrivateTalk plugin){
         super(viewer.getName()+"-main", 6, viewer, null);
         this.messages = new PrivateFile(FileType.MESSAGES);
         this.plugin = plugin;
+        this.bottomRow = new StaticPane(2, 5, 3, 1);
+        this.bottomRow.setPriority(Pane.Priority.HIGH);
         setMainPage();
         getPaginatedPane().populateWithGuiItems(generatePages());
+        setBottomRow();
+        getMenu().addPane(bottomRow);
 
 
 
@@ -64,6 +72,16 @@ public class MainMenuPaging extends PagingMenu {
         helper.setNavigationBar(getMenu(), getViewer());
         helper.setSideDecorationSlots(getMenu());
 
+    }
+
+    private void setBottomRow(){
+        Pair<ItemStack, Integer> viewAllPlayer = InventoryHelper.getItem("main-menu.bottom-row.view-players", null);
+        GuiItem viewAllPlayersItem = new GuiItem(viewAllPlayer.getFirst(), i -> {
+            i.setCancelled(true);
+            new PlayerListPager((Player) i.getWhoClicked()).show();
+        });
+
+        bottomRow.addItem(viewAllPlayersItem, viewAllPlayer.getSecond(), 5);
     }
 
 

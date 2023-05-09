@@ -132,3 +132,12 @@ chatroom-bar:
       display: "&e&lIn Chat: &f"
       material: "NAME_TAG"
       slot: 2
+
+# Main Menu
+# Menu that appears when you do /privatetalk
+main-menu:
+   bottom-row:
+      view-players:
+         material: "OAK_SIGN"
+         display: "&eView all players"
+         slot: 0

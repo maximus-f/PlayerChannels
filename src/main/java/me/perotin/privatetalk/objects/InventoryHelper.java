@@ -247,9 +247,11 @@ public class InventoryHelper {
         PrivateFile file = new PrivateFile(FileType.MENUS);
         ItemStackUtils builder = new ItemStackUtils(material, owner);
         builder.setName(file.getString(path + ".display"));
-        List<String> lores = file.getConfiguration().getStringList(path + ".lore");
-        lores.forEach(s -> ChatColor.translateAlternateColorCodes('&', s));
-        builder.setLore(lores);
+        if (file.getConfiguration().isSet(path + ".lore")) {
+            List<String> lores = file.getConfiguration().getStringList(path + ".lore");
+            lores.forEach(s -> ChatColor.translateAlternateColorCodes('&', s));
+            builder.setLore(lores);
+        }
         return new Pair<>(builder.build(), file.getConfiguration().getInt(path + ".slot"));
 
     }
@@ -310,6 +312,12 @@ public class InventoryHelper {
         return item.build();
     }
 
+    /**
+     *
+     * @param path to item in the menus.yml to grab
+     * @param owner if a skull set owner here
+     * @return item generated from yml
+     */
     public static Pair<ItemStack, Integer> getItem(String path, OfflinePlayer owner) {
         PrivateFile file = new PrivateFile(FileType.MENUS);
         ItemStackUtils builder = new ItemStackUtils(Material.valueOf(file.getString(path+".material")), owner);
