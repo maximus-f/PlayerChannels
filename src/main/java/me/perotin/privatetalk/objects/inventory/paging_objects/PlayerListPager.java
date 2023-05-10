@@ -24,6 +24,7 @@ public class PlayerListPager extends PagingMenu {
         super("PlayerListPager", 6, viewer, new MainMenuPaging(viewer, PrivateTalk.getInstance()).getMenu());
         setPaginatedPane();
         getPaginatedPane().populateWithGuiItems(generatePages());
+        setPlayerListPage();
 
 
     }
@@ -48,7 +49,7 @@ public class PlayerListPager extends PagingMenu {
         return heads;
     }
 
-    private void setMainPage() {
+    private void setPlayerListPage() {
         InventoryHelper helper = PrivateTalk.getInstance().getHelper();
         helper.setNavigationBar(getMenu(), getViewer());
         helper.setSideDecorationSlots(getMenu());
@@ -62,17 +63,19 @@ public class PlayerListPager extends PagingMenu {
         PrivateTalk plugin = PrivateTalk.getInstance();
         PrivateFile messages = new PrivateFile(FileType.MESSAGES);
         for(PrivatePlayer privatePlayer: plugin.getPlayers()){
+           OfflinePlayer owner = Bukkit.getOfflinePlayer(privatePlayer.getUuid());
             if(Bukkit.getPlayer(privatePlayer.getUuid()) != null){
                 // online
                 Player player = Bukkit.getPlayer(privatePlayer.getUuid());
                 ItemStackUtils head = new ItemStackUtils(Material.PLAYER_HEAD);
-                head.setName(messages.getString("chatroom-head-display").replace("$name$", player.getName()));
-
+                head.setName(messages.getString("chatroom-head-display").replace("$player-name$", player.getName()));
+                head.setOwner(owner);
                 heads.put(head.build(), privatePlayer);
             } else {
                 OfflinePlayer player = Bukkit.getOfflinePlayer(privatePlayer.getUuid());
                 ItemStackUtils head = new ItemStackUtils(Material.PLAYER_HEAD);
-                head.setName(messages.getString("chatroom-head-display").replace("$name$", player.getName()));
+                head.setName(messages.getString("chatroom-head-display").replace("$player-name$", player.getName()));
+                head.setOwner(owner);
                 heads.put(head.build(), privatePlayer);
 
             }

@@ -11,6 +11,7 @@ import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.objects.inventory.PagingMenu;
+import me.perotin.privatetalk.objects.inventory.static_inventories.ChatroomModeratorMenu;
 import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
@@ -128,7 +129,7 @@ public class ChatroomPager extends PagingMenu {
     protected List<GuiItem> generatePages() {
         List<GuiItem> items = new ArrayList<>();
         for(ItemStack i : getHeads().keySet()) {
-            items.add(new GuiItem(i, goToProfile(getHeads().get(i))));
+            items.add(new GuiItem(i, viewModMenuFor(getHeads().get(i))));
         }
         return items;
     }
@@ -136,14 +137,16 @@ public class ChatroomPager extends PagingMenu {
 
 
     /**
-     *
+     * TODO
+     * This needs to be changed to not show their profile but show options for moderator actions if permission suffices
+     * i.e. moderator or above
      * @param player to go to profile
      * @return consumer action to go to param player's profile page
      */
-    private Consumer<InventoryClickEvent> goToProfile(PrivatePlayer player){
+    private Consumer<InventoryClickEvent> viewModMenuFor(PrivatePlayer player){
         return (InventoryClickEvent event) -> {
             event.setCancelled(true);
-            player.showProfileTo(getViewer());
+            new ChatroomModeratorMenu(getViewer(), player, chatroom).getMenu().show(getViewer());
         };
     }
 
@@ -231,6 +234,8 @@ public class ChatroomPager extends PagingMenu {
         };
 
     }
+
+
 
 
     /**

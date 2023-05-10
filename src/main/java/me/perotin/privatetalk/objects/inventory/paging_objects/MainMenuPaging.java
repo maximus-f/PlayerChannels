@@ -31,13 +31,13 @@ public class MainMenuPaging extends PagingMenu {
     private PrivateFile messages;
     private PrivateTalk plugin;
 
-    private StaticPane bottomRow; // Bottom row to contain button to view all players, join a random chatroom, leave all current chatrooms etc.
+    private final StaticPane bottomRow; // Bottom row to contain button to view all players, join a random chatroom, leave all current chatrooms etc.
     public MainMenuPaging(Player viewer, PrivateTalk plugin){
         super(viewer.getName()+"-main", 6, viewer, null);
         this.messages = new PrivateFile(FileType.MESSAGES);
         this.plugin = plugin;
-        this.bottomRow = new StaticPane(2, 5, 3, 1);
-        this.bottomRow.setPriority(Pane.Priority.HIGH);
+        this.bottomRow = new StaticPane(3, 5, 3, 1);
+        this.bottomRow.setPriority(Pane.Priority.HIGHEST);
         setMainPage();
         getPaginatedPane().populateWithGuiItems(generatePages());
         setBottomRow();
@@ -81,7 +81,7 @@ public class MainMenuPaging extends PagingMenu {
             new PlayerListPager((Player) i.getWhoClicked()).show();
         });
 
-        bottomRow.addItem(viewAllPlayersItem, viewAllPlayer.getSecond(), 5);
+        bottomRow.addItem(viewAllPlayersItem, viewAllPlayer.getSecond(), 0);
     }
 
 

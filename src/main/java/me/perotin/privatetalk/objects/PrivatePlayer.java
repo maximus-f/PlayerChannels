@@ -28,6 +28,8 @@ public class PrivatePlayer {
 
     private List<Chatroom> invites; // Represent chatrooms that have invited this player
 
+    private boolean isAcceptingInvites; // Toggle for if the player is accepting invites or not
+
 
     public PrivatePlayer(UUID uuid, String name) {
         this.uuid = uuid;
@@ -117,6 +119,35 @@ public class PrivatePlayer {
         return focusedChatroom;
     }
 
+    /**
+     * @return list of chatrooms that have invited this player
+     */
+    public List<Chatroom> getInvites() {
+        return invites;
+    }
+
+    /**
+     * @param invite chatroom to add
+     */
+    public void addInvite(Chatroom invite) {
+        this.invites.add(invite);
+    }
+
+    /**
+     *
+     * @return if they're accepting invites or not
+     */
+    public boolean isAcceptingInvites() {
+        return isAcceptingInvites;
+    }
+
+    /**
+     *
+     * @param acceptingInvites toggle whether they are accepting invites or not
+     */
+    public void setAcceptingInvites(boolean acceptingInvites) {
+        isAcceptingInvites = acceptingInvites;
+    }
     /**
      *
      * @param sets the playeres current focused chatroom

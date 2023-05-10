@@ -56,8 +56,10 @@ nav-bar:
 paging-nav-bar:
    deco-item:
       slots:
+         - "1"
          - "2"
          - "3"
+         - "4"
          - "5"
          - "6"
          - "7"
@@ -132,6 +134,22 @@ chatroom-bar:
       display: "&e&lIn Chat: &f"
       material: "NAME_TAG"
       slot: 2
+
+# Chatroom Moderator actions
+# These are the items that moderators/owners will see when trying to punish a member
+chatroom-mod:
+   mute-item:
+      display: "&cMute "
+      material: "REDSTONE_BLOCK"
+      slot: 0
+   kick-item:
+      display: "&cKick "
+      material: "REDSTONE_BLOCK"
+      slot: 2
+   ban-item:
+      display: "&cBan "
+      material: "REDSTONE_BLOCK"
+      slot: 4
 
 # Main Menu
 # Menu that appears when you do /privatetalk
