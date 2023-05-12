@@ -91,6 +91,9 @@ public class PrivatePlayer {
      */
     public void leaveChatroom(Chatroom chatroom) {
         chatrooms.remove(chatroom);
+        if (focusedChatroom != null && focusedChatroom.equals(chatroom)){
+            setFocusedChatroom(null);
+        }
     }
 
     /**

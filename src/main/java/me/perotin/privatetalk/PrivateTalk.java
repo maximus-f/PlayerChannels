@@ -87,6 +87,9 @@ public class PrivateTalk extends JavaPlugin {
     public void onDisable(){
         // Save each to save chatroom to file, will worry about global chatrooms at another time
         chatrooms.stream().filter(Chatroom::isSaved).forEach(Chatroom::saveToFile);
+
+        // Save each player to file
+        players.forEach(PrivatePlayer::savePlayer);
         this.players.clear();
         this.chatrooms.clear();
         this.helper = null;

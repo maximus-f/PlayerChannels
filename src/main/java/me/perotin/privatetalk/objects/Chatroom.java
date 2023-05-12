@@ -37,6 +37,9 @@ public class Chatroom {
     // true if saved, false if not
     private boolean isSaved;
     private List<UUID> bannedMembers;
+
+    private List<UUID> mutedMembers;
+
     private HashMap<UUID, String> nickNames;
     private PrivateFile messages;
     private ItemStack display;
@@ -58,6 +61,8 @@ public class Chatroom {
         this.messages = new PrivateFile(MESSAGES);
         this.isSaved = isSaved;
         this.display = generateItem();
+        this.mutedMembers = new ArrayList<>();
+        this.bannedMembers = new ArrayList<>();
     }
 
     /**
@@ -90,6 +95,9 @@ public class Chatroom {
         return members.keySet();
     }
 
+    public boolean isMuted(UUID uuid) {
+        return mutedMembers.contains(uuid);
+    }
     /**
      * @return List of all online players
      */
@@ -195,10 +203,10 @@ public class Chatroom {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
+    public boolean isBanned(UUID uuid){
+        return bannedMembers.contains(uuid);
+    }
     public boolean isPublic() {
         return isPublic;
     }
@@ -237,6 +245,30 @@ public class Chatroom {
         members.forEach(member -> member.sendMessage(chatroomFormat));
     }
 
+    public List<UUID> getMutedMembers() {
+        return mutedMembers;
+    }
+
+    /**
+     * @param uuid of player to mute within the chatrrom
+     */
+    public void mute(UUID uuid) {
+        mutedMembers.add(uuid);
+    }
+
+    /**
+     * @param uuid of player to mute within the chatrrom
+     */
+    public void unmute(UUID uuid) {
+        mutedMembers.remove(uuid);
+    }
+    /**
+     * @param uuid to ban
+     */
+    public void ban(UUID uuid) {
+        bannedMembers.add(uuid);
+        removeMember(uuid);
+    }
     /**
      *Sets the nickname map
      */

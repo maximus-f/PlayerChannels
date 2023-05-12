@@ -36,3 +36,6 @@ set-name-message: "&eType a one-word name for a chatroom, or type &c'$cancel$'&e
 set-description-message: "&eType the description for this chatroom, or type &c'$cancel$'&e to cancel."
 name-missing: "&cYou must set a name!"
 description-missing: "&cYou must set a description!"
+
+# Messages related to chatrooms
+muted-message: "&e7[&e$chatroom$&7] &cYou are currently muted in this chatroom!"

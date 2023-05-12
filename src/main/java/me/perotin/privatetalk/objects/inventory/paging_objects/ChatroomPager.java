@@ -17,6 +17,7 @@ import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.ChatRoleComparator;
 import me.perotin.privatetalk.utils.ItemStackUtils;
+import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -219,7 +220,13 @@ public class ChatroomPager extends PagingMenu {
 
             if (join) {
                 // Currently not a member, so enter chatroom
-                PrivateTalk.getInstance().getLogger().info("Join!");
+                // Need to check if banned
+                if (chatroom.isBanned(player.getUuid())){
+                    // TODO figure out way to send messages that is smart and sensible. Through changing
+                    // menu title again probably but in a smart way
+                    //PrivateUtils.sendErrorMessage("You are banned!");
+                    return;
+                }
                 player.addChatroom(chatroom);
                 chatroom.addMember(new Pair<>(player.getUuid(), ChatRole.MEMBER));
             } else {

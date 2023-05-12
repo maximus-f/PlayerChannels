@@ -142,6 +142,10 @@ chatroom-mod:
       display: "&cMute "
       material: "REDSTONE_BLOCK"
       slot: 0
+   unmute-item:
+      display: "&aUnmute "
+      material: "EMERALD_BLOCK"
+      slot: 0
    kick-item:
       display: "&cKick "
       material: "REDSTONE_BLOCK"
