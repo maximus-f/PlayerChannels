@@ -2,7 +2,11 @@ package me.perotin.privatetalk.objects.inventory.actions;
 
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.PrivatePlayer;
+import me.perotin.privatetalk.objects.inventory.static_inventories.ChatroomModeratorMenu;
+import me.perotin.privatetalk.utils.PrivateUtils;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.InventoryView;
 
 import java.util.function.Consumer;
 
@@ -29,11 +33,16 @@ public class ChatroomModeratorAction {
     public static Consumer<InventoryClickEvent> muteMember(Chatroom chat, PrivatePlayer player){
         return inventoryClickEvent -> {
             inventoryClickEvent.setCancelled(true);
+            Player mod = (Player) inventoryClickEvent.getWhoClicked();
             if (!chat.isMuted(player.getUuid())) {
                 chat.mute(player.getUuid());
+                    PrivateUtils.sendMenuMessage("You have muted " + player.getName() +"!", mod,
+                         new ChatroomModeratorMenu(mod, player, chat));
             } else {
                 // unmute
                 chat.unmute(player.getUuid());
+                PrivateUtils.sendMenuMessage("You have unmuted " + player.getName() +"!", mod,
+                 new ChatroomModeratorMenu(mod, player, chat));
             }
 
         };

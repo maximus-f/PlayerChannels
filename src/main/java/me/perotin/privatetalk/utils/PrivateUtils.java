@@ -2,10 +2,15 @@ package me.perotin.privatetalk.utils;
 
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.Chatroom;
+import me.perotin.privatetalk.objects.inventory.Menu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
 
@@ -58,7 +63,19 @@ public class PrivateUtils {
     /**
      * @param message of error
      */
-    public static void sendErrorMessage(String message){
-
+    public static void sendMenuMessage(String message, Player player, Menu nextMenu){
+        InventoryView menu = player.getOpenInventory();
+        player.closeInventory();
+        player.sendTitle(message, "", 0, 2*20, 0);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (nextMenu != null) {
+                    nextMenu.show(player);
+                } else {
+                    player.openInventory(menu);
+                }
+            }
+        }.runTaskLater(PrivateTalk.getInstance(), 2*20);
     }
 }

@@ -1,7 +1,7 @@
 package me.perotin.privatetalk.objects.inventory.paging_objects;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
-import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
+import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
@@ -10,14 +10,12 @@ import me.perotin.privatetalk.objects.ChatRole;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PrivatePlayer;
-import me.perotin.privatetalk.objects.inventory.PagingMenu;
 import me.perotin.privatetalk.objects.inventory.static_inventories.ChatroomModeratorMenu;
 import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.ChatRoleComparator;
 import me.perotin.privatetalk.utils.ItemStackUtils;
-import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -100,8 +98,7 @@ public class ChatroomPager extends PagingMenu {
         chatroomBar.addItem(desc, description.getSecond(), 0);
 
         PrivateTalk.getInstance().getLogger().info(description.getSecond() + " x --");
-        player.getChatrooms().forEach(c ->
-                PrivateTalk.getInstance().getLogger().info(c.getName() + " in this"));
+
         if (player.isMemberOf(chatroom)) {
             ChatRole role = chatroom.getMemberMap().get(player.getUuid());
             chatroomBar.addItem(leaveItem, leave.getSecond(), 0);

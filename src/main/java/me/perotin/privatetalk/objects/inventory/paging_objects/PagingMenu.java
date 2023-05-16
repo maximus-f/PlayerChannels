@@ -1,4 +1,4 @@
-package me.perotin.privatetalk.objects.inventory;
+package me.perotin.privatetalk.objects.inventory.paging_objects;
 
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
@@ -9,6 +9,7 @@ import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.InventoryHelper;
+import me.perotin.privatetalk.objects.inventory.Menu;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.ItemStackUtils;
@@ -26,10 +27,9 @@ import java.util.stream.Collectors;
 
 
 /** Base class for all paging menus in PrivateTalk, wrapper for PaginatedPane object primarily **/
-public abstract class PagingMenu {
+public abstract class PagingMenu extends Menu {
 
     protected PaginatedPane pane;
-    private ChestGui menu;
     private Player viewer;
     /** Used in the title of every menu, for identifying what type of paging menu it is **/
     private final String identifier;
@@ -42,14 +42,14 @@ public abstract class PagingMenu {
     private StaticPane pagingNavBar;
 
     public PagingMenu(String identifier, int rows, Player viewer, Gui backMenu){
+        super(new ChestGui(rows, identifier, PrivateTalk.getInstance()));
         this.identifier = identifier;
-        this.menu = new ChestGui(rows, identifier);
         this.backMenu = backMenu;
         this.viewer = viewer;
         this.pagingNavBar = new StaticPane(0, 5, 9, 1);
 
         setPaginatedPane();
-        setPagingNavigation(menu); // Refactor this to main menu perhaps
+        setPagingNavigation(getMenu()); // Refactor this to main menu perhaps
     }
     /**
      * Sets the current page to + 1 if within bounds
@@ -57,8 +57,8 @@ public abstract class PagingMenu {
     public void next(){
         if (pane.getPages() > pane.getPage() + 1) {
             pane.setPage(pane.getPage() + 1);
-            menu.setTitle(identifier + " Page: " + pane.getPage() + 1);
-            menu.update();
+            getMenu().setTitle(identifier + " Page: " + pane.getPage() + 1);
+            getMenu().update();
         }
 
     }
@@ -69,9 +69,9 @@ public abstract class PagingMenu {
     public void previous(Gui backMenu){
         if (pane.getPage() > 0) {
             pane.setPage(pane.getPage() - 1);
-            menu.setTitle(identifier + " Page: " + pane.getPage() + 1);
+            getMenu().setTitle(identifier + " Page: " + pane.getPage() + 1);
 
-            menu.update();
+            getMenu().update();
         } else {
             Bukkit.broadcastMessage("1");
             if (backMenu != null) {
@@ -135,12 +135,10 @@ public abstract class PagingMenu {
         return this.pane;
     }
 
-    public ChestGui getMenu(){
-        return this.menu;
-    }
+
 
     public void addPaneToGui(Pane pane) {
-        menu.addPane(pane);
+        getMenu().addPane(pane);
     }
 
     /**
@@ -153,14 +151,14 @@ public abstract class PagingMenu {
     protected void setPaginatedPane(){
         this.pane = new PaginatedPane(1, 1, 7, 4);
 
-        menu.addPane(pane);
+        getMenu().addPane(pane);
     }
 
     /**
      * @param pane to add to Gui
      */
     public void addPane(Pane pane) {
-        menu.addPane(pane);
+        getMenu().addPane(pane);
     }
 
     public Gui getBackMenu() {
