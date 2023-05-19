@@ -30,17 +30,21 @@ public class PrivatePlayer {
 
     private boolean isAcceptingInvites; // Toggle for if the player is accepting invites or not
 
+    private String status;
 
     public PrivatePlayer(UUID uuid, String name) {
         this.uuid = uuid;
         this.name = name;
         this.chatrooms = new ArrayList<>();
+        this.status = "";
     }
 
     public PrivatePlayer(UUID uuid, String name, List<Chatroom> chatrooms) {
         this(uuid, name);
         this.chatrooms = chatrooms;
+        this.status = "";
     }
+
 
     /**
      * @param player to show player profile to
@@ -157,6 +161,15 @@ public class PrivatePlayer {
      */
     public void setFocusedChatroom(Chatroom focusedChatroom) {
         this.focusedChatroom = focusedChatroom;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     /**

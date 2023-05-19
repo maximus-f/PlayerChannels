@@ -3,6 +3,7 @@ package me.perotin.privatetalk;
 import me.perotin.privatetalk.commands.PrivateTalkCommand;
 import me.perotin.privatetalk.events.chat_events.ChatroomChatEvent;
 import me.perotin.privatetalk.events.chat_events.CreateChatroomInputEvent;
+import me.perotin.privatetalk.events.chat_events.StatusInputEvent;
 import me.perotin.privatetalk.events.join.PrivatePlayerJoinEvent;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.InventoryHelper;
@@ -99,6 +100,7 @@ public class PrivateTalk extends JavaPlugin {
     private void init(){
         Bukkit.getPluginManager().registerEvents(new CreateChatroomInputEvent(this), this);
         Bukkit.getPluginManager().registerEvents(new ChatroomChatEvent(this), this);
+        Bukkit.getPluginManager().registerEvents(new StatusInputEvent(), this);
 
         Bukkit.getPluginManager().registerEvents(new PrivatePlayerJoinEvent(this), this);
 

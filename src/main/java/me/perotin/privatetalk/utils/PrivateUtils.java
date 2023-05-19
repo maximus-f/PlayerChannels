@@ -1,8 +1,10 @@
 package me.perotin.privatetalk.utils;
 
+import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.inventory.Menu;
+import me.perotin.privatetalk.objects.inventory.paging_objects.MainMenuPaging;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -10,6 +12,8 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
@@ -77,5 +81,18 @@ public class PrivateUtils {
                 }
             }
         }.runTaskLater(PrivateTalk.getInstance(), 2*20);
+    }
+
+
+    public static ItemStack appendToDisplayName(ItemStack item, String append){
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(meta.getDisplayName() + " " + append);
+        item.setItemMeta(meta);
+        return item;
+
+    }
+
+    public static Gui getMainMenu(Player viewer){
+        return new MainMenuPaging(viewer, PrivateTalk.getInstance()).getMenu();
     }
 }

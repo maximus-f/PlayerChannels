@@ -163,3 +163,21 @@ main-menu:
          material: "OAK_SIGN"
          display: "&eView all players"
          slot: 0
+
+# Player Profile Menu
+# Menu that appears when a player is selected from the player list menu or a
+# chatroom where the clicker is not a moderator or owner or if a player clicks their own profile
+player-profile-menu:
+   player-controls:
+      player-status:
+         material: "OAK_SIGN"
+         display: "&e&lStatus: "
+         slot: 0
+      toggle-invite-status:
+         material: "BOOKSHELF"
+         display: "&e&lToggle invites: "
+         slot: 2
+      invite-player:
+         material: "BOOK"
+         display: "&e&lInvite "
+         slot: 2
