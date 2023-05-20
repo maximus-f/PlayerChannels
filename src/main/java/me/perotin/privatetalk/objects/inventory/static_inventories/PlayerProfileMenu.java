@@ -2,6 +2,8 @@ package me.perotin.privatetalk.objects.inventory.static_inventories;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
+import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
+import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.Chatroom;
@@ -14,7 +16,9 @@ import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.PrivateUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -34,12 +38,19 @@ public class PlayerProfileMenu extends PagingMenu {
         helper = PrivateTalk.getInstance().getHelper();
         helper.setSideDecorationSlots(getMenu());
         helper.setNavigationBar(getMenu(), viewer);
+        this.player = PrivatePlayer.getPlayer(viewer.getUniqueId());
         helper.setPagingNavBar(getMenu());
         playerControlPane = new StaticPane(3, 1, 3, 1);
+        playerControlPane.setPriority(Pane.Priority.HIGHEST);
         pane.setY(2); // Change from 1 to 2 so we can have the row for the control pane
         pane.setHeight(3);
+        getMenu().getPanes().removeIf(pane -> pane instanceof PaginatedPane);
+        getMenu().addPane(pane);
         getPaginatedPane().populateWithGuiItems(generatePages());
         setPlayerControlPane();
+        addPane(playerControlPane);
+
+
 
     }
 
@@ -69,22 +80,21 @@ public class PlayerProfileMenu extends PagingMenu {
         ItemStack invitePlayer = invites.getFirst();
 
         GuiItem invPlayerItem = new GuiItem(invitePlayer, PlayerProfileAction.invitePlayerToChatroom(viewer, player));
-        playerControlPane.addItem(statusItem, status.getSecond(), 1);
+        playerControlPane.addItem(statusItem, status.getSecond(), 0);
 
         // Need to check if the person viewing is themselves
         if (getViewer().getName().equals(player.getName())) {
             // viewing themselves so add toggle invites option and set
             // actions to be able to change and toggle
-            playerControlPane.addItem(toggleInvitesItem, toggleInvites.getSecond(), 1);
+            playerControlPane.addItem(toggleInvitesItem, toggleInvites.getSecond(), 0);
 
         } else {
             // different person. add invite player option but be sure to check
             // that the viewer is in a chatroom that they are able to invite the player
             // to
-            playerControlPane.addItem(invPlayerItem, toggleInvites.getSecond(), 1);
+            playerControlPane.addItem(invPlayerItem, toggleInvites.getSecond(), 0);
 
         }
-        getMenu().addPane(playerControlPane);
 
 
 
@@ -96,5 +106,13 @@ public class PlayerProfileMenu extends PagingMenu {
         else if(o.getType() == saved) return 1;
         else if(o1.getType() == saved) return -1;
         return 0;
+    }
+
+    public void showProfile(HumanEntity entity){
+        getMenu().getPanes().get(getMenu().getPanes().size() - 1).getItems().forEach(
+                i->Bukkit.getLogger().info(i.getItem().toString())
+        );
+        getMenu().show(entity);
+
     }
 }

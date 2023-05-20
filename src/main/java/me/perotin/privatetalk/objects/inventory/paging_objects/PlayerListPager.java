@@ -4,9 +4,11 @@ import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PrivatePlayer;
+import me.perotin.privatetalk.objects.inventory.static_inventories.PlayerProfileMenu;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.ItemStackUtils;
+import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -40,7 +42,9 @@ public class PlayerListPager extends PagingMenu {
             PrivatePlayer correspondingPlayer = headsMap.get(i);
             heads.add(new GuiItem(i, inventoryClickEvent -> {
                 inventoryClickEvent.setCancelled(true);
-                correspondingPlayer.showProfileTo((Player) inventoryClickEvent.getWhoClicked());
+                Player clicker = (Player) inventoryClickEvent.getWhoClicked();
+                PrivatePlayer privatePlayer = PrivatePlayer.getPlayer(clicker.getUniqueId());
+                new PlayerProfileMenu((Player) inventoryClickEvent.getWhoClicked(), privatePlayer, PrivateUtils.getMainMenu(clicker)).showProfile(clicker);
 
             }));
         }

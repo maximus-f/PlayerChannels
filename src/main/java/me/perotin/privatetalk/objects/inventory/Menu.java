@@ -23,11 +23,8 @@ public class Menu {
 
     public ChestGui getMenu() {
         if (menu == null){
-            Bukkit.getLogger().info("getMenu() is null somehow still!!");
             return new ChestGui(3, "Boo", PrivateTalk.getInstance());
         } else {
-            Bukkit.getLogger().info("getMenu() is not null!");
-
             return menu;
         }
     }

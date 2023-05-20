@@ -39,10 +39,10 @@ public class PrivatePlayer {
         this.status = "";
     }
 
-    public PrivatePlayer(UUID uuid, String name, List<Chatroom> chatrooms) {
+    public PrivatePlayer(UUID uuid, String name, String status, List<Chatroom> chatrooms) {
         this(uuid, name);
         this.chatrooms = chatrooms;
-        this.status = "";
+        this.status = status;
     }
 
 
@@ -106,7 +106,10 @@ public class PrivatePlayer {
     public void savePlayer(){
         PrivateFile playerFile = new PrivateFile(FileType.PLAYERS);
         playerFile.set(uuid.toString()+".name", name);
-        playerFile.set(uuid.toString()+".chatrooms", getChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList()));
+        playerFile.set(uuid+".status", status);
+
+        playerFile.set(uuid+".chatrooms", getChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList()));
+
         playerFile.save();
 
     }
@@ -186,12 +189,13 @@ public class PrivatePlayer {
         }
         PrivateFile playerFile = new PrivateFile(FileType.PLAYERS);
         if (playerFile.getConfiguration().isSet(uuid.toString()+".name")) {
-            String name = playerFile.getString(uuid.toString() + ".name");
+            String name = playerFile.getString(uuid + ".name");
+            String status = playerFile.getString(uuid + ".status");
             // do some checking with chatrooms that aren't loaded
             List<Chatroom> chatrooms = playerFile.getConfiguration().getStringList(uuid.toString() + ".chatrooms")
                     .stream().map(PrivateUtils::getChatroomWith).collect(Collectors.toList());
 
-            return new PrivatePlayer(uuid, name, chatrooms);
+            return new PrivatePlayer(uuid, name, status, chatrooms);
         } else {
             // New player so create new object
             return new PrivatePlayer(uuid, Bukkit.getPlayer(uuid).getName());
