@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 
@@ -23,7 +24,13 @@ public class StatusInputEvent implements Listener {
             PrivatePlayer player = PrivatePlayer.getPlayer(chatter.getUniqueId());
             player.setStatus(event.getMessage());
             enteringStatus.remove(chatter);
-            new PlayerProfileMenu(chatter, player, new MainMenuPaging(chatter, PrivateTalk.getInstance()).getMenu()).show();
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    new PlayerProfileMenu(chatter, player, new MainMenuPaging(chatter, PrivateTalk.getInstance()).getMenu()).show();
+
+                }
+            }.runTask(PrivateTalk.getInstance());
         }
 
     }
