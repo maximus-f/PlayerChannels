@@ -127,7 +127,7 @@ chatroom-bar:
       material: "EMERALD_BLOCK"
       slot: 1
    leave-chatroom:
-      display: "&c7lLeave"
+      display: "&c&lLeave"
       material: "REDSTONE_BLOCK"
       slot: 1
    in-chat:

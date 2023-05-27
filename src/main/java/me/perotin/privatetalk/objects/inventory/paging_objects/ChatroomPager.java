@@ -170,16 +170,18 @@ public class ChatroomPager extends PagingMenu {
                 // online
                 Player player = Bukkit.getPlayer(uuid);
                 ItemStackUtils head = new ItemStackUtils(Material.PLAYER_HEAD);
-                head.setName(messages.getString("chatroom-head-display").replace("$name$", player.getName()));
+                head.setName(messages.getString("chatroom-head-display").replace("$player-name$", player.getName()));
                 head.setLore(messages.getString("chatroom-head-lore1")
                 .replace("$connected$", messages.getString("online")).replace("$role$", chatroom.getRole(uuid)));
+                head.setOwner(player);
                 heads.put(head.build(), PrivatePlayer.getPlayer(uuid));
             } else {
                 OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
                 ItemStackUtils head = new ItemStackUtils(Material.PLAYER_HEAD);
-                head.setName(messages.getString("chatroom-head-display").replace("$name$", player.getName()));
+                head.setName(messages.getString("chatroom-head-display").replace("$player-name$", player.getName()));
                 head.setLore(messages.getString("chatroom-head-lore1")
                         .replace("$connected$", messages.getString("offline")).replace("$role$", chatroom.getRole(uuid)));
+                head.setOwner(player);
                 heads.put(head.build(), PrivatePlayer.getPlayer(uuid));
 
             }

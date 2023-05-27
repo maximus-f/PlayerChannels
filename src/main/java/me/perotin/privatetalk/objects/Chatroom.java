@@ -290,15 +290,19 @@ public class Chatroom {
      * @return string version of their role, being either member, moderator, or owner
      */
     public String getRole(UUID member){
+        String role = "";
         if(isInChatroom(member)){
             ChatRole value = getMemberMap().get(member);
             switch(value){
-                case OWNER: messages.getString("owner");
-                case MODERATOR: messages.getString("moderator");
-                case MEMBER: messages.getString("member");
+                case OWNER: role = messages.getString("owner");
+                break;
+                case MODERATOR: role = messages.getString("moderator");
+                break;
+                case MEMBER: role = messages.getString("member");
+                break;
             }
         }
-        return "";
+        return role;
     }
 
     /**

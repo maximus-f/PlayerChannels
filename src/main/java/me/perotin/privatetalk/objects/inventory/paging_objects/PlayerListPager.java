@@ -44,7 +44,8 @@ public class PlayerListPager extends PagingMenu {
                 inventoryClickEvent.setCancelled(true);
                 Player clicker = (Player) inventoryClickEvent.getWhoClicked();
                 PrivatePlayer privatePlayer = PrivatePlayer.getPlayer(clicker.getUniqueId());
-                new PlayerProfileMenu((Player) inventoryClickEvent.getWhoClicked(), privatePlayer, PrivateUtils.getMainMenu(clicker)).showProfile(clicker);
+                Bukkit.getLogger().info("Clicker " + clicker.getName() + " Clicked;" + correspondingPlayer.getName());
+                new PlayerProfileMenu(clicker, correspondingPlayer, PrivateUtils.getMainMenu(clicker)).showProfile(clicker);
 
             }));
         }

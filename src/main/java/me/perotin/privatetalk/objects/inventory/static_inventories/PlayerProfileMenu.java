@@ -38,7 +38,7 @@ public class PlayerProfileMenu extends PagingMenu {
         helper = PrivateTalk.getInstance().getHelper();
         helper.setSideDecorationSlots(getMenu());
         helper.setNavigationBar(getMenu(), viewer);
-        this.player = PrivatePlayer.getPlayer(viewer.getUniqueId());
+        this.player = player;
         helper.setPagingNavBar(getMenu());
         playerControlPane = new StaticPane(3, 1, 3, 1);
         playerControlPane.setPriority(Pane.Priority.HIGHEST);
@@ -83,6 +83,8 @@ public class PlayerProfileMenu extends PagingMenu {
         playerControlPane.addItem(statusItem, status.getSecond(), 0);
 
         // Need to check if the person viewing is themselves
+        Bukkit.getLogger().info("Clicker " + getViewer().getName() + " Clicked;" + player.getName());
+
         if (getViewer().getName().equals(player.getName())) {
             // viewing themselves so add toggle invites option and set
             // actions to be able to change and toggle
