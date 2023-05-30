@@ -108,10 +108,17 @@ public class PrivatePlayer {
         playerFile.set(uuid.toString()+".name", name);
         playerFile.set(uuid+".status", status);
 
-        playerFile.set(uuid+".chatrooms", getChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList()));
+        if(!getSavedChatrooms().isEmpty()) {
+            playerFile.set(uuid + ".chatrooms", getSavedChatrooms());
+        } else {
+            playerFile.set(uuid + ".chatrooms", new ArrayList<>());
 
+        }
         playerFile.save();
 
+    }
+    private List<Chatroom> getSavedChatrooms() {
+        return getChatrooms().stream().filter(Chatroom::isSaved).collect(Collectors.toList());
     }
 
     /**
@@ -192,10 +199,16 @@ public class PrivatePlayer {
             String name = playerFile.getString(uuid + ".name");
             String status = playerFile.getString(uuid + ".status");
             // do some checking with chatrooms that aren't loaded
-            List<Chatroom> chatrooms = playerFile.getConfiguration().getStringList(uuid.toString() + ".chatrooms")
-                    .stream().map(PrivateUtils::getChatroomWith).collect(Collectors.toList());
+            List<String> chatrooms = playerFile.getConfiguration().getStringList(uuid + ".chatrooms");
+            List<Chatroom> playerChatrooms = new ArrayList<>();
+            for (String chatName : chatrooms) {
+                Chatroom chatroom = PrivateUtils.getChatroomWith(chatName);
+                if (chatroom != null) {
+                    playerChatrooms.add(chatroom);
+                }
+            }
 
-            return new PrivatePlayer(uuid, name, status, chatrooms);
+            return new PrivatePlayer(uuid, name, status, playerChatrooms);
         } else {
             // New player so create new object
             return new PrivatePlayer(uuid, Bukkit.getPlayer(uuid).getName());

@@ -90,7 +90,10 @@ public class PrivateTalk extends JavaPlugin {
         chatrooms.stream().filter(Chatroom::isSaved).forEach(Chatroom::saveToFile);
 
         // Save each player to file
-        players.forEach(PrivatePlayer::savePlayer);
+        for (PrivatePlayer privatePlayer : players) {
+            Bukkit.getLogger().info("Saving " + privatePlayer.getName());
+            privatePlayer.savePlayer();
+        }
         this.players.clear();
         this.chatrooms.clear();
         this.helper = null;

@@ -22,6 +22,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,10 +60,16 @@ public class PlayerProfileMenu extends PagingMenu {
 
     @Override
     protected List<GuiItem> generatePages() {
-        List<ItemStack> toDisplay = player.getChatrooms().stream().map(Chatroom::getItem).collect(Collectors.toList());
-        toDisplay = toDisplay.stream().sorted(this::compare).collect(Collectors.toList());
-        return toDisplay.stream().map(item -> new GuiItem(item, ChatroomItemStackAction.clickOnChatroom())).collect(Collectors.toList());
 
+        if (!player.getChatrooms().isEmpty()) {
+
+
+            List<ItemStack> toDisplay = player.getChatrooms().stream().map(Chatroom::getItem).collect(Collectors.toList());
+            toDisplay = toDisplay.stream().sorted(this::compare).collect(Collectors.toList());
+            return toDisplay.stream().map(item -> new GuiItem(item, ChatroomItemStackAction.clickOnChatroom())).collect(Collectors.toList());
+
+        }
+        return new ArrayList<>();
 
     }
 
