@@ -289,7 +289,7 @@ public class Chatroom {
      * @param member of chatroom
      * @return string version of their role, being either member, moderator, or owner
      */
-    public String getRole(UUID member){
+    public String getStringRole(UUID member){
         String role = "";
         if(isInChatroom(member)){
             ChatRole value = getMemberMap().get(member);
@@ -355,6 +355,11 @@ public class Chatroom {
         } else return null;
 
     }
+
+    public ChatRole getRole(UUID uuid) {
+        return getMemberMap().get(uuid);
+    }
+
 
 
 }

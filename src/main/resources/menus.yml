@@ -181,3 +181,12 @@ player-profile-menu:
          material: "BOOK"
          display: "&e&lInvite "
          slot: 2
+
+# Invitiation menu items
+invitations-menu:
+   invite-item:
+      material: "BOOK"
+      display: "&e&lInvite from: "
+      lore:
+         - "&7&oRight click to &a&lACCEPT"
+         - "&7&oLeft click to &c&lREJECT"

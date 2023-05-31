@@ -172,7 +172,7 @@ public class ChatroomPager extends PagingMenu {
                 ItemStackUtils head = new ItemStackUtils(Material.PLAYER_HEAD);
                 head.setName(messages.getString("chatroom-head-display").replace("$player-name$", player.getName()));
                 head.setLore(messages.getString("chatroom-head-lore1")
-                .replace("$connected$", messages.getString("online")).replace("$role$", chatroom.getRole(uuid)));
+                .replace("$connected$", messages.getString("online")).replace("$role$", chatroom.getStringRole(uuid)));
                 head.setOwner(player);
                 heads.put(head.build(), PrivatePlayer.getPlayer(uuid));
             } else {
@@ -180,7 +180,7 @@ public class ChatroomPager extends PagingMenu {
                 ItemStackUtils head = new ItemStackUtils(Material.PLAYER_HEAD);
                 head.setName(messages.getString("chatroom-head-display").replace("$player-name$", player.getName()));
                 head.setLore(messages.getString("chatroom-head-lore1")
-                        .replace("$connected$", messages.getString("offline")).replace("$role$", chatroom.getRole(uuid)));
+                        .replace("$connected$", messages.getString("offline")).replace("$role$", chatroom.getStringRole(uuid)));
                 head.setOwner(player);
                 heads.put(head.build(), PrivatePlayer.getPlayer(uuid));
 

@@ -37,12 +37,16 @@ public class PrivatePlayer {
         this.name = name;
         this.chatrooms = new ArrayList<>();
         this.status = "";
+        this.invites = new ArrayList<>();
     }
 
     public PrivatePlayer(UUID uuid, String name, String status, List<Chatroom> chatrooms) {
         this(uuid, name);
         this.chatrooms = chatrooms;
         this.status = status;
+        // store invites correctly as another list
+        this.invites = new ArrayList<>();
+
     }
 
 

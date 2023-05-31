@@ -9,6 +9,7 @@ import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.inventory.actions.CreateChatroomAction;
+import me.perotin.privatetalk.objects.inventory.paging_objects.ChatroomInvitationListPager;
 import me.perotin.privatetalk.objects.inventory.paging_objects.MainMenuPaging;
 import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
@@ -61,7 +62,13 @@ public class InventoryHelper {
      */
     public Gui setNavigationBar(ChestGui inventory, OfflinePlayer owner) {
         navBar.addItem(new GuiItem(getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getFirst()), getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getSecond(), 0);
-       inventory.addPane(navBar);
+        Pair<ItemStack, Integer> invites = getItemFrom(Material.WRITABLE_BOOK, "nav-bar.manage-invites", null);
+        navBar.addItem(new GuiItem(invites.getFirst(), event -> {
+            event.setCancelled(true);
+            new ChatroomInvitationListPager(PrivatePlayer.getPlayer(owner.getUniqueId()), (Player) owner, new MainMenuPaging((Player) owner, PrivateTalk.getInstance()).getMenu()).show();
+        }),  invites.getSecond(), 0);
+
+        inventory.addPane(navBar);
         return inventory;
     }
 
@@ -77,7 +84,7 @@ public class InventoryHelper {
 
         navBar.addItem(new GuiItem(head.getFirst()), head.getSecond(), 0);
         navBar.addItem(new GuiItem(createChatroom.getFirst(), CreateChatroomAction.createChatroomConsumer()), (int) createChatroom.getSecond(), 0);
-        navBar.addItem(new GuiItem(invites.getFirst()), (int) invites.getSecond(), 0);
+        navBar.addItem(new GuiItem(invites.getFirst()),  invites.getSecond(), 0);
         GuiItem deco = DECO_ITEM();
         List<Integer> slots = getAsInts(file.getConfiguration().getStringList("nav-bar.deco-item.slots"));
         for (int x : slots) {
@@ -243,7 +250,7 @@ public class InventoryHelper {
      * @param material path to the item in menus.yml, for example, "nav-bar.player-profile-head" will retrieve said path
      * @return itemstack with integer slot
      */
-    private Pair<ItemStack, Integer> getItemFrom(Material material, String path, OfflinePlayer owner) {
+    public Pair<ItemStack, Integer> getItemFrom(Material material, String path, OfflinePlayer owner) {
         PrivateFile file = new PrivateFile(FileType.MENUS);
         ItemStackUtils builder = new ItemStackUtils(material, owner);
         builder.setName(file.getString(path + ".display"));
@@ -252,7 +259,11 @@ public class InventoryHelper {
             lores.forEach(s -> ChatColor.translateAlternateColorCodes('&', s));
             builder.setLore(lores);
         }
-        return new Pair<>(builder.build(), file.getConfiguration().getInt(path + ".slot"));
+        int slot = -1;
+        if (file.getConfiguration().isSet(path +".slot")){
+            slot = file.getConfiguration().getInt(path + ".slot");
+        }
+        return new Pair<>(builder.build(), slot);
 
     }
 
@@ -322,10 +333,16 @@ public class InventoryHelper {
         PrivateFile file = new PrivateFile(FileType.MENUS);
         ItemStackUtils builder = new ItemStackUtils(Material.valueOf(file.getString(path+".material")), owner);
         builder.setName(file.getString(path + ".display"));
-        List<String> lores = file.getConfiguration().getStringList(path + ".lore");
-        lores.forEach(s -> ChatColor.translateAlternateColorCodes('&', s));
-        builder.setLore(lores);
-        return new Pair<>(builder.build(), file.getConfiguration().getInt(path + ".slot"));
+        if (file.getConfiguration().isSet(path + ".lore")) {
+            List<String> lores = file.getConfiguration().getStringList(path + ".lore");
+            lores.forEach(s -> ChatColor.translateAlternateColorCodes('&', s));
+            builder.setLore(lores);
+        }
+        int slot = -1;
+        if (file.getConfiguration().isSet(path + ".slot")){
+            slot = file.getConfiguration().getInt(path + ".slot");
+        }
+        return new Pair<>(builder.build(), slot);
 
     }
 
