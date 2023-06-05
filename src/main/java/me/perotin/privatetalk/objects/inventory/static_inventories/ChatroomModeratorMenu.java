@@ -4,6 +4,7 @@ import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.PrivateTalk;
+import me.perotin.privatetalk.objects.ChatRole;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PrivatePlayer;
@@ -21,6 +22,7 @@ public class ChatroomModeratorMenu extends StaticMenu {
     private PrivatePlayer toPunish; // Player that is being punished in the menu
     private Chatroom chatroom; // Chatroom that the punishment is being dealt within
 
+    private Player punisher;
     private StaticPane modItems;
     private InventoryHelper helper;
 
@@ -29,8 +31,9 @@ public class ChatroomModeratorMenu extends StaticMenu {
         super(moderator, "Moderator Actions ");
         this.toPunish = toPunish;
         this.chatroom = chatroom;
-        this.modItems = new StaticPane(2, 2, 5, 1);
+        this.modItems = new StaticPane(2, 2, 5, 2);
         this.helper = PrivateTalk.getInstance().getHelper();
+        this.punisher = moderator;
 
         setDecorations();
         setModItems();
@@ -51,6 +54,30 @@ public class ChatroomModeratorMenu extends StaticMenu {
         Pair<ItemStack, Integer> kickPair = InventoryHelper.getItem("chatroom-mod.kick-item", null);
         Pair<ItemStack, Integer> banPair = InventoryHelper.getItem("chatroom-mod.ban-item", null);
 
+        Pair<ItemStack, Integer> promoteMember = InventoryHelper.getItem("chatroom-mod.promote-member", null);
+        Pair<ItemStack, Integer> demoteModerator = InventoryHelper.getItem("chatroom-mod.demote-moderator", null);
+        Pair<ItemStack, Integer> promoteModerator = InventoryHelper.getItem("chatroom-mod.promote-moderator", null);
+
+
+        // Check if person is owner
+        if (getPunisher().getUniqueId().equals(chatroom.getOwner())) {
+            // owner in menu so display options for promotion/demotion etc.
+            ChatRole role = chatroom.getRole(toPunish.getUuid());
+            switch (role){
+                case MEMBER:
+                    // Member so show option to promote
+                    modItems.addItem(new GuiItem(promoteMember.getFirst(), ChatroomModeratorAction.promoteMember(chatroom, toPunish)), promoteMember.getSecond(), 1);
+                    break;
+                case MODERATOR:
+                    // Moderator so show option to promote to owner or demote to member
+                    modItems.addItem(new GuiItem(promoteModerator.getFirst()), promoteModerator.getSecond(), 1);
+                    modItems.addItem(new GuiItem(demoteModerator.getFirst(),
+                            ChatroomModeratorAction.demoteModerator(chatroom, toPunish)), demoteModerator.getSecond(), 1);
+                    break;
+                case OWNER:
+                    break;
+            }
+        }
        ItemStack mute = setNamesForItems(mutePair.getFirst());
         ItemStack unmute = setNamesForItems(unmutePair.getFirst());
 
@@ -74,5 +101,7 @@ public class ChatroomModeratorMenu extends StaticMenu {
         return addName;
     }
 
-
+    public Player getPunisher() {
+        return punisher;
+    }
 }

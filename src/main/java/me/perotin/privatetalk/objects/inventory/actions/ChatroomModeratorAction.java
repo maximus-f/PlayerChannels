@@ -11,8 +11,60 @@ import org.bukkit.inventory.InventoryView;
 
 import java.util.function.Consumer;
 
+//TODO: menu messages should be configurable
 public class ChatroomModeratorAction {
 
+
+    /**
+     * Inventory event for when owner promotes a member to moderator
+     * @param chatroom
+     * @param player
+     * @return
+     */
+    public static Consumer<InventoryClickEvent> promoteMember(Chatroom chatroom, PrivatePlayer player) {
+        return event -> {
+            event.setCancelled(true);
+            chatroom.promoteMemberToModerator(player.getUuid());
+            Player mod = (Player) event.getWhoClicked();
+
+            // tell person they've been promoted and show new mod menu
+            PrivateUtils.sendMenuMessage("You have promoted " + player.getName() +" to mod!", mod,
+                    new ChatroomPager(chatroom, mod));
+
+        };
+    }
+
+    /**
+     * Inventory event for when owner demotes a moderator to member
+     * @param chatroom
+     * @param player
+     * @return
+     */
+    public static Consumer<InventoryClickEvent> demoteModerator(Chatroom chatroom, PrivatePlayer player) {
+        return event -> {
+            event.setCancelled(true);
+            chatroom.demoteModeratorToMember(player.getUuid());
+            Player mod = (Player) event.getWhoClicked();
+
+            // tell person they've been promoted and show new mod menu
+            PrivateUtils.sendMenuMessage("You have demoted " + player.getName() +" from mod!", mod,
+                    new ChatroomPager(chatroom, mod));
+
+        };
+    }
+
+    /**
+     * Inventory event for when owner promotes a moderator to owner
+     * May do another thing here to confirm promotion to owner since it is a decisive action
+     * @param chatroom
+     * @param player
+     * @return
+     */
+    public static Consumer<InventoryClickEvent> promoteModerator(Chatroom chatroom, PrivatePlayer player) {
+        return event -> {
+            event.setCancelled(true);
+        };
+    }
     /**
      * @return inventory event for when a moderator kicks a member
      */

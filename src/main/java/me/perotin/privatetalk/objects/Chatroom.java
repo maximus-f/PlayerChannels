@@ -38,9 +38,9 @@ public class Chatroom {
     private boolean isSaved;
     private List<UUID> bannedMembers;
 
-    private List<UUID> mutedMembers;
+    private final List<UUID> mutedMembers;
 
-    private HashMap<UUID, String> nickNames;
+    private Map<UUID, String> nickNames;
     private PrivateFile messages;
     private ItemStack display;
 
@@ -223,7 +223,7 @@ public class Chatroom {
         this.bannedMembers = bannedMembers;
     }
 
-    public HashMap<UUID, String> getNickNames() {
+    public Map<UUID, String> getNickNames() {
         return nickNames;
     }
 
@@ -274,6 +274,23 @@ public class Chatroom {
      */
     public void setNickNames(HashMap<UUID, String> nickNames) {
         this.nickNames = nickNames;
+    }
+
+
+    public void promoteMemberToModerator(UUID member) {
+        updateRoleFor(member, ChatRole.MODERATOR);
+    }
+    public void demoteModeratorToMember(UUID member) {
+        updateRoleFor(member, ChatRole.MEMBER);
+    }
+
+    public void promoteModeratorToOwner(UUID member) {
+        updateRoleFor(member, ChatRole.OWNER);
+    }
+
+    private void updateRoleFor(UUID uuid, ChatRole role) {
+        getMemberMap().remove(uuid);
+        getMemberMap().put(uuid, role);
     }
 
 
@@ -359,6 +376,7 @@ public class Chatroom {
     public ChatRole getRole(UUID uuid) {
         return getMemberMap().get(uuid);
     }
+
 
 
 

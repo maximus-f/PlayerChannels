@@ -154,6 +154,18 @@ chatroom-mod:
       display: "&cBan "
       material: "REDSTONE_BLOCK"
       slot: 4
+   promote-member:
+      display: "&aPromote to Moderator"
+      material: "EMERALD_BLOCK"
+      slot: 2
+   promote-moderator:
+      display: "&aPromote to Owner"
+      material: "EMERALD_BLOCK"
+      slot: 3
+   demote-moderator:
+      display: "&cDemote to member"
+      material: "REDSTONE_BLOCK"
+      slot: 1
 
 # Main Menu
 # Menu that appears when you do /privatetalk
