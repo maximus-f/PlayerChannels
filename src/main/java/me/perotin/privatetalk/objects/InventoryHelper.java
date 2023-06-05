@@ -63,7 +63,7 @@ public class InventoryHelper {
      * @param inventory to set
      * @return sets the nav bar for any given inventory
      */
-    public Gui setNavigationBar(ChestGui inventory, OfflinePlayer owner) {
+    public Pair<Gui, StaticPane> setNavigationBar(ChestGui inventory, OfflinePlayer owner) {
         navBar.addItem(new GuiItem(getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getFirst(), clickOnOwnHead(owner.getUniqueId())), getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getSecond(), 0);
         Pair<ItemStack, Integer> invites = getItemFrom(Material.WRITABLE_BOOK, "nav-bar.manage-invites", null);
         navBar.addItem(new GuiItem(invites.getFirst(), event -> {
@@ -72,7 +72,7 @@ public class InventoryHelper {
         }),  invites.getSecond(), 0);
 
         inventory.addPane(navBar);
-        return inventory;
+        return new Pair<>(inventory, navBar);
     }
 
 

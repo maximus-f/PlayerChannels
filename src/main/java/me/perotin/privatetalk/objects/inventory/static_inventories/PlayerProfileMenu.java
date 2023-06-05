@@ -15,8 +15,10 @@ import me.perotin.privatetalk.objects.inventory.paging_objects.PagingMenu;
 import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
+import me.perotin.privatetalk.utils.ItemStackUtils;
 import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -41,7 +43,12 @@ public class PlayerProfileMenu extends PagingMenu {
         this.viewer = viewer;
         helper = PrivateTalk.getInstance().getHelper();
         helper.setSideDecorationSlots(getMenu());
-        helper.setNavigationBar(getMenu(), viewer);
+        setNavBar(helper.setNavigationBar(getMenu(), viewer).getSecond());
+        ItemStack playerHead = new ItemStackUtils(Material.PLAYER_HEAD)
+                .setOwner(Bukkit.getOfflinePlayer(player.getUuid()))
+                .setName(ChatColor.YELLOW + player.getName())
+                .build();
+        getNavBar().addItem(new GuiItem(playerHead, event -> event.setCancelled(true)), 4, 0);
         this.player = player;
         helper.setPagingNavBar(getMenu());
         playerControlPane = new StaticPane(3, 1, 3, 1);

@@ -77,6 +77,8 @@ public abstract class PagingMenu extends Menu {
             Bukkit.broadcastMessage("1");
             if (backMenu != null) {
                 Bukkit.broadcastMessage("2");
+                // Set the nav bar again
+                PrivateTalk.getInstance().getHelper().setNavigationBar((ChestGui) backMenu, getViewer());
 
                 backMenu.show(viewer);
             }

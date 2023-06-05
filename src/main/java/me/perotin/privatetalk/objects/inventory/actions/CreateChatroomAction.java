@@ -34,7 +34,7 @@ public class CreateChatroomAction {
             PreChatroom chatroom = new PreChatroom(clickEvent.getWhoClicked().getUniqueId());
             InventoryHelper helper = PrivateTalk.getInstance().getHelper();
             CreateChatroomInputEvent.getInstance().getInCreation().put(clickEvent.getWhoClicked().getUniqueId(), chatroom);
-            helper.setNavigationBar(helper.getCreationMenu(chatroom), (OfflinePlayer) clickEvent.getWhoClicked()).show(clickEvent.getWhoClicked());
+            helper.setNavigationBar(helper.getCreationMenu(chatroom), (OfflinePlayer) clickEvent.getWhoClicked()).getFirst().show(clickEvent.getWhoClicked());
         };
     }
 

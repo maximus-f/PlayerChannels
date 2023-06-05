@@ -94,7 +94,7 @@ public class CreateChatroomInputEvent implements Listener {
             @Override
             public void run() {
                 InventoryHelper helper = plugin.getHelper();
-                helper.setNavigationBar(helper.getCreationMenu(view), toShow).show(toShow);
+                helper.setNavigationBar(helper.getCreationMenu(view), toShow).getFirst().show(toShow);
             }
         }.runTask(plugin);
     }
