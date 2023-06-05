@@ -9,12 +9,14 @@ import me.perotin.privatetalk.storage.files.PrivateFile;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Skull;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -140,6 +142,11 @@ public class Chatroom {
                 messages.getString("chatroom-items.owner").replace("$owner$", Bukkit.getOfflinePlayer(getOwner()).getName()),
                 messages.getString("chatroom-items.members").replace("$member_count$", getMembers().size()+"" )));
 
+        NamespacedKey chatroomName = new NamespacedKey(PrivateTalk.getInstance(), "chatroomName");  // 'plugin' is your JavaPlugin instance
+
+        // Set the custom data
+        itemMeta.getPersistentDataContainer().set(chatroomName, PersistentDataType.STRING, getName());
+
         item.setItemMeta(itemMeta);
 
 
@@ -171,7 +178,7 @@ public class Chatroom {
      * @return Item representation of the chatroom
      */
     public ItemStack getItem(){
-        return display;
+        return generateItem();
     }
 
     public void addMember(Pair<UUID, ChatRole> value) {

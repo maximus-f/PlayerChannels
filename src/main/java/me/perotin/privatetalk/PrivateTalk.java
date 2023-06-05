@@ -169,4 +169,12 @@ public class PrivateTalk extends JavaPlugin {
         }
     }
 
+    public Chatroom getChatroom(String name){
+        for (Chatroom chat : chatrooms) {
+            if (chat.getName().equalsIgnoreCase(name))
+                return chat;
+        }
+        return null;
+    }
+
 }
