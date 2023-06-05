@@ -115,7 +115,6 @@ public class InventoryHelper {
 
     /**
      * Sets the creation menu items
-     * TODO Functions attached to each item
      */
     private void setCreationMenu(PreChatroom chatroom) {
         PrivateFile menus = new PrivateFile(FileType.MENUS);

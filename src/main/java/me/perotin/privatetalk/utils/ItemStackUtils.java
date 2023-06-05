@@ -95,8 +95,7 @@ public class ItemStackUtils {
     }
 
 
-
-
-
-
+    public String getDisplayName() {
+        return name;
+    }
 }

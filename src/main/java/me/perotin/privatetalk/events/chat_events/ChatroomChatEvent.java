@@ -52,7 +52,7 @@ public class ChatroomChatEvent implements Listener {
                        .replace("$chatroom$", focusedChatroom.getName()));
                return;
            }
-           focusedChatroom.chat(chatter.getName(), event.getMessage());
+           focusedChatroom.chat(chatter.getName(), event.getMessage(), chatter.getUniqueId());
 
        }
 
@@ -67,7 +67,7 @@ public class ChatroomChatEvent implements Listener {
                        .replace("$chatroom$", quickChatroom.getName()));
                return;
            }
-           quickChatroom.chat(chatter.getName(), event.getMessage().substring(1));
+           quickChatroom.chat(chatter.getName(), event.getMessage().substring(1), chatter.getUniqueId());
            return;
        }
 

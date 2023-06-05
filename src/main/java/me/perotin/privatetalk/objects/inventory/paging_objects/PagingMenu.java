@@ -92,7 +92,6 @@ public abstract class PagingMenu extends Menu {
 
     public void show(){
         getMenu().show(viewer);
-        Bukkit.getLogger().info("Pane at showing " + pane.getY());
     }
 
     private void setPagingNavigation(ChestGui menu){

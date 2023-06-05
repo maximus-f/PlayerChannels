@@ -2,6 +2,7 @@ package me.perotin.privatetalk.objects.inventory.paging_objects;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
+import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
@@ -49,18 +50,24 @@ public class ChatroomPager extends PagingMenu {
 
     private PrivateFile messages;
     private StaticPane chatroomBar; /** Items that appear directly beneath nav bar**/
+    private final StaticPane bottomRow; /** Items that appear in the bottom row, for viewing ban menu etc. **/
+
     public ChatroomPager(Chatroom chatroom, Player viewer){
         super(viewer.getName()+"-chatroom", 6, viewer, new MainMenuPaging(viewer, PrivateTalk.getInstance()).getMenu());
         this.chatroom = chatroom;
          this.messages = new PrivateFile(FileType.MESSAGES);
          this.chatroomBar = new StaticPane(2, 1, 5, 1);
          chatroomBar.setPriority(Pane.Priority.HIGH);
+        this.bottomRow = new StaticPane(3, 5, 3, 1);
+        this.bottomRow.setPriority(Pane.Priority.HIGHEST);
         PrivateTalk.getInstance().getHelper().setSideDecorationSlots(getMenu());
         PrivateTalk.getInstance().getHelper().setNavigationBar(getMenu(), getViewer());
         setPaginatedPane();
 
         getPaginatedPane().populateWithGuiItems(generatePages());
         setChatroomBar();
+        setBottomRow();
+        addPaneToGui(bottomRow);
       //  getMenu().getPanes().forEach(p -> p.getItems().forEach(i ->
               //  PrivateTalk.getInstance().getLogger().info(i.getItem().toString())));
 
@@ -106,7 +113,10 @@ public class ChatroomPager extends PagingMenu {
 
         } else {
             // Not a member
-            chatroomBar.addItem(joinItem, join.getSecond(), 0);
+            // Check if chatroom is public or not and if player is not banned
+            if (chatroom.isPublic() && !chatroom.isBanned(getViewer().getUniqueId())) {
+                chatroomBar.addItem(joinItem, join.getSecond(), 0);
+            }
 
 
         }
@@ -265,6 +275,57 @@ public class ChatroomPager extends PagingMenu {
 
 
         };
+    }
+
+    /**
+     *
+     * @return consumer event showing the ban menu
+     */
+    private Consumer<InventoryClickEvent> viewBanMenu(){
+        return event -> {
+            event.setCancelled(true);
+            new ChatroomBannedMembersListPager(chatroom, getViewer()).show();
+        };
+    }
+
+    /**
+     *
+     * @return consumer event showing the nickname menu
+     */
+    private Consumer<InventoryClickEvent> viewNicknameMenu(){
+        return event -> {
+            event.setCancelled(true);
+            new ChatroomNicknameManagerPager(chatroom, getViewer()).show();
+        };
+    }
+
+    /**
+     * Sets the bottom row for use of mod actions like viewing ban menu and members for setting nicknames
+     *
+     * chatroom-bottom-bar:
+     *    nicknames:
+     *       display: "&e&lNicknames menu"
+     *       material: "NETHER_STAR"
+     *       slot: 0
+     *    ban-menu:
+     *       display: "&e&lBans"
+     *       material: "ENDER_CHEST"
+     *       slot: 3
+     */
+    private void setBottomRow(){
+        Pair<ItemStack, Integer> nicknames = InventoryHelper.getItem("chatroom-bottom-bar.nicknames", null);
+        Pair<ItemStack, Integer> banMenu = InventoryHelper.getItem("chatroom-bottom-bar.ban-menu", null);
+
+        GuiItem banItem = new GuiItem(banMenu.getFirst(), viewBanMenu());
+        GuiItem nickNameItem = new GuiItem(nicknames.getFirst(), viewNicknameMenu());
+
+        bottomRow.addItem(nickNameItem, nicknames.getSecond(), 0);
+
+        if (chatroom.hasModeratorPermissions(getViewer().getUniqueId())){
+
+            bottomRow.addItem(banItem, banMenu.getSecond(), 0);
+        }
+
     }
 }
 

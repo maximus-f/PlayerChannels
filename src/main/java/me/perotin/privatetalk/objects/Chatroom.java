@@ -37,7 +37,7 @@ public class Chatroom {
     // true if chatroom is public, false if private
     private boolean isPublic;
     // true if saved, false if not
-    private boolean isSaved;
+    private boolean isSaved, nicknamesEnabled;
     private List<UUID> bannedMembers;
 
     private final List<UUID> mutedMembers;
@@ -65,6 +65,7 @@ public class Chatroom {
         this.display = generateItem();
         this.mutedMembers = new ArrayList<>();
         this.bannedMembers = new ArrayList<>();
+        this.nickNames = new HashMap<>();
     }
 
     /**
@@ -75,6 +76,8 @@ public class Chatroom {
         this(owner, name, description, isPublic, isSaved);
         this.messages = new PrivateFile(MESSAGES);
         this.members = members;
+        this.nickNames = new HashMap<>();
+
     }
 
     /**
@@ -166,6 +169,10 @@ public class Chatroom {
         }
     }
 
+    public boolean isNicknamesEnabled() {
+        return nicknamesEnabled;
+    }
+
     /**
      * @return true if chatroom gets saved, false if not
      */
@@ -241,13 +248,21 @@ public class Chatroom {
      * In the future, members may be able to mute a chatroom so will have to account for this.
      * @param message
      */
-    public void chat(String sender, String message){
+    public void chat(String sender, String message, UUID id){
         List<Player> members = getOnlinePlayers();
         // Perform operations to format message accordingly
+        String nickname = "";
+        if (getNickNames().containsKey(id)) {
+            nickname = ChatColor.translateAlternateColorCodes('&', getNickNames().get(id));
+        }
+        // TODO need to make this a bit more complex, for example
+        // if a nickname does not exist, it should default to their regular name.
         String chatroomFormat = ChatColor.translateAlternateColorCodes('&', PrivateTalk.getInstance().getConfig().getString("chatroom-message-format")
                 .replace("$chatroom$", getName())
                 .replace("$message$", message)
-                .replace("$name$", sender));
+                        .replace("$role$", getStringRole(id))
+                .replace("$name$", sender))
+                        .replace("$nickname$", nickname);
 
         members.forEach(member -> member.sendMessage(chatroomFormat));
     }
@@ -283,6 +298,14 @@ public class Chatroom {
         this.nickNames = nickNames;
     }
 
+    /**
+     * Sets a nickname for a specific player
+     * @param uuid
+     * @param nickname
+     */
+    public void setNickname(UUID uuid, String nickname) {
+        getNickNames().put(uuid, nickname);
+    }
 
     public void promoteMemberToModerator(UUID member) {
         updateRoleFor(member, ChatRole.MODERATOR);
@@ -300,6 +323,9 @@ public class Chatroom {
         getMemberMap().put(uuid, role);
     }
 
+    public boolean hasModeratorPermissions(UUID uuid) {
+        return getRole(uuid) == ChatRole.MODERATOR || getRole(uuid) == ChatRole.OWNER;
+    }
 
     /**
      * Checks if a memmber is in this chatroom object
@@ -385,6 +411,9 @@ public class Chatroom {
     }
 
 
-
-
+    public void unbanMember(UUID uuid) {
+        if (isBanned(uuid)){
+            getBannedMembers().remove(uuid);
+        }
+    }
 }

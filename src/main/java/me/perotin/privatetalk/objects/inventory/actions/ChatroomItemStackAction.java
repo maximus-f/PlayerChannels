@@ -18,6 +18,8 @@ public class ChatroomItemStackAction {
 
     /**
      * Action for clicking on a chatroom and it bringing you to its menu
+     * NOTE: Using PersistentDataContainer was introduced in 1.14,
+     *  may want to do something to support earlier versions
      */
     public static Consumer<InventoryClickEvent> clickOnChatroom() {
         //Check to see if this is the proper way of handling ChatroomPager and if we need to store the instance anywhere
