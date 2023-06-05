@@ -11,6 +11,7 @@ import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.inventory.actions.CreateChatroomAction;
 import me.perotin.privatetalk.objects.inventory.paging_objects.ChatroomInvitationListPager;
 import me.perotin.privatetalk.objects.inventory.paging_objects.MainMenuPaging;
+import me.perotin.privatetalk.objects.inventory.static_inventories.PlayerProfileMenu;
 import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
@@ -21,10 +22,12 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -61,7 +64,7 @@ public class InventoryHelper {
      * @return sets the nav bar for any given inventory
      */
     public Gui setNavigationBar(ChestGui inventory, OfflinePlayer owner) {
-        navBar.addItem(new GuiItem(getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getFirst()), getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getSecond(), 0);
+        navBar.addItem(new GuiItem(getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getFirst(), clickOnOwnHead(owner.getUniqueId())), getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getSecond(), 0);
         Pair<ItemStack, Integer> invites = getItemFrom(Material.WRITABLE_BOOK, "nav-bar.manage-invites", null);
         navBar.addItem(new GuiItem(invites.getFirst(), event -> {
             event.setCancelled(true);
@@ -344,6 +347,15 @@ public class InventoryHelper {
         }
         return new Pair<>(builder.build(), slot);
 
+    }
+
+    private Consumer<InventoryClickEvent> clickOnOwnHead(UUID uuid) {
+        return event -> {
+            PrivatePlayer player = PrivatePlayer.getPlayer(uuid);
+            Player viewer = Bukkit.getPlayer(uuid);
+            event.setCancelled(true);
+            new PlayerProfileMenu(viewer, player, new MainMenuPaging(viewer, PrivateTalk.getInstance()).getMenu()).show();
+        };
     }
 
 }
