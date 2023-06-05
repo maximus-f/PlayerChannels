@@ -15,6 +15,10 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+/**
+ * Class for when a player invites another player and is selecting which of their chatrooms to invite them too
+ * since multiple possible candidates for a chatroom can exist
+ */
 public class SelectChatroomToInviteMenu extends StaticMenu {
     private StaticPane chatrooms;
     public SelectChatroomToInviteMenu(Player inviter, PrivatePlayer inRoom, PrivatePlayer invited) {
@@ -39,6 +43,14 @@ public class SelectChatroomToInviteMenu extends StaticMenu {
 
     }
 
+    /**
+     * Inventory event where player chooses which chatroom to invite a player to
+     * Need to check if they already have an invite from them to avoid spamming with invites
+     * as well as potentially checking if player is banend before trying to invite them
+     * @param invited
+     * @param chatroom
+     * @return event
+     */
     private Consumer<InventoryClickEvent> inviteTo(PrivatePlayer invited, Chatroom chatroom){
         return event -> {
             event.setCancelled(true);

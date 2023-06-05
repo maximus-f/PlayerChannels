@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * Class for representing menu where player views their invites from other chatrooms
+ */
 public class ChatroomInvitationListPager extends PagingMenu {
 
 
@@ -40,15 +43,23 @@ public class ChatroomInvitationListPager extends PagingMenu {
     @Override
     protected List<GuiItem> generatePages() {
         List<GuiItem> items = new ArrayList<>();
-        ItemStack invite = InventoryHelper.getItem("invitations-menu.invite-item", null).getFirst();
         for (Chatroom invited : player.getInvites()) {
             // Build chatroom invite item for each
+            ItemStack invite = InventoryHelper.getItem("invitations-menu.invite-item", null).getFirst();
+
             PrivateUtils.appendToDisplayName(invite, invited.getName());
             items.add(new GuiItem(invite, clickOnInvite(invited, player)));
         }
         return items;
     }
 
+    /**
+     * Inventory event for when a player clicks on an invite in their invitation menu from
+     * navigation bar
+     * @param chatroom that invite is originated from
+     * @param clicker
+     * @return event
+     */
     private Consumer<InventoryClickEvent> clickOnInvite(Chatroom chatroom, PrivatePlayer clicker){
         return event -> {
             event.setCancelled(true);

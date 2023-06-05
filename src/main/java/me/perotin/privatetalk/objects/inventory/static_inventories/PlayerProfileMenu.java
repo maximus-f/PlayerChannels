@@ -26,6 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Class to represent when a player is viewing their own player profile or another users player profile
+ */
 public class PlayerProfileMenu extends PagingMenu {
 
     private InventoryHelper helper;
@@ -98,10 +101,10 @@ public class PlayerProfileMenu extends PagingMenu {
             playerControlPane.addItem(toggleInvitesItem, toggleInvites.getSecond(), 0);
 
         } else {
-            // different person. add invite player option but be sure to check
-            // that the viewer is in a chatroom that they are able to invite the player
-            // to
-            playerControlPane.addItem(invPlayerItem, toggleInvites.getSecond(), 0);
+            // different person. don't show if receipient has invites turned off
+            if (player.isAcceptingInvites()) {
+                playerControlPane.addItem(invPlayerItem, toggleInvites.getSecond(), 0);
+            }
 
         }
 

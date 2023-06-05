@@ -1,5 +1,7 @@
 package me.perotin.privatetalk.objects;
 
+import me.perotin.privatetalk.storage.files.FileType;
+import me.perotin.privatetalk.storage.files.PrivateFile;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
@@ -31,8 +33,28 @@ public enum ChatRole implements ConfigurationSerializable {
      * @param item to find chat role of
      * @return chat role of itemstack
      */
-    public static ChatRole getRoleFrom(ItemStack item){
-        return ChatRole.valueOf(ChatColor.stripColor(Objects.requireNonNull(item.getItemMeta()).getLore().get(0)));
+    // Think this method is broken because it is on the same line as $connected$ placeholder
+    public static ChatRole getRoleFrom(ItemStack item) {
+        // Define a mapping from the custom role names to the enum values
+        PrivateFile messages = new PrivateFile(FileType.MESSAGES);
+        Map<String, ChatRole> roleMap = new HashMap<>();
+        roleMap.put(messages.getString("member"), ChatRole.MEMBER);
+        roleMap.put(messages.getString("moderator"), ChatRole.MODERATOR);
+        roleMap.put(messages.getString("owner"), ChatRole.OWNER);
+
+        // Get the lore
+        String lore = Objects.requireNonNull(item.getItemMeta()).getLore().get(0);
+
+        // Check if the lore contains each role name
+        for (Map.Entry<String, ChatRole> entry : roleMap.entrySet()) {
+            if (lore.contains(entry.getKey())) {
+                // If it does, return the corresponding role
+                return entry.getValue();
+            }
+        }
+
+        // If no role name was found in the lore, throw an exception
+        throw new IllegalArgumentException("Role not found in item lore");
     }
 
     @NotNull

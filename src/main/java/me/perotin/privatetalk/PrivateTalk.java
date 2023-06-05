@@ -80,7 +80,6 @@ public class PrivateTalk extends JavaPlugin {
             players.add(PrivatePlayer.getPlayer(player.getUniqueId()));
             Bukkit.broadcastMessage("Added " + player.getName() + "! to pmemory");
         }
-
     }
 
     // Clean up collections

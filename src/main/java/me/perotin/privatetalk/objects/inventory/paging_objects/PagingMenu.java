@@ -57,7 +57,8 @@ public abstract class PagingMenu extends Menu {
     public void next(){
         if (pane.getPages() > pane.getPage() + 1) {
             pane.setPage(pane.getPage() + 1);
-            getMenu().setTitle(identifier + " Page: " + pane.getPage() + 1);
+            int pageNum = pane.getPage();
+            getMenu().setTitle(identifier + " Page: " + pageNum);
             getMenu().update();
         }
 
@@ -69,7 +70,7 @@ public abstract class PagingMenu extends Menu {
     public void previous(Gui backMenu){
         if (pane.getPage() > 0) {
             pane.setPage(pane.getPage() - 1);
-            getMenu().setTitle(identifier + " Page: " + pane.getPage() + 1);
+            getMenu().setTitle(identifier + " Page: " + pane.getPage());
 
             getMenu().update();
         } else {
