@@ -12,6 +12,7 @@ import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.objects.inventory.static_inventories.ChatroomModeratorMenu;
+import me.perotin.privatetalk.objects.inventory.static_inventories.PlayerProfileMenu;
 import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
@@ -154,12 +155,26 @@ public class ChatroomPager extends PagingMenu {
     }
 
     /**
+     * List of items that appear in the chatroom with either event for punish or viewing profile based on power of role
+     * and person they are trying to punish
      * @return a list of items to be added to the pane
      */
     protected List<GuiItem> generatePages() {
         List<GuiItem> items = new ArrayList<>();
         for(ItemStack i : getHeads().keySet()) {
-            items.add(new GuiItem(i, viewModMenuFor(getHeads().get(i))));
+            if (chatroom.getRole(getViewer().getUniqueId()) == ChatRole.OWNER && ChatRole.getRoleFrom(i) != ChatRole.OWNER) {
+                items.add(new GuiItem(i, viewModMenuFor(getHeads().get(i))));
+            } else if (chatroom.getRole(getViewer().getUniqueId()) == ChatRole.MODERATOR
+            && ChatRole.getRoleFrom(i) == ChatRole.MEMBER) {
+                items.add(new GuiItem(i, viewModMenuFor(getHeads().get(i))));
+            } else if (chatroom.getRole(getViewer().getUniqueId()) == ChatRole.MODERATOR
+                    && ChatRole.getRoleFrom(i) == ChatRole.MODERATOR || ChatRole.getRoleFrom(i) == ChatRole.OWNER) {
+                items.add(new GuiItem(i, viewProfile(getHeads().get(i))));
+            } else {
+                // must be a member
+                items.add(new GuiItem(i, viewProfile(getHeads().get(i))));
+
+            }
         }
         return items;
     }
@@ -167,9 +182,7 @@ public class ChatroomPager extends PagingMenu {
 
 
     /**
-     * TODO
-     * This needs to be changed to not show their profile but show options for moderator actions if permission suffices
-     * i.e. moderator or above
+     *Shows the punish menu for when a moderator or owner tries to punish an eligible player
      * @param player to go to profile
      * @return consumer action to go to param player's profile page
      */
@@ -177,6 +190,18 @@ public class ChatroomPager extends PagingMenu {
         return (InventoryClickEvent event) -> {
             event.setCancelled(true);
             new ChatroomModeratorMenu(getViewer(), player, chatroom).getMenu().show(getViewer());
+        };
+    }
+
+    /**
+     * For when a player clicks on another player but they do not have permission to punish so it shows them their profile
+     * @param player
+     * @return
+     */
+    private Consumer<InventoryClickEvent> viewProfile(PrivatePlayer player){
+        return (InventoryClickEvent event) -> {
+            event.setCancelled(true);
+            new PlayerProfileMenu(getViewer(), player, getMenu()).getMenu().show(getViewer());
         };
     }
 
@@ -262,7 +287,6 @@ public class ChatroomPager extends PagingMenu {
                 chatroom.addMember(new Pair<>(player.getUuid(), ChatRole.MEMBER));
             } else {
                 // Leaving the chatroom
-                PrivateTalk.getInstance().getLogger().info("Leave!");
 
                 player.leaveChatroom(chatroom);
                 chatroom.removeMember(player.getUuid());

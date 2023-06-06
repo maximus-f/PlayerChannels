@@ -196,8 +196,17 @@ public class Chatroom {
         this.members.put(value.getFirst(), value.getSecond());
     }
 
+    /**
+     * Chatroom method for removing a member or when a member leaves
+     * TODO make this more robust, currently very naive approach of deleting chatroom but probably want to make
+     * sure that the user is aware that this will delete their chatroom if they are the last ones left
+     * @param key to remove
+     */
     public void removeMember(UUID key) {
         this.members.remove(key);
+        if (getMembers().isEmpty() && !isSaved()){
+            PrivateTalk.getInstance().getChatrooms().remove(this);
+        }
     }
 
 
