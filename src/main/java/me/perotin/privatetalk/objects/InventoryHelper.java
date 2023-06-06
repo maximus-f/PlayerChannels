@@ -16,6 +16,7 @@ import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.ItemStackUtils;
+import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -65,8 +66,12 @@ public class InventoryHelper {
      * @return sets the nav bar for any given inventory
      */
     public Pair<Gui, StaticPane> setNavigationBar(ChestGui inventory, OfflinePlayer owner) {
-        navBar.addItem(new GuiItem(getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getFirst(), clickOnOwnHead(owner.getUniqueId())), getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", owner).getSecond(), 0);
-        Pair<ItemStack, Integer> invites = getItemFrom(Material.WRITABLE_BOOK, "nav-bar.manage-invites", null);
+        Pair<ItemStack, Integer> playerHead = getItem("nav-bar.player-profile-head", owner);
+        ItemStack playerHeadItem = playerHead.getFirst();
+        PrivateUtils.replacePlaceHolderInDisplayName(playerHeadItem, "$name$", owner.getName());
+
+        navBar.addItem(new GuiItem(playerHeadItem, clickOnOwnHead(owner.getUniqueId())), getItem( "nav-bar.player-profile-head", owner).getSecond(), 0);
+        Pair<ItemStack, Integer> invites = getItem( "nav-bar.manage-invites", null);
         navBar.addItem(new GuiItem(invites.getFirst(), event -> {
             event.setCancelled(true);
             new ChatroomInvitationListPager(PrivatePlayer.getPlayer(owner.getUniqueId()), (Player) owner, new MainMenuPaging((Player) owner, PrivateTalk.getInstance()).getMenu()).show();
@@ -75,6 +80,8 @@ public class InventoryHelper {
         inventory.addPane(navBar);
         return new Pair<>(inventory, navBar);
     }
+
+
 
 
     /**
@@ -160,9 +167,9 @@ public class InventoryHelper {
         ItemStack savedItem = saved.getFirst();
         ItemMeta savedMeta = savedItem.getItemMeta();
         if(chatroom.isSaved()) {
-            savedMeta.setDisplayName(sMeta.getDisplayName() + " " +messages.getString("true") );
+            savedMeta.setDisplayName(savedMeta.getDisplayName() + " " +messages.getString("true") );
         } else {
-            savedMeta.setDisplayName(sMeta.getDisplayName() + " " + messages.getString("false"));
+            savedMeta.setDisplayName(savedMeta.getDisplayName() + " " + messages.getString("false"));
         }
         savedItem.setItemMeta(savedMeta);
 
@@ -251,6 +258,7 @@ public class InventoryHelper {
 
     /**
      * @param material path to the item in menus.yml, for example, "nav-bar.player-profile-head" will retrieve said path
+     * @deprecated
      * @return itemstack with integer slot
      */
     public Pair<ItemStack, Integer> getItemFrom(Material material, String path, OfflinePlayer owner) {
@@ -259,8 +267,11 @@ public class InventoryHelper {
         builder.setName(file.getString(path + ".display"));
         if (file.getConfiguration().isSet(path + ".lore")) {
             List<String> lores = file.getConfiguration().getStringList(path + ".lore");
-            lores.forEach(s -> ChatColor.translateAlternateColorCodes('&', s));
-            builder.setLore(lores);
+            List<String> loresColored = new ArrayList<>();
+            for (String s : lores) {
+                loresColored.add(ChatColor.translateAlternateColorCodes('&', s));
+            }
+            builder.setLore(loresColored);
         }
         int slot = -1;
         if (file.getConfiguration().isSet(path +".slot")){

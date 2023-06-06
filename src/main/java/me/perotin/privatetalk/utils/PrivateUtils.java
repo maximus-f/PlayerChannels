@@ -116,4 +116,11 @@ public class PrivateUtils {
     public static Gui getMainMenu(Player viewer){
         return new MainMenuPaging(viewer, PrivateTalk.getInstance()).getMenu();
     }
+
+    public static ItemStack replacePlaceHolderInDisplayName(ItemStack toEdit, String placeholder, String input) {
+        ItemMeta meta = toEdit.getItemMeta();
+        meta.setDisplayName(meta.getDisplayName().replace(placeholder, input));
+        toEdit.setItemMeta(meta);
+        return toEdit;
+    }
 }

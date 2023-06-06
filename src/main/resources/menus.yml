@@ -31,15 +31,19 @@ nav-bar:
    player-profile-head:
       slot: 4
       display: "&e$name$"
+      # Keep this as the material for a player head (may be different spelling based on minecraft version you are using)
+      material: "PLAYER_HEAD"
       lore:
          - "&7&oClick to view your profile!"
    create-chatroom:
       slot: 5
       display: "&eCreate a chatroom"
+      material: "ANVIL"
       lore:
          - "&7&oClick to create a chatroom"
    manage-invites:
       slot: 8
+      material: "WRITABLE_BOOK"
       display: "&eView invites"
       lore:
          - "&7&oClick to view your invites"
