@@ -63,6 +63,13 @@ public class ChatroomModeratorAction {
     public static Consumer<InventoryClickEvent> promoteModerator(Chatroom chatroom, PrivatePlayer player) {
         return event -> {
             event.setCancelled(true);
+            Player owner = (Player) event.getWhoClicked();
+
+            chatroom.promoteModeratorToOwner(player.getUuid(), owner.getUniqueId());
+
+            // tell person they've been promoted and show new mod menu
+            PrivateUtils.sendMenuMessage("You have promoted " + player.getName() +" to owner!", owner,
+                    new ChatroomPager(chatroom, owner));
         };
     }
     /**

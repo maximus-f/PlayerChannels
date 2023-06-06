@@ -327,8 +327,10 @@ public class Chatroom {
         updateRoleFor(member, ChatRole.MEMBER);
     }
 
-    public void promoteModeratorToOwner(UUID member) {
+    public void promoteModeratorToOwner(UUID member, UUID oldOwner) {
         updateRoleFor(member, ChatRole.OWNER);
+        updateRoleFor(oldOwner, ChatRole.MODERATOR);
+        setOwner(member);
     }
 
     private void updateRoleFor(UUID uuid, ChatRole role) {

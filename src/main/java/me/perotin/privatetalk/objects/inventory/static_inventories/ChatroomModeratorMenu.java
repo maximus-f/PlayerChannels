@@ -70,7 +70,7 @@ public class ChatroomModeratorMenu extends StaticMenu {
                     break;
                 case MODERATOR:
                     // Moderator so show option to promote to owner or demote to member
-                    modItems.addItem(new GuiItem(promoteModerator.getFirst()), promoteModerator.getSecond(), 1);
+                    modItems.addItem(new GuiItem(promoteModerator.getFirst(), ChatroomModeratorAction.promoteModerator(chatroom, toPunish)), promoteModerator.getSecond(), 1);
                     modItems.addItem(new GuiItem(demoteModerator.getFirst(),
                             ChatroomModeratorAction.demoteModerator(chatroom, toPunish)), demoteModerator.getSecond(), 1);
                     break;
