@@ -132,7 +132,7 @@ chatroom-bar:
       slot: 1
    leave-chatroom:
       display: "&c&lLeave"
-      material: "REDSTONE_BLOCK"
+      material: "BARRIER"
       slot: 1
    in-chat:
       display: "&e&lIn Chat:"
@@ -144,6 +144,12 @@ chatroom-bar:
       slot: 3
       lore:
          - "&7&oClick to toggle"
+   status:
+      display: "&e&lStatus:"
+      material: "IRON_DOOR"
+      slot: 4
+      lore:
+         - "&7&oClick to make public or private"
 
 chatroom-bottom-bar:
    nicknames:

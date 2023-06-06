@@ -86,6 +86,7 @@ public class ChatroomPager extends PagingMenu {
         Pair<ItemStack, Integer> leave = InventoryHelper.getItem("chatroom-bar.leave-chatroom", null);
         Pair<ItemStack, Integer> inChat = InventoryHelper.getItem("chatroom-bar.in-chat", null);
         Pair<ItemStack, Integer> nicknames = InventoryHelper.getItem("chatroom-bar.nicknames", null);
+        Pair<ItemStack, Integer> status = InventoryHelper.getItem("chatroom-bar.status", null);
 
 
 
@@ -107,13 +108,22 @@ public class ChatroomPager extends PagingMenu {
         GuiItem leaveItem = new GuiItem(leave.getFirst(), joinOrLeaveEvent(false));
         GuiItem inChatItem = new GuiItem(inChat.getFirst(), toggleFocusedChat());
         ItemStack nicknamesStack = nicknames.getFirst();
+        ItemStack statusStack = status.getFirst();
+
         if (!chatroom.hasModeratorPermissions(getViewer().getUniqueId())) {
             nicknamesStack = PrivateUtils.stripLore(nicknames.getFirst(), true, -1);
+            statusStack = PrivateUtils.stripLore(statusStack, true, -1);
+
         }
         String nickStatus = chatroom.isNicknamesEnabled() ? messages.getString("true") : messages.getString("false");
         GuiItem nicknameItem = new GuiItem(PrivateUtils.appendToDisplayName(nicknamesStack, nickStatus), toggleNicknameStatus());
 
+        String statusAppend = chatroom.isPublic() ? messages.getString("public") : messages.getString("private");
+        GuiItem statusItem = new GuiItem(PrivateUtils.appendToDisplayName(statusStack, statusAppend), togglePublicStatus());
+
         chatroomBar.addItem(nicknameItem, nicknames.getSecond(), 0);
+        chatroomBar.addItem(statusItem, status.getSecond(), 0);
+
         chatroomBar.addItem(desc, description.getSecond(), 0);
 
         PrivateTalk.getInstance().getLogger().info(description.getSecond() + " x --");
@@ -302,8 +312,19 @@ public class ChatroomPager extends PagingMenu {
                 new ChatroomPager(chatroom, clicker).show();
 
             }
+        };
+    }
 
+    private Consumer<InventoryClickEvent> togglePublicStatus() {
+        return inventoryClickEvent -> {
+            inventoryClickEvent.setCancelled(true);
+            Player clicker = (Player) inventoryClickEvent.getWhoClicked();
 
+            if (chatroom.hasModeratorPermissions(getViewer().getUniqueId())){
+                chatroom.setPublic(!chatroom.isPublic());
+                new ChatroomPager(chatroom, clicker).show();
+
+            }
         };
     }
 
