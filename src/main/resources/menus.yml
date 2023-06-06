@@ -119,7 +119,7 @@ chatroom-items:
 # (Page where you can join, leave, a chatroom etc.
 chatroom-bar:
    description:
-      display: "&e&lDescription: &f"
+      display: "&e&lDescription:"
       material: "OAK_SIGN"
       slot: 0
    join-chatroom:
@@ -131,9 +131,15 @@ chatroom-bar:
       material: "REDSTONE_BLOCK"
       slot: 1
    in-chat:
-      display: "&e&lIn Chat: &f"
+      display: "&e&lIn Chat:"
       material: "NAME_TAG"
       slot: 2
+   nicknames:
+      display: "&e&lNicknames:"
+      material: "ARMOR_STAND"
+      slot: 3
+      lore:
+         - "&7&oClick to toggle"
 
 chatroom-bottom-bar:
    nicknames:

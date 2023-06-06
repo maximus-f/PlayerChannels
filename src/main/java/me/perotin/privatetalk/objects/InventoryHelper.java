@@ -26,6 +26,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -337,8 +338,11 @@ public class InventoryHelper {
         builder.setName(file.getString(path + ".display"));
         if (file.getConfiguration().isSet(path + ".lore")) {
             List<String> lores = file.getConfiguration().getStringList(path + ".lore");
-            lores.forEach(s -> ChatColor.translateAlternateColorCodes('&', s));
-            builder.setLore(lores);
+            List<String> loresColored = new ArrayList<>();
+            for (String s : lores) {
+                loresColored.add(ChatColor.translateAlternateColorCodes('&', s));
+            }
+            builder.setLore(loresColored);
         }
         int slot = -1;
         if (file.getConfiguration().isSet(path + ".slot")){

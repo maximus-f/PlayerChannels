@@ -173,6 +173,10 @@ public class Chatroom {
         return nicknamesEnabled;
     }
 
+    public void setNicknamesEnabled(boolean nicknamesEnabled) {
+        this.nicknamesEnabled = nicknamesEnabled;
+    }
+
     /**
      * @return true if chatroom gets saved, false if not
      */

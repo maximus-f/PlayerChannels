@@ -17,6 +17,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /* Created by Perotin on 8/21/19 */
 
@@ -63,6 +65,25 @@ public class PrivateUtils {
         return chat; // may be null
     }
 
+    /**
+     * Strips an itemstack of either all of its lore or a specified index
+     * @param toStrip
+     * @param all
+     * @param index
+     * @return
+     */
+    public static ItemStack stripLore(ItemStack toStrip, boolean all, int index) {
+        ItemMeta meta = toStrip.getItemMeta();
+        if (all) {
+            meta.setLore(new ArrayList<>());
+        } else {
+            List<String> lores = meta.getLore();
+            lores.remove(index);
+            meta.setLore(lores);
+        }
+        toStrip.setItemMeta(meta);
+        return toStrip;
+    }
 
     /**
      * @param message of error

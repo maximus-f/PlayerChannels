@@ -17,6 +17,7 @@ import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.ChatRoleComparator;
 import me.perotin.privatetalk.utils.ItemStackUtils;
+import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -84,6 +85,9 @@ public class ChatroomPager extends PagingMenu {
         Pair<ItemStack, Integer> join = InventoryHelper.getItem("chatroom-bar.join-chatroom", null);
         Pair<ItemStack, Integer> leave = InventoryHelper.getItem("chatroom-bar.leave-chatroom", null);
         Pair<ItemStack, Integer> inChat = InventoryHelper.getItem("chatroom-bar.in-chat", null);
+        Pair<ItemStack, Integer> nicknames = InventoryHelper.getItem("chatroom-bar.nicknames", null);
+
+
 
 
         ItemMeta inChatToggle =  inChat.getFirst().getItemMeta();
@@ -97,11 +101,19 @@ public class ChatroomPager extends PagingMenu {
         }
         inChat.getFirst().setItemMeta(inChatToggle);
 
-        GuiItem desc = new GuiItem(description.getFirst(), i -> i.setCancelled(true));
+        ItemStack descItem = PrivateUtils.appendToDisplayName(description.getFirst(), chatroom.getDescription());
+        GuiItem desc = new GuiItem(descItem, i -> i.setCancelled(true));
         GuiItem joinItem = new GuiItem(join.getFirst(), joinOrLeaveEvent(true));
         GuiItem leaveItem = new GuiItem(leave.getFirst(), joinOrLeaveEvent(false));
         GuiItem inChatItem = new GuiItem(inChat.getFirst(), toggleFocusedChat());
+        ItemStack nicknamesStack = nicknames.getFirst();
+        if (!chatroom.hasModeratorPermissions(getViewer().getUniqueId())) {
+            nicknamesStack = PrivateUtils.stripLore(nicknames.getFirst(), true, -1);
+        }
+        String nickStatus = chatroom.isNicknamesEnabled() ? messages.getString("true") : messages.getString("false");
+        GuiItem nicknameItem = new GuiItem(PrivateUtils.appendToDisplayName(nicknamesStack, nickStatus), toggleNicknameStatus());
 
+        chatroomBar.addItem(nicknameItem, nicknames.getSecond(), 0);
         chatroomBar.addItem(desc, description.getSecond(), 0);
 
         PrivateTalk.getInstance().getLogger().info(description.getSecond() + " x --");
@@ -278,6 +290,24 @@ public class ChatroomPager extends PagingMenu {
     }
 
     /**
+     * @return consumer of inventory event of when mod/owner toggles nickname status
+     */
+    private Consumer<InventoryClickEvent> toggleNicknameStatus() {
+        return inventoryClickEvent -> {
+            inventoryClickEvent.setCancelled(true);
+            Player clicker = (Player) inventoryClickEvent.getWhoClicked();
+
+            if (chatroom.hasModeratorPermissions(getViewer().getUniqueId())){
+                chatroom.setNicknamesEnabled(!chatroom.isNicknamesEnabled());
+                new ChatroomPager(chatroom, clicker).show();
+
+            }
+
+
+        };
+    }
+
+    /**
      *
      * @return consumer event showing the ban menu
      */
@@ -301,16 +331,6 @@ public class ChatroomPager extends PagingMenu {
 
     /**
      * Sets the bottom row for use of mod actions like viewing ban menu and members for setting nicknames
-     *
-     * chatroom-bottom-bar:
-     *    nicknames:
-     *       display: "&e&lNicknames menu"
-     *       material: "NETHER_STAR"
-     *       slot: 0
-     *    ban-menu:
-     *       display: "&e&lBans"
-     *       material: "ENDER_CHEST"
-     *       slot: 3
      */
     private void setBottomRow(){
         Pair<ItemStack, Integer> nicknames = InventoryHelper.getItem("chatroom-bottom-bar.nicknames", null);
@@ -319,7 +339,9 @@ public class ChatroomPager extends PagingMenu {
         GuiItem banItem = new GuiItem(banMenu.getFirst(), viewBanMenu());
         GuiItem nickNameItem = new GuiItem(nicknames.getFirst(), viewNicknameMenu());
 
-        bottomRow.addItem(nickNameItem, nicknames.getSecond(), 0);
+        if (chatroom.isNicknamesEnabled()) {
+            bottomRow.addItem(nickNameItem, nicknames.getSecond(), 0);
+        }
 
         if (chatroom.hasModeratorPermissions(getViewer().getUniqueId())){
 
@@ -327,5 +349,6 @@ public class ChatroomPager extends PagingMenu {
         }
 
     }
+
 }
 
