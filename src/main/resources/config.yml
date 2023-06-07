@@ -5,6 +5,7 @@
 #
 # Having issues? Contact me on discord @ Perotin#3447
 
+#note most of the conf
 
 command-name: "privatetalk"
 aliases:
@@ -16,6 +17,14 @@ saved-material: "OAK_SIGN"
 
 quickchat-prefix: "@"
 
-chatroom-message-format: "&7[&e$chatroom$&7] &e$role$ &7$name$ ➤ &e$message$"
+# If $nickname$ is present, will use the player's chatroom nickname
+# if it exists, other will just use their minecraft name
+# Valid placeholders for this:
+# $role$ - Role in chatroom (e.g. Member, Moderator, Owner, values defined in messages.yml)
+# $chatroom$ - Name of chatroom message is being sent in
+# $nickname$ - Nickname of player in chatroom, if player does not have a nickname or it is disabled will just default to $name$
+# $name$ - Real minecraft name of plaeyer
+
+chatroom-message-format: "&7[&e$chatroom$&7] &e$role$ $nickname$ ➤ &e$message$"
 bungeecord: false
 

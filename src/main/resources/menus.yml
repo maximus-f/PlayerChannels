@@ -123,9 +123,11 @@ chatroom-items:
 # (Page where you can join, leave, a chatroom etc.
 chatroom-bar:
    description:
-      display: "&e&lDescription:"
+      display: "&e&lDescription:&f"
       material: "OAK_SIGN"
       slot: 0
+      lore:
+         - "&7&oClick to change"
    join-chatroom:
       display: "&a&lJoin"
       material: "EMERALD_BLOCK"
@@ -135,7 +137,7 @@ chatroom-bar:
       material: "BARRIER"
       slot: 1
    in-chat:
-      display: "&e&lIn Chat:"
+      display: "&e&lIn Chat:&f"
       material: "NAME_TAG"
       slot: 2
    nicknames:

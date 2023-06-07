@@ -7,6 +7,7 @@ import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.PrivateTalk;
+import me.perotin.privatetalk.events.chat_events.ChatroomSetDescriptionEvent;
 import me.perotin.privatetalk.objects.ChatRole;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.InventoryHelper;
@@ -104,7 +105,6 @@ public class ChatroomPager extends PagingMenu {
         inChat.getFirst().setItemMeta(inChatToggle);
 
         ItemStack descItem = PrivateUtils.appendToDisplayName(description.getFirst(), chatroom.getDescription());
-        GuiItem desc = new GuiItem(descItem, i -> i.setCancelled(true));
         GuiItem joinItem = new GuiItem(join.getFirst(), joinOrLeaveEvent(true));
         GuiItem leaveItem = new GuiItem(leave.getFirst(), joinOrLeaveEvent(false));
         GuiItem inChatItem = new GuiItem(inChat.getFirst(), toggleFocusedChat());
@@ -114,8 +114,11 @@ public class ChatroomPager extends PagingMenu {
         if (!chatroom.hasModeratorPermissions(getViewer().getUniqueId())) {
             nicknamesStack = PrivateUtils.stripLore(nicknames.getFirst(), true, -1);
             statusStack = PrivateUtils.stripLore(statusStack, true, -1);
+            descItem = PrivateUtils.stripLore(descItem, true, -1);
 
         }
+        GuiItem desc = new GuiItem(descItem, changeChatroomDescription());
+
         String nickStatus = chatroom.isNicknamesEnabled() ? messages.getString("true") : messages.getString("false");
         GuiItem nicknameItem = new GuiItem(PrivateUtils.appendToDisplayName(nicknamesStack, nickStatus), toggleNicknameStatus());
 
@@ -347,6 +350,23 @@ public class ChatroomPager extends PagingMenu {
             if (chatroom.hasModeratorPermissions(getViewer().getUniqueId())){
                 chatroom.setPublic(!chatroom.isPublic());
                 new ChatroomPager(chatroom, clicker).show();
+
+            }
+        };
+    }
+
+    private Consumer<InventoryClickEvent> changeChatroomDescription() {
+        return inventoryClickEvent -> {
+            inventoryClickEvent.setCancelled(true);
+            Player clicker = (Player) inventoryClickEvent.getWhoClicked();
+
+            if (chatroom.hasModeratorPermissions(getViewer().getUniqueId())){
+                ChatroomSetDescriptionEvent.setDescription.put(clicker, chatroom);
+                clicker.closeInventory();
+                String setDesc = messages.getString("set-description").replace("$chatroom$", chatroom.getName())
+                        .replace("$cancel$", messages.getString("cancel"));
+                clicker.sendMessage(setDesc);
+
 
             }
         };

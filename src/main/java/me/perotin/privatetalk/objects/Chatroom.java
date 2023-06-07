@@ -185,6 +185,11 @@ public class Chatroom {
         return isSaved;
     }
 
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     /**
      * @return Item representation of the chatroom
      */
@@ -264,8 +269,8 @@ public class Chatroom {
     public void chat(String sender, String message, UUID id){
         List<Player> members = getOnlinePlayers();
         // Perform operations to format message accordingly
-        String nickname = "";
-        if (getNickNames().containsKey(id)) {
+        String nickname = sender;
+        if (getNickNames().containsKey(id) && isNicknamesEnabled()) {
             nickname = ChatColor.translateAlternateColorCodes('&', getNickNames().get(id));
         }
         // TODO need to make this a bit more complex, for example

@@ -39,4 +39,5 @@ description-missing: "&cYou must set a description!"
 
 # Messages related to chatrooms
 muted-message: "&e7[&e$chatroom$&7] &cYou are currently muted in this chatroom!"
-set-nickname: "&eSet a nickname for $name$ in chat, type &c$cancel$ to cancel:"
+set-nickname: "&eSet a nickname for $name$ in chat, type &c$cancel$ &eto cancel:"
+set-description: "&eSet a description for $chatroom$ in chat, type &c$cancel$ &eto cancel:"

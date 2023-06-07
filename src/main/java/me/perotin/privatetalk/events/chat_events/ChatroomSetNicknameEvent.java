@@ -42,18 +42,22 @@ public class ChatroomSetNicknameEvent implements Listener {
             setNickname.remove(chatter);
             if (messages.getString("cancel").equalsIgnoreCase(nickname)){
                 // cancel setting the nickname
-                new ChatroomNicknameManagerPager(chatroom, chatter).show();
+                openInvSynchronously(chatroom, chatter);
                 return;
 
             }
             chatroom.setNickname(toSetFor, nickname);
             // Show them the nickname menu again
-            new BukkitRunnable(){
-                @Override
-                public void run() {
-                    new ChatroomNicknameManagerPager(chatroom, chatter).show();
-                }
-            }.runTask(PrivateTalk.getInstance());
+            openInvSynchronously(chatroom, chatter);
         }
+    }
+
+    private void openInvSynchronously(Chatroom chatroom, Player chatter) {
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                new ChatroomNicknameManagerPager(chatroom, chatter).show();
+            }
+        }.runTask(PrivateTalk.getInstance());
     }
 }
