@@ -5,8 +5,12 @@ import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.inventory.Menu;
 import me.perotin.privatetalk.objects.inventory.paging_objects.MainMenuPaging;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.*;
+import org.bukkit.advancement.Advancement;
+import org.bukkit.advancement.AdvancementProgress;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
@@ -19,6 +23,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /* Created by Perotin on 8/21/19 */
 
@@ -89,20 +94,64 @@ public class PrivateUtils {
      * @param message of error
      */
     public static void sendMenuMessage(String message, Player player, Menu nextMenu){
-        InventoryView menu = player.getOpenInventory();
-        player.closeInventory();
-        player.sendTitle(message, "", 0, 2*20, 0);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (nextMenu != null) {
-                    nextMenu.show(player);
-                } else {
-                    player.openInventory(menu);
-                }
-            }
-        }.runTaskLater(PrivateTalk.getInstance(), 2*20);
+
+//        // Create the BossBar
+//        BossBar bossBar = Bukkit.createBossBar(message, BarColor.PURPLE, BarStyle.SOLID);
+
+        sendAdvancementNotification(player, message, "", Material.WRITABLE_BOOK);
+//        bossBar.addPlayer(player);
+
+        if (nextMenu != null){
+            nextMenu.show(player);
+        }
+
+//        Bukkit.getScheduler().runTaskLater(PrivateTalk.getInstance(), () -> bossBar.removePlayer(player), 5*20L); // 60L is approximately 3 seconds
+
     }
+
+
+    private static void sendAdvancementNotification(Player player, String title, String description, Material iconMaterial) {
+        // Generate a random UUID for this advancement.
+        String uuid = UUID.randomUUID().toString();
+
+        // Create a NamespacedKey for the advancement.
+        NamespacedKey key = new NamespacedKey(PrivateTalk.getInstance(), uuid);
+
+        // Create the JSON for the advancement.
+        String json = "{"
+                + "\"display\": {"
+                + "\"title\": {\"text\": \"" + title + "\", \"color\": \"yellow\"},"
+                + "\"description\": {\"text\": \"" + description + "\", \"color\": \"white\"},"
+                + "\"icon\": {\"item\": \"minecraft:" + iconMaterial.getKey().getKey() + "\"},"
+                + "\"frame\": \"goal\","
+                + "\"announce_to_chat\": false,"
+                + "\"show_toast\": true,"
+                + "\"hidden\": true,"
+                + "\"background\": \"minecraft:textures/block/stone.png\""
+                + "},"
+                + "\"criteria\": {"
+                + "\"trigger\": {\"trigger\": \"minecraft:impossible\"}"
+                + "}"
+                + "}";
+
+        // Load the advancement.
+        Advancement advancement = Bukkit.getUnsafe().loadAdvancement(key, json);
+        if (advancement != null) {
+            // Grant the advancement to the player.
+            AdvancementProgress progress = player.getAdvancementProgress(advancement);
+            progress.awardCriteria("trigger");
+
+            // Schedule the removal of the advancement.
+            Bukkit.getScheduler().runTaskLater(PrivateTalk.getInstance(), () -> {
+                progress.revokeCriteria("trigger");
+                Bukkit.getUnsafe().removeAdvancement(key);
+                Bukkit.getServer().reloadData();
+            }, 20L);  // Remove the advancement after 20 ticks (1 second).
+        }
+    }
+
+
+
 
 
     public static ItemStack appendToDisplayName(ItemStack item, String append){

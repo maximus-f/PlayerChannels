@@ -7,6 +7,7 @@ import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.PrivateTalk;
+import me.perotin.privatetalk.events.chat_events.ChatroomConfirmDeletionEvent;
 import me.perotin.privatetalk.events.chat_events.ChatroomSetDescriptionEvent;
 import me.perotin.privatetalk.objects.ChatRole;
 import me.perotin.privatetalk.objects.Chatroom;
@@ -283,16 +284,29 @@ public class ChatroomPager extends PagingMenu {
                 if (chatroom.isBanned(player.getUuid())){
                     // TODO figure out way to send messages that is smart and sensible. Through changing
                     // menu title again probably but in a smart way
-                    //PrivateUtils.sendErrorMessage("You are banned!");
+                    PrivateUtils.sendMenuMessage("You are banned!", clicker, null);
                     return;
                 }
                 player.addChatroom(chatroom);
                 chatroom.addMember(new Pair<>(player.getUuid(), ChatRole.MEMBER));
             } else {
                 // Leaving the chatroom
+                // If owner is leaving then tell them that this will delete their chatroom and have them confirm it
+                if (getChatroom().getRole(player.getUuid()) == ChatRole.OWNER && getChatroom().getMembers().size() > 1) {
+                    clicker.closeInventory();
+                    ChatroomConfirmDeletionEvent.confirmDeletion.put(clicker, chatroom);
 
-                player.leaveChatroom(chatroom);
-                chatroom.removeMember(player.getUuid());
+                    String warningDelete = messages.getString("owner-leave-chatroom")
+                            .replace("$chatroom$", chatroom.getName());
+                    clicker.sendMessage(warningDelete);
+                    clicker.sendMessage(messages.getString("owner-leave-chatroom2"));
+                    return;
+
+                } else {
+                    // let them leave simply
+                    player.leaveChatroom(chatroom);
+                    chatroom.removeMember(player.getUuid());
+                }
 
             }
             new ChatroomPager(chatroom, clicker).show();

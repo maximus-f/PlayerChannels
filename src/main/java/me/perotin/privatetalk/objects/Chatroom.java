@@ -251,9 +251,6 @@ public class Chatroom {
         return bannedMembers;
     }
 
-    public void setBannedMembers(List<UUID> bannedMembers) {
-        this.bannedMembers = bannedMembers;
-    }
 
     public Map<UUID, String> getNickNames() {
         return nickNames;
@@ -283,6 +280,17 @@ public class Chatroom {
                         .replace("$nickname$", nickname);
 
         members.forEach(member -> member.sendMessage(chatroomFormat));
+    }
+
+    /**
+     * Broadcast any message to the entire chatroom
+     * @param message
+     */
+    public void broadcastMessage(String message) {
+        List<Player> members = getOnlinePlayers();
+        members.forEach(member -> member.sendMessage(message));
+
+
     }
 
     public List<UUID> getMutedMembers() {
@@ -435,5 +443,18 @@ public class Chatroom {
         if (isBanned(uuid)){
             getBannedMembers().remove(uuid);
         }
+    }
+
+    /**
+     * Deletes itself from memory. Will remove and remove its correspondence from all @PrivatePlayer objects
+     * TODO make this compatible with saved chatrooms
+     */
+    public void delete() {
+        broadcastMessage(messages.getString("chatroom-being-deleted").replace("$chatroom$", getName()));
+        for (PrivatePlayer player : getMembers().stream().map(PrivatePlayer::getPlayer).collect(Collectors.toList())) {
+            player.getChatrooms().remove(this);
+        }
+        PrivateTalk.getInstance().getChatrooms().remove(this);
+
     }
 }

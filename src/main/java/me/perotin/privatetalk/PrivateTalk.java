@@ -105,6 +105,8 @@ public class PrivateTalk extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PrivatePlayerJoinEvent(this), this);
         Bukkit.getPluginManager().registerEvents(new ChatroomSetNicknameEvent(this), this);
         Bukkit.getPluginManager().registerEvents(new ChatroomSetDescriptionEvent(this), this);
+        Bukkit.getPluginManager().registerEvents(new ChatroomConfirmDeletionEvent(this), this);
+
 
 
 
