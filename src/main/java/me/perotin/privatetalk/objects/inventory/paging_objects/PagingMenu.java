@@ -32,7 +32,7 @@ public abstract class PagingMenu extends Menu {
     protected PaginatedPane pane;
     private Player viewer;
     /** Used in the title of every menu, for identifying what type of paging menu it is **/
-    private final String identifier;
+    private String identifier;
 
     /**
      * Menu that player came from to reach this paging menu. Can be null if it does not exist
@@ -89,6 +89,10 @@ public abstract class PagingMenu extends Menu {
         return identifier;
     }
 
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
     public void show(){
         getMenu().show(viewer);

@@ -7,6 +7,7 @@ import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.utils.ItemStackUtils;
+import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -28,7 +29,7 @@ public class ChatroomBannedMembersListPager extends PagingMenu {
     private PrivateTalk plugin;
 
     public ChatroomBannedMembersListPager(Chatroom chatroom, Player viewer){
-        super(chatroom.getName() + ": Banned players", 6, viewer, new ChatroomPager(chatroom, viewer).getMenu());
+        super(PrivateUtils.getMessageString("chatroom-ban-menu-title").replace("$chatroom$", chatroom.getName()).replace("$count$", chatroom.getBannedMembers().size()+""), 6, viewer, new ChatroomPager(chatroom, viewer).getMenu());
         this.chatroom = chatroom;
         this.plugin = PrivateTalk.getInstance();
         plugin.getHelper().setSideDecorationSlots(getMenu());

@@ -21,10 +21,11 @@ public class PlayerListPager extends PagingMenu {
 
 
     public PlayerListPager(Player viewer) {
-        super("PlayerListPager", 6, viewer, new MainMenuPaging(viewer, PrivateTalk.getInstance()).getMenu());
+        super(PrivateUtils.getMessageString("player-list-menu-title"), 6, viewer, new MainMenuPaging(viewer, PrivateTalk.getInstance()).getMenu());
         setPaginatedPane();
         getPaginatedPane().populateWithGuiItems(generatePages());
         setPlayerListPage();
+
 
 
     }

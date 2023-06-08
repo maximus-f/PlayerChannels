@@ -11,6 +11,7 @@ import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.objects.inventory.paging_objects.MainMenuPaging;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
+import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -127,10 +128,11 @@ public class CreateChatroomAction {
 
             // may not be fully correct
             if(chatroom.getName().equals("")){
-                clicker.sendTitle(messages.getString("name-missing"), "", 10, 20*3, 10);
+                PrivateUtils.sendMenuMessage(messages.getString("name-missing"), clicker, null);
+//                clicker.sendTitle(messages.getString("name-missing"), "", 10, 20*3, 10);
                 return;
             } else if(chatroom.getDescription().equals("")){
-                clicker.sendTitle(messages.getString("description-missing"), "", 10, 20*3, 10);
+                PrivateUtils.sendMenuMessage(messages.getString("description-missing"), clicker, null);
                 return;
             }
             // create the chatroom

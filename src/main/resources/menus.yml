@@ -203,7 +203,7 @@ main-menu:
       view-players:
          material: "OAK_SIGN"
          display: "&eView all players"
-         slot: 0
+         slot: 1
 
 # Player Profile Menu
 # Menu that appears when a player is selected from the player list menu or a

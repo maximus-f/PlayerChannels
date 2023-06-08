@@ -54,14 +54,16 @@ public class CreateChatroomInputEvent implements Listener {
                     return;
                 }
                 // success condition, set name in PreChatroom
+                name = PrivateUtils.addColor(name);
                 preChatroom.setName(name);
                 showUpdatedMenu(chatter, preChatroom);
                 setName.remove(chatter.getUniqueId());
 
 
             } else if (setDescription.contains(chatter.getUniqueId())) {
-                String description = event.getMessage();
+                String description = PrivateUtils.addColor(event.getMessage());
                 // no error conditions so continue
+
                 preChatroom.setDescription(description);
                 showUpdatedMenu(chatter, preChatroom);
                 setDescription.remove(chatter.getUniqueId());

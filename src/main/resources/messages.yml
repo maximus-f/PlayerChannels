@@ -40,8 +40,19 @@ description-missing: "&cYou must set a description!"
 # Messages related to chatrooms
 muted-message: "&e7[&e$chatroom$&7] &cYou are currently muted in this chatroom!"
 set-nickname: "&eSet a nickname for $name$ in chat, type &c$cancel$ &eto cancel:"
-set-description: "&eSet a description for $chatroom$ in chat, type &c$cancel$ &eto cancel:"
+set-description: "&eSet a description for $chatroom$ &ein chat, type &c$cancel$ &eto cancel:"
 moderator-promoted: "&7[$chatroom$&7] &a$name$&e has been promoted to &amoderator&e!"
-owner-leave-chatroom: "&7[&c&lAttention&7] &cLeaving $chatroom$ will delete it! Either promote a moderator to owner or type '&e$chatroom$&c' to confirm this"
+owner-leave-chatroom: "&7[&c&lAttention&7] &cLeaving $chatroom$ &cwill delete it! Either promote a moderator to owner or type '&e$chatroom$&c' to confirm this"
 owner-leave-chatroom2: "&cOr type anything else to cancel."
 chatroom-being-deleted: "&7[$chatroom$&7] &eThis chatroom is being deleted! Goodbye!"
+
+# Menu titles
+main-menu-title: "Main Menu: "
+chatroom-menu-title: "$chatroom$ Menu: "
+player-profile-menu-title: "$name$'s Profile: "
+player-list-menu-title: "Player List: "
+invitations-menu-title: "Your invitations: "
+# $count$ is how many banned players exist for the chatroom
+chatroom-ban-menu-title: "$chatroom$: Banned players ($count$)"
+chatroom-nickname-menu-title: "$chatroom$: Nickname Menu"
+select-chatroom-to-invite-menu-title: "Select chatroom to invite:"

@@ -36,9 +36,10 @@ public class PlayerProfileMenu extends PagingMenu {
     private InventoryHelper helper;
     private PrivatePlayer player;
     private Player viewer;
-    private StaticPane playerControlPane; // Pane that has controls for players like their status & if they are allowing invites or not
+
+    private final StaticPane playerControlPane; // Pane that has controls for players like their status & if they are allowing invites or not
     public PlayerProfileMenu(Player viewer, PrivatePlayer player, Gui backMenu) {
-        super(player.getName() + "'s Profile", 6, viewer, backMenu);
+        super(PrivateUtils.getMessageString("player-profile-menu-title").replace("$name$", player.getName()), 6, viewer, backMenu);
 
         this.viewer = viewer;
         helper = PrivateTalk.getInstance().getHelper();

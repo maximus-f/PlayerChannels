@@ -12,6 +12,7 @@ import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.ItemStackUtils;
+import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -32,7 +33,8 @@ public class ChatroomNicknameManagerPager extends PagingMenu {
 
     private PrivateFile messages;
     public ChatroomNicknameManagerPager(Chatroom chatroom, Player viewer){
-        super(chatroom.getName()+"-nickname-manager", 6, viewer, new MainMenuPaging(viewer, PrivateTalk.getInstance()).getMenu());
+        super(PrivateUtils.getMessageString("chatroom-nickname-menu-title")
+                .replace("$chatroom$", chatroom.getName()), 6, viewer, new ChatroomPager(chatroom, viewer).getMenu());
         this.chatroom = chatroom;
         this.messages = new PrivateFile(FileType.MESSAGES);
         PrivateTalk.getInstance().getHelper().setSideDecorationSlots(getMenu());

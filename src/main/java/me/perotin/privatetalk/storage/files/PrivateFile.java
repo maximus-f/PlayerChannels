@@ -7,6 +7,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
+import java.util.List;
+import java.util.UUID;
 
 /* Created by Perotin on 8/14/19 */
 public class PrivateFile {
@@ -60,6 +62,9 @@ public class PrivateFile {
         return configuration.get(path);
     }
 
+    public List<String> getStringList(String path) {
+        return configuration.getStringList(path);
+    }
     public void set(String path, Object value) {
         configuration.set(path, value);
     }

@@ -40,11 +40,13 @@ public class Chatroom {
     private boolean isSaved, nicknamesEnabled;
     private List<UUID> bannedMembers;
 
-    private final List<UUID> mutedMembers;
+    private List<UUID> mutedMembers;
 
     private Map<UUID, String> nickNames;
     private PrivateFile messages;
     private ItemStack display;
+
+
 
     /**
      * Players that are currently chatting in the chatroom
@@ -72,11 +74,14 @@ public class Chatroom {
      * Used for loading a chatroom from file with members
      * @return chatroom
      */
-    public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, Map<UUID, ChatRole> members) {
+    public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, Map<UUID, ChatRole> members, List<UUID> bannedMembers, List<UUID> mutedMembers, Map<UUID, String> nicknames, boolean nicknamesenabled ) {
         this(owner, name, description, isPublic, isSaved);
         this.messages = new PrivateFile(MESSAGES);
         this.members = members;
-        this.nickNames = new HashMap<>();
+        this.bannedMembers = bannedMembers;
+        this.mutedMembers = mutedMembers;
+        this.nickNames = nicknames;
+        this.nicknamesEnabled = nicknamesenabled;
 
     }
 
@@ -386,19 +391,45 @@ public class Chatroom {
     /**
      * @apiNote Used to save a chatroom to chatrooms.yml
      */
-    public void saveToFile(){
+    /**
+     * owner
+     * name
+     * description
+     * ispublic
+     * isSaved
+     * nicknamesEnabled
+     * bannedMmebers
+     * mutedMembers
+     * nicknames
+     *
+     */
+    public void saveToFile() {
         PrivateFile chatrooms = new PrivateFile(FileType.CHATROOM);
-        HashMap<UUID, Integer> mappedToInt = new HashMap<>();
+        HashMap<String, Integer> mappedToInt = new HashMap<>();
         for (UUID uuid : getMemberMap().keySet()) {
-            mappedToInt.put(uuid, getMemberMap().get(uuid).getValue());
+            mappedToInt.put(uuid.toString(), getMemberMap().get(uuid).getValue());
         }
+
+        HashMap<String, String> stringNickNames = new HashMap<>();
+        for (UUID uuid : nickNames.keySet()) {
+            stringNickNames.put(uuid.toString(), nickNames.get(uuid));
+        }
+
+        List<String> stringBannedMembers = bannedMembers.stream().map(UUID::toString).collect(Collectors.toList());
+        List<String> stringMutedMembers = mutedMembers.stream().map(UUID::toString).collect(Collectors.toList());
+
         chatrooms.set(name+".status", isPublic);
         chatrooms.set(name+".saved", isSaved);
+        chatrooms.set(name+".nicknamesEnabled", nicknamesEnabled);
         chatrooms.set(name+".owner", getOwner().toString());
         chatrooms.set(name+".description", description);
+        chatrooms.set(name+".nicknames", stringNickNames);
+        chatrooms.set(name+".banned", stringBannedMembers);
+        chatrooms.set(name+".muted", stringMutedMembers);
         chatrooms.getConfiguration().createSection(name+".members", mappedToInt);
         chatrooms.save();
     }
+
 
     /**
      * Chatroom names are unique so this is a good way for checking this.
@@ -421,6 +452,25 @@ public class Chatroom {
             UUID owner = UUID.fromString(chatrooms.getString(name + ".owner"));
             boolean saved = chatrooms.getBool(name + ".saved");
             boolean isPublic = chatrooms.getBool(name + ".status");
+            boolean nicknamesEnabled = chatrooms.getBool(name+".nicknamesEnabled");
+
+            List<UUID> banned = chatrooms.getStringList(name+".banned").stream()
+                    .map(UUID::fromString).collect(Collectors.toList());
+
+            List<UUID> muted = chatrooms.getStringList(name+".muted").stream()
+                    .map(UUID::fromString).collect(Collectors.toList());
+
+            ConfigurationSection nicknamesSection = chatrooms.getConfiguration()
+                    .getConfigurationSection(name + ".nicknames");
+            Map<UUID, String> nicknames = new HashMap<>();
+            if(nicknamesSection != null) {
+                for(String key : nicknamesSection.getKeys(false)) {
+                    UUID uuid = UUID.fromString(key);
+                    String nickname = nicknamesSection.getString(key);
+                    nicknames.put(uuid, nickname);
+                }
+            }
+
             ConfigurationSection sec = chatrooms.getConfiguration().getConfigurationSection(name + ".members");
             Map<UUID, ChatRole> loadedRoles = new HashMap<>();
             for (String key : sec.getKeys(false)) {
@@ -429,10 +479,13 @@ public class Chatroom {
                 UUID uuid = UUID.fromString(key);
                 loadedRoles.put(uuid, roleO);
             }
-            return new Chatroom(owner, name, description, isPublic, saved, loadedRoles);
-        } else return null;
 
+            return new Chatroom(owner, name, description, isPublic, saved, loadedRoles, banned, muted, nicknames, nicknamesEnabled);
+        } else {
+            return null;
+        }
     }
+
 
     public ChatRole getRole(UUID uuid) {
         return getMemberMap().get(uuid);

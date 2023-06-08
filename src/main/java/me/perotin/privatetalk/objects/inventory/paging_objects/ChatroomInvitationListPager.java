@@ -8,6 +8,8 @@ import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.InventoryHelper;
 import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.storage.Pair;
+import me.perotin.privatetalk.storage.files.FileType;
+import me.perotin.privatetalk.storage.files.PrivateFile;
 import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -29,7 +31,7 @@ public class ChatroomInvitationListPager extends PagingMenu {
     private PrivatePlayer player; // player viewing their own invites
     private InventoryHelper helper;
     public ChatroomInvitationListPager(PrivatePlayer player, Player viewer, Gui backMenu) {
-        super("Your invitations", 6, viewer, backMenu);
+        super(new PrivateFile(FileType.MESSAGES).getString("invitations-menu-title"), 6, viewer, backMenu);
         this.player = player;
         this.helper = PrivateTalk.getInstance().getHelper();
         this.helper.setNavigationBar(getMenu(), viewer);

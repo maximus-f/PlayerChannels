@@ -57,7 +57,7 @@ public class ChatroomPager extends PagingMenu {
     private final StaticPane bottomRow; /** Items that appear in the bottom row, for viewing ban menu etc. **/
 
     public ChatroomPager(Chatroom chatroom, Player viewer){
-        super(viewer.getName()+"-chatroom", 6, viewer, new MainMenuPaging(viewer, PrivateTalk.getInstance()).getMenu());
+        super(PrivateUtils.getMessageString(("chatroom-menu-title")).replace("$chatroom$", chatroom.getName()), 6, viewer, new MainMenuPaging(viewer, PrivateTalk.getInstance()).getMenu());
         this.chatroom = chatroom;
          this.messages = new PrivateFile(FileType.MESSAGES);
          this.chatroomBar = new StaticPane(2, 1, 5, 1);
@@ -306,6 +306,11 @@ public class ChatroomPager extends PagingMenu {
                     // let them leave simply
                     player.leaveChatroom(chatroom);
                     chatroom.removeMember(player.getUuid());
+                    // so it doesn't show them the empty chatroom
+                    if (getChatroom().getMembers().size() == 0){
+                        new MainMenuPaging(clicker, PrivateTalk.getInstance()).show();
+                        return;
+                    }
                 }
 
             }

@@ -5,6 +5,8 @@ import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.Chatroom;
 import me.perotin.privatetalk.objects.inventory.Menu;
 import me.perotin.privatetalk.objects.inventory.paging_objects.MainMenuPaging;
+import me.perotin.privatetalk.storage.files.FileType;
+import me.perotin.privatetalk.storage.files.PrivateFile;
 import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
@@ -90,6 +92,9 @@ public class PrivateUtils {
         return toStrip;
     }
 
+    public static String getMessageString(String path) {
+        return new PrivateFile(FileType.MESSAGES).getString(path);
+    }
     /**
      * @param message of error
      */
@@ -151,7 +156,17 @@ public class PrivateUtils {
     }
 
 
-
+    /**
+     * Adds color to any given message provided that they are allowed
+     * @param msg
+     * @return
+     */
+    public static String addColor(String msg) {
+        boolean allowed = PrivateTalk.getInstance().getConfig().getBoolean("chat-colors");
+        if (allowed) {
+            return ChatColor.translateAlternateColorCodes('&', msg);
+        } else return msg;
+    }
 
 
     public static ItemStack appendToDisplayName(ItemStack item, String append){

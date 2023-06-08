@@ -6,6 +6,7 @@ import me.perotin.privatetalk.objects.inventory.paging_objects.ChatroomNicknameM
 import me.perotin.privatetalk.objects.inventory.paging_objects.ChatroomPager;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
+import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,7 +39,7 @@ public class ChatroomSetDescriptionEvent implements Listener {
             if (ChatColor.stripColor(cancel).equalsIgnoreCase(newDescription)) {
                 openInvSynchronously(chatroom, chatter);
             } else {
-                chatroom.setDescription(newDescription);
+                chatroom.setDescription(PrivateUtils.addColor(newDescription));
                 openInvSynchronously(chatroom, chatter);
 
             }

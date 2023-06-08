@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class SelectChatroomToInviteMenu extends StaticMenu {
     private StaticPane chatrooms;
     public SelectChatroomToInviteMenu(Player inviter, PrivatePlayer inRoom, PrivatePlayer invited) {
-        super(inviter, "Select chatroom to invite to");
+        super(inviter, PrivateUtils.getMessageString("select-chatroom-to-invite-menu-title"));
         chatrooms = new StaticPane(0, 0, 6, 7);
         // TODO Doing this is a prototype manner to see if done, needs to be refactored
         int x = 0, y = 0;

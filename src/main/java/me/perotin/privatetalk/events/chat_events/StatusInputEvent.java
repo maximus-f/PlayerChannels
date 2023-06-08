@@ -4,6 +4,7 @@ import me.perotin.privatetalk.PrivateTalk;
 import me.perotin.privatetalk.objects.PrivatePlayer;
 import me.perotin.privatetalk.objects.inventory.paging_objects.MainMenuPaging;
 import me.perotin.privatetalk.objects.inventory.static_inventories.PlayerProfileMenu;
+import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,7 +23,7 @@ public class StatusInputEvent implements Listener {
             // Entering status
             event.setCancelled(true);
             PrivatePlayer player = PrivatePlayer.getPlayer(chatter.getUniqueId());
-            player.setStatus(event.getMessage());
+            player.setStatus(PrivateUtils.addColor(event.getMessage()));
             enteringStatus.remove(chatter);
             new BukkitRunnable(){
                 @Override

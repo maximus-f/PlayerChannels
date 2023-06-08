@@ -10,6 +10,7 @@ import me.perotin.privatetalk.objects.inventory.actions.ChatroomItemStackAction;
 import me.perotin.privatetalk.storage.Pair;
 import me.perotin.privatetalk.storage.files.FileType;
 import me.perotin.privatetalk.storage.files.PrivateFile;
+import me.perotin.privatetalk.utils.PrivateUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -30,7 +31,7 @@ public class MainMenuPaging extends PagingMenu {
 
     private final StaticPane bottomRow; // Bottom row to contain button to view all players, join a random chatroom, leave all current chatrooms etc.
     public MainMenuPaging(Player viewer, PrivateTalk plugin){
-        super(viewer.getName()+"-main", 6, viewer, null);
+        super(PrivateUtils.getMessageString("main-menu-title"), 6, viewer, null);
         this.messages = new PrivateFile(FileType.MESSAGES);
         this.plugin = plugin;
         this.bottomRow = new StaticPane(3, 5, 3, 1);

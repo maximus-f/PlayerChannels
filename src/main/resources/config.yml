@@ -5,8 +5,10 @@
 #
 # Having issues? Contact me on discord @ Perotin#3447
 
-#note most of the conf
+#note most of the configuration comes in menus.yml / messages.yml!
 
+# Should chat colors be allowed throughout the plugin? (chatroom names, player statuses, etc.)
+chat-colors: true
 command-name: "privatetalk"
 aliases:
    - "pt"
@@ -25,6 +27,6 @@ quickchat-prefix: "@"
 # $nickname$ - Nickname of player in chatroom, if player does not have a nickname or it is disabled will just default to $name$
 # $name$ - Real minecraft name of plaeyer
 
-chatroom-message-format: "&7[&e$chatroom$&7] &e$role$ $nickname$ ➤ &e$message$"
+chatroom-message-format: "&7[&e$chatroom$&7] &e$role$ $nickname$ &7➤ &e$message$"
 bungeecord: false
 
