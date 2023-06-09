@@ -113,7 +113,7 @@ public class PrivatePlayer {
         playerFile.set(uuid+".status", status);
 
         if(!getSavedChatrooms().isEmpty()) {
-            playerFile.set(uuid + ".chatrooms", getSavedChatrooms());
+            playerFile.set(uuid + ".chatrooms", getSavedChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList()));
         } else {
             playerFile.set(uuid + ".chatrooms", new ArrayList<>());
 

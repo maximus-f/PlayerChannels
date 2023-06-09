@@ -21,6 +21,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static me.perotin.privatetalk.storage.files.FileType.CHATROOM;
 import static me.perotin.privatetalk.storage.files.FileType.MESSAGES;
 
 /**
@@ -479,8 +480,11 @@ public class Chatroom {
                 UUID uuid = UUID.fromString(key);
                 loadedRoles.put(uuid, roleO);
             }
+            Chatroom loadedChat = new Chatroom(owner, name, description, isPublic, saved, loadedRoles, banned, muted, nicknames, nicknamesEnabled);
+            Bukkit.getLogger().info("Loaded chatroom " + name + " with values: ");
+            Bukkit.getLogger().info(loadedChat.toString());
 
-            return new Chatroom(owner, name, description, isPublic, saved, loadedRoles, banned, muted, nicknames, nicknamesEnabled);
+            return loadedChat;
         } else {
             return null;
         }
@@ -508,6 +512,20 @@ public class Chatroom {
             player.getChatrooms().remove(this);
         }
         PrivateTalk.getInstance().getChatrooms().remove(this);
+        if (isSaved()) {
+            // have to delete from chatrooms.yml
+            // players.yml should be fine because it should get overwritten
+            PrivateFile chatrooms = new PrivateFile(CHATROOM);
+            if (chatrooms.getConfiguration().isSet(getName())) {
+                chatrooms.getConfiguration().set(getName(), null);
+                chatrooms.save();
+            }
+        }
 
+    }
+
+    @Override
+    public String toString(){
+        return "Chatroom[name=" + name+", description=" + description+", owner=" + owner +", isSaved=" + isSaved +", isPublic=" + isPublic + ", isNicknamesEnabled=" + isNicknamesEnabled()+"]";
     }
 }
