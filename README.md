@@ -1,4 +1,4 @@
-# PrivateTalk (Rewritten)
+# PlayerChannels
 This is a complete rewrite of my plugin PrivateTalkPremium. The rewritten version supports only the latest 1.14 and up. Support for 1.13 will also be added at a later date.
 
 
