@@ -36,6 +36,7 @@ set-name-message: "&eType a one-word name for a chatroom, or type &c'$cancel$'&e
 set-description-message: "&eType the description for this chatroom, or type &c'$cancel$'&e to cancel."
 name-missing: "&cYou must set a name!"
 description-missing: "&cYou must set a description!"
+no-permission: "&cNo permission to do that!"
 
 # Messages related to chatrooms
 muted-message: "&e7[&e$chatroom$&7] &cYou are currently muted in this chatroom!"
@@ -56,3 +57,7 @@ invitations-menu-title: "Your invitations: "
 chatroom-ban-menu-title: "$chatroom$: Banned players ($count$)"
 chatroom-nickname-menu-title: "$chatroom$: Nickname Menu"
 select-chatroom-to-invite-menu-title: "Select chatroom to invite:"
+
+# Messages related to player menus
+player-set-status: "&ePlease type your status or type '&c$cancel$&e' to cancel:"
+

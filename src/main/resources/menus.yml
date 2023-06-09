@@ -111,11 +111,11 @@ creation-menu:
 # Chatroom ItemStacks
 # Essentially, the messages that appear when you hover over the representations of Chatrooms in the form of items.
 chatroom-items:
-   name: "&eName: $name$"
-   description: "&eDescription: $description$"
-   status: "&eStatus: $status$"
-   owner: "&eOwner: $owner$"
-   members: "&eMembers (&f$member_count$&e)"
+   name: "&e&lName:&f $name$"
+   description: "&e&lDescription:&f $description$"
+   status: "&e&lStatus: $status$"
+   owner: "&e&lOwner:&f $owner$"
+   members: "&e&lMembers &e(&f$member_count$&e)"
 
 
 # Chatroom Bar Items
@@ -212,11 +212,11 @@ player-profile-menu:
    player-controls:
       player-status:
          material: "OAK_SIGN"
-         display: "&e&lStatus: "
+         display: "&e&lStatus:&f"
          slot: 0
       toggle-invite-status:
          material: "BOOKSHELF"
-         display: "&e&lToggle invites: "
+         display: "&e&lToggle invites:"
          slot: 2
       invite-player:
          material: "BOOK"

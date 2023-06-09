@@ -1,11 +1,8 @@
-name: PrivateTalk
-main: me.perotin.privatetalk.PrivateTalk
+name: PlayerChannels
+main: me.perotin.playerchannels.PlayerChannels
 author: Perotin
 version: 3.0
 api-version: 1.14
 description: The ultimate chatroom solution.
 commands:
-   test:
-      usage: /test
-      description: test
-      aliases: [t]
+
