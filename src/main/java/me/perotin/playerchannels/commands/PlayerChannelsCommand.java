@@ -13,7 +13,7 @@ import java.util.List;
 /* Created by Perotin on 8/20/19 */
 
 /**
- * Base command for PrivateTalk, extends (need to look into)Command for ability to set custom command names, aliases etc.
+ * Base command for PlayerChannels, extends (need to look into)Command for ability to set custom command names, aliases etc.
  */
 public class PlayerChannelsCommand extends Command  {
 

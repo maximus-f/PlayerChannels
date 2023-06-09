@@ -9,7 +9,7 @@ import org.bukkit.entity.HumanEntity;
 
 /**
  * @Class menu object to represent paging objects and static menus. Used to generalize #show method to present any
- * type of PrivateTalk menu to a player
+ * type of PlayerChannels menu to a player
  */
 public class Menu {
 

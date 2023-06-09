@@ -121,8 +121,8 @@ public class ChannelFile {
                 }
             } catch (IOException e) {
                 e.printStackTrace(); // So they notice
-                Bukkit.getLogger().severe("[PrivateTalk] Couldn't create " + type.toString().toLowerCase() + " file.");
-                Bukkit.getLogger().severe("[PrivateTalk] This is a fatal error. Now disabling");
+                Bukkit.getLogger().severe("[PlayerChannels] Couldn't create " + type.toString().toLowerCase() + " file.");
+                Bukkit.getLogger().severe("[PlayerChannels] This is a fatal error. Now disabling");
                 PlayerChannels.getInstance().getPluginLoader().disablePlugin(PlayerChannels.getInstance()); // Without
                 // it
                 // loaded,

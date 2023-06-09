@@ -1,12 +1,12 @@
 #######################################################
 #
-#      PrivateTalk
+#      PlayerChannels
 #   "The ultimate chat solution"
 #
 # Having issues? Contact me on discord @ Perotin#3447
 
 
-# The following file is to give YOU the power to decorate the menus within PrivateTalk however you would like.
+# The following file is to give YOU the power to decorate the menus within PlayerChannels however you would like.
 
 # This file is sorted by section of items, some sections appear in menus with other sections. It is not by inventory.
 # NOTE: Only what appears in the default config can be configured. Do not try to add config keys where they do not already exist
@@ -197,7 +197,7 @@ chatroom-mod:
       slot: 1
 
 # Main Menu
-# Menu that appears when you do /privatetalk
+# Menu that appears when you do /PlayerChannels
 main-menu:
    bottom-row:
       view-players:

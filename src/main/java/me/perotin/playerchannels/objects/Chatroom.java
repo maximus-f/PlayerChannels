@@ -131,7 +131,7 @@ public class Chatroom {
                 saved = Material.valueOf(savedString);
            } catch (IllegalArgumentException ex){
                // exception handling
-               Bukkit.getLogger().severe("The material id for the saved-material key in /PrivateTalk/config.yml is invalid! Make sure to use a correct value.");
+               Bukkit.getLogger().severe("The material id for the saved-material key in /PlayerChannels/config.yml is invalid! Make sure to use a correct value.");
                return null;
            }
              item = new ItemStack(saved);
