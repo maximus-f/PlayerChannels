@@ -39,13 +39,12 @@ public class PlayerListPager extends PagingMenu {
         List<GuiItem> heads = new ArrayList<>();
         Map<ItemStack, PlayerChannelUser> headsMap = getHeads();
         for (ItemStack i : headsMap.keySet()){
-            // Associate consumer action with each privateplayer
+            // Associate consumer action with each playerchannel user
             PlayerChannelUser correspondingPlayer = headsMap.get(i);
             heads.add(new GuiItem(i, inventoryClickEvent -> {
                 inventoryClickEvent.setCancelled(true);
                 Player clicker = (Player) inventoryClickEvent.getWhoClicked();
                 PlayerChannelUser playerChannelUser = PlayerChannelUser.getPlayer(clicker.getUniqueId());
-                Bukkit.getLogger().info("Clicker " + clicker.getName() + " Clicked;" + correspondingPlayer.getName());
                 new PlayerProfileMenu(clicker, correspondingPlayer, ChannelUtils.getMainMenu(clicker)).showProfile(clicker);
 
             }));

@@ -101,7 +101,6 @@ public class PlayerProfileMenu extends PagingMenu {
         playerControlPane.addItem(statusItem, status.getSecond(), 0);
 
         // Need to check if the person viewing is themselves
-        Bukkit.getLogger().info("Clicker " + getViewer().getName() + " Clicked;" + player.getName());
 
         if (getViewer().getName().equals(player.getName())) {
             // viewing themselves so add toggle invites option and set
@@ -129,9 +128,7 @@ public class PlayerProfileMenu extends PagingMenu {
     }
 
     public void showProfile(HumanEntity entity){
-        getMenu().getPanes().get(getMenu().getPanes().size() - 1).getItems().forEach(
-                i->Bukkit.getLogger().info(i.getItem().toString())
-        );
+
         getMenu().show(entity);
 
     }

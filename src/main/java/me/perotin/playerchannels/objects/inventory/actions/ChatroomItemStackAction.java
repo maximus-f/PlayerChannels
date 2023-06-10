@@ -32,10 +32,7 @@ public class ChatroomItemStackAction {
 
             Chatroom clicked = PlayerChannels.getInstance().getChatroom(chatroomName);
 //            Chatroom clicked = getChatroomWith(clickEvent.getCurrentItem());
-            if (clicked != null) {
-                Bukkit.getLogger().info("Clicked is not null! " + clicked.getName()+"!" );
 
-            }
             new ChatroomPager(clicked, clicker).show();
         };
 

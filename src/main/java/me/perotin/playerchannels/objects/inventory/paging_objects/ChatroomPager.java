@@ -129,7 +129,6 @@ public class ChatroomPager extends PagingMenu {
 
         chatroomBar.addItem(desc, description.getSecond(), 0);
 
-        PlayerChannels.getInstance().getLogger().info(description.getSecond() + " x --");
 
         if (player.isMemberOf(chatroom)) {
             ChatRole role = chatroom.getMemberMap().get(player.getUuid());

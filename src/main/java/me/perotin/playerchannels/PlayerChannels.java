@@ -74,7 +74,6 @@ public class PlayerChannels extends JavaPlugin {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             players.add(PlayerChannelUser.getPlayer(player.getUniqueId()));
-            Bukkit.broadcastMessage("Added " + player.getName() + "! to pmemory");
         }
     }
 

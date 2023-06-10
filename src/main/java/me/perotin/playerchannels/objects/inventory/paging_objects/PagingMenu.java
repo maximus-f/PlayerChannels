@@ -71,13 +71,13 @@ public abstract class PagingMenu extends Menu {
 
             getMenu().update();
         } else {
-            Bukkit.broadcastMessage("1");
             if (backMenu != null) {
-                Bukkit.broadcastMessage("2");
                 // Set the nav bar again
                 PlayerChannels.getInstance().getHelper().setNavigationBar((ChestGui) backMenu, getViewer());
 
                 backMenu.show(viewer);
+            } else {
+                getViewer().closeInventory();
             }
         }
     }
