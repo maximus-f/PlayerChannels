@@ -56,7 +56,7 @@ public class ChannelUtils {
     public static Chatroom getChatroomWith(String name){
         PlayerChannels plugin = PlayerChannels.getInstance();
         for(Chatroom chat : plugin.getChatrooms()){
-            if(ChatColor.stripColor( chat.getName()).equals(ChatColor.stripColor(name))){
+            if(ChatColor.stripColor( chat.getName()).equalsIgnoreCase(ChatColor.stripColor(name))){
                 return chat;
             }
         }

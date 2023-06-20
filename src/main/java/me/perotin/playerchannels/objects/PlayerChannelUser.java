@@ -24,7 +24,9 @@ public class PlayerChannelUser {
     private String name;
     private List<Chatroom> chatrooms;
 
-    private Chatroom focusedChatroom; //  null if none is focused
+    private Chatroom focusedChatroom; //  null if none is focused, to decide which chatroom they are chatting in
+
+    private List<Chatroom> listeningChatrooms;
 
     private List<Chatroom> invites; // Represent chatrooms that have invited this player
 
@@ -38,6 +40,7 @@ public class PlayerChannelUser {
         this.chatrooms = new ArrayList<>();
         this.status = "";
         this.invites = new ArrayList<>();
+        this.listeningChatrooms = new ArrayList<>();
     }
 
     public PlayerChannelUser(UUID uuid, String name, String status, List<Chatroom> chatrooms) {
@@ -46,6 +49,8 @@ public class PlayerChannelUser {
         this.status = status;
         // store invites correctly as another list
         this.invites = new ArrayList<>();
+        this.invites = new ArrayList<>();
+
 
     }
 
@@ -57,6 +62,38 @@ public class PlayerChannelUser {
         new ChestGui(6, getName() + "'s profile").show(player);
 
     }
+
+    /**
+     * @return List of channels that the user is currently listening too
+     */
+    public List<Chatroom> getListeningChatrooms() {
+        return listeningChatrooms;
+    }
+
+    /**
+     * Adds a chatroom to the set of channels that the player will ONLY receive incoming messages from
+     * @param chatroom
+     */
+   public void addChannelToListen(Chatroom chatroom) {
+        getListeningChatrooms().add(chatroom);
+   }
+
+    /**
+     * Removes a chatroom to the set of channels that the player will ONLY receive incoming messages from
+     * @param chatroom
+     */
+   public void removeChannelToListen(Chatroom chatroom) {
+       getListeningChatrooms().remove(chatroom);
+   }
+
+    /**
+     *
+     * @param chatroom
+     * @return if player is listening to mentioned chatroom
+     */
+   public boolean isListeningTo(Chatroom chatroom) {
+        return getListeningChatrooms().contains(chatroom);
+   }
 
     /**
      * @return player uuid

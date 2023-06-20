@@ -1,6 +1,6 @@
 #############################
 #
-#         Private Talk
+#         PlayerChannels
 #   "The ultimate chat solution"
 #
 # Having issues? Contact me on discord @ Perotin#3447
@@ -61,3 +61,8 @@ select-chatroom-to-invite-menu-title: "Select chatroom to invite:"
 # Messages related to player menus
 player-set-status: "&ePlease type your status or type '&c$cancel$&e' to cancel:"
 
+listen-not-in-channel: "&cYou are not in that chatroom!"
+listen-added-channel: "&aNow listening to $chatroom$&a!"
+listen-removed-channel: "&cNo longer listening to $chatroom$&c!"
+listen-help: "&cIncorrect arguments! &a/$command$ $listen$ <add/remove/off> <chatroom>"
+listen-not-currently-listening: "&cYou are not currently listening to that chatroom!"

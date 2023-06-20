@@ -1,6 +1,6 @@
 ########################################################
 #
-#         PRIVATE TALK
+#         Player Channels
 #   "The ultimate chat solution"
 #
 # Having issues? Contact me on discord @ Perotin#3447
@@ -10,6 +10,10 @@
 # Should chat colors be allowed throughout the plugin? (chatroom names, player statuses, etc.)
 chat-colors: true
 command-name: "playerchannels"
+
+# Subcommand name for disabling messages from global / other chatrooms
+# e.g. /playerchannels listen add <chatroom>
+listen: "listen"
 aliases:
    - "pc"
    - "chatrooms"
@@ -29,5 +33,4 @@ quickchat-prefix: "@"
 # $name$ - Real minecraft name of plaeyer
 
 chatroom-message-format: "&7[&e$chatroom$&7] &e$role$ $nickname$ &7➤ &e$message$"
-bungeecord: false
 
