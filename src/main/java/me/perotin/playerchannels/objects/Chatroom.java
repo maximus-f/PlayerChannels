@@ -284,7 +284,12 @@ public class Chatroom {
                 .replace("$name$", sender))
                         .replace("$nickname$", nickname);
 
-        members.forEach(member -> member.sendMessage(chatroomFormat));
+        for (Player member : members) {
+            // Send if not listening or is listening explicity to this one
+            if (!PlayerChannels.getInstance().getListeningPlayers().contains(member.getUniqueId()) || PlayerChannelUser.getPlayer(member.getUniqueId()).getListeningChatrooms().contains(this)){
+                member.sendMessage(chatroomFormat);
+            }
+        }
     }
 
     /**

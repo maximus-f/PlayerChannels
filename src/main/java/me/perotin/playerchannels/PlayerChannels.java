@@ -14,8 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /* Created by Perotin on 8/13/19 */
 
@@ -58,6 +57,8 @@ public class PlayerChannels extends JavaPlugin {
     public static String QUICK_CHAT_PREFIX;
     private InventoryHelper helper;
 
+    private Set<UUID> disableGlobalChat;
+
 
     // Enabling method
     @Override
@@ -68,6 +69,7 @@ public class PlayerChannels extends JavaPlugin {
         this.chatrooms = new ArrayList<>();
         this.players = new ArrayList<>();
         this.helper = new InventoryHelper();
+        this.disableGlobalChat = new HashSet<>();
         QUICK_CHAT_PREFIX = getConfig().getString("quickchat-prefix");
         init();
         loadChatrooms();
@@ -178,4 +180,7 @@ public class PlayerChannels extends JavaPlugin {
         return null;
     }
 
+    public Set<UUID> getListeningPlayers() {
+        return disableGlobalChat;
+    }
 }

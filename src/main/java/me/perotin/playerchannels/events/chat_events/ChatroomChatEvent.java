@@ -5,10 +5,13 @@ import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+
+import java.util.stream.Collectors;
 
 /**
  * @author Perotin
@@ -41,6 +44,9 @@ public class ChatroomChatEvent implements Listener {
         PlayerChannelUser playerChannelUser = PlayerChannelUser.getPlayer(chatter.getUniqueId());
         String message = event.getMessage();
         // Player is opted into one singular chatroom and every message goes as such
+
+        // Remove players listening to any chatroom
+        plugin.getListeningPlayers().stream().map(Bukkit::getPlayer).collect(Collectors.toList()).forEach(event.getRecipients()::remove);
 
        if (playerChannelUser.getFocusedChatroom() != null) {
            event.setCancelled(true);

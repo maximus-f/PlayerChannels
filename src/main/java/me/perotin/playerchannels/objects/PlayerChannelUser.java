@@ -76,6 +76,7 @@ public class PlayerChannelUser {
      */
    public void addChannelToListen(Chatroom chatroom) {
         getListeningChatrooms().add(chatroom);
+        PlayerChannels.getInstance().getListeningPlayers().add(getUuid());
    }
 
     /**
@@ -84,6 +85,9 @@ public class PlayerChannelUser {
      */
    public void removeChannelToListen(Chatroom chatroom) {
        getListeningChatrooms().remove(chatroom);
+       if (getListeningChatrooms().isEmpty()) {
+           PlayerChannels.getInstance().getListeningPlayers().remove(getUuid());
+       }
    }
 
     /**
@@ -251,7 +255,7 @@ public class PlayerChannelUser {
 
             return new PlayerChannelUser(uuid, name, status, playerChatrooms);
         } else {
-            // New player so create new object
+            // New player so create new objectc
             return new PlayerChannelUser(uuid, Bukkit.getPlayer(uuid).getName());
         }
     }

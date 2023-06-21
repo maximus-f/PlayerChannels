@@ -61,8 +61,10 @@ select-chatroom-to-invite-menu-title: "Select chatroom to invite:"
 # Messages related to player menus
 player-set-status: "&ePlease type your status or type '&c$cancel$&e' to cancel:"
 
+# Messages related to subcommand /playerchannels listen
 listen-not-in-channel: "&cYou are not in that chatroom!"
 listen-added-channel: "&aNow listening to $chatroom$&a!"
 listen-removed-channel: "&cNo longer listening to $chatroom$&c!"
 listen-help: "&cIncorrect arguments! &a/$command$ $listen$ <add/remove/off> <chatroom>"
 listen-not-currently-listening: "&cYou are not currently listening to that chatroom!"
+listen-off: "&cNo longer listening to any chatroom!"

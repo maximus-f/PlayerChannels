@@ -53,12 +53,16 @@ public class PlayerChannelsCommand extends Command  {
                 /playerchannels listen off
                 anything else send help
                  */
-                String thirdArg = args[1];
+                String thirdArg = "";
+                if (args.length > 1) thirdArg = args[1];
 
                 if (args.length == 2) {
                   // Check for condition where they do listen off
                   if (thirdArg.equalsIgnoreCase("off")) {
                       // Remove the player from any blockers and let them view normal global chat again
+                      playerChannelUser.getListeningChatrooms().clear();
+                      plugin.getListeningPlayers().remove(player.getUniqueId());
+                      player.sendMessage(messages.getString("listen-off"));
                       return true;
                   }
               } else if (args.length == 3) {
@@ -110,9 +114,13 @@ public class PlayerChannelsCommand extends Command  {
 
 
                   }
+
               }
 
-
+                player.sendMessage(messages.getString("listen-help")
+                        .replace("$command$", plugin.getConfig().getString("command-name"))
+                        .replace("$listen$", plugin.getConfig().getString("listen")));
+                return true;
             }
         }
         PreChatroom chat = new PreChatroom(player.getUniqueId());
