@@ -133,10 +133,8 @@ public class CreateChatroomAction {
                 ChannelUtils.sendMenuMessage(messages.getString("name-missing"), clicker, null);
 //                clicker.sendTitle(messages.getString("name-missing"), "", 10, 20*3, 10);
                 return;
-            } else if(chatroom.getDescription().equals("")){
-                ChannelUtils.sendMenuMessage(messages.getString("description-missing"), clicker, null);
-                return;
             }
+
             // create the chatroom
             Chatroom addedChatroom = PlayerChannels.getInstance().createChatroom(chatroom);
             playerChannelUser.addChatroom(addedChatroom);

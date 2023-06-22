@@ -14,6 +14,11 @@ command-name: "playerchannels"
 # Subcommand name for disabling messages from global / other chatrooms
 # e.g. /playerchannels listen add <chatroom>
 listen: "listen"
+
+# Subcommand name for creating a chatroom with a command instead of through GUI as it may be more intuitive that way
+# e.g. /playerchannels create <name> <optional: description>
+create: "create"
+
 aliases:
    - "pc"
    - "chatrooms"

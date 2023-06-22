@@ -105,7 +105,7 @@ public class CreateChatroomInputEvent implements Listener {
      * @param name
      * @return true if name is used by another chatroom, false if not
      */
-    private boolean isNameTaken(String name) {
+    public static boolean isNameTaken(String name) {
         return ChannelUtils.getChatroomWith(name) != null;
     }
 }

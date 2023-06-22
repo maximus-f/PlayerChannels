@@ -37,6 +37,7 @@ set-description-message: "&eType the description for this chatroom, or type &c'$
 name-missing: "&cYou must set a name!"
 description-missing: "&cYou must set a description!"
 no-permission: "&cNo permission to do that!"
+taken-name: "&cThat name is taken!"
 
 # Messages related to chatrooms
 muted-message: "&e7[&e$chatroom$&7] &cYou are currently muted in this chatroom!"
@@ -68,3 +69,4 @@ listen-removed-channel: "&cNo longer listening to $chatroom$&c!"
 listen-help: "&cIncorrect arguments! &a/$command$ $listen$ <add/remove/off> <chatroom>"
 listen-not-currently-listening: "&cYou are not currently listening to that chatroom!"
 listen-off: "&cNo longer listening to any chatroom!"
+

@@ -1,7 +1,9 @@
 package me.perotin.playerchannels.commands;
 
 import me.perotin.playerchannels.PlayerChannels;
+import me.perotin.playerchannels.events.chat_events.CreateChatroomInputEvent;
 import me.perotin.playerchannels.objects.Chatroom;
+import me.perotin.playerchannels.objects.InventoryHelper;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
 import me.perotin.playerchannels.objects.PreChatroom;
 import me.perotin.playerchannels.objects.inventory.paging_objects.MainMenuPaging;
@@ -9,6 +11,7 @@ import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.utils.ChannelUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -45,6 +48,48 @@ public class PlayerChannelsCommand extends Command  {
         if (args.length > 0) {
             // Check if arg length is greater than 0 and if second key-word is "focus" or something of the sort
             String secondArg = args[0];
+            if (secondArg.equalsIgnoreCase(plugin.getConfig().getString("create"))){
+                if (args.length == 1) {
+                    // Open creation menu with nothing set
+                    PreChatroom chatroom = new PreChatroom(player.getUniqueId());
+                    InventoryHelper helper = PlayerChannels.getInstance().getHelper();
+                    CreateChatroomInputEvent.getInstance().getInCreation().put(player.getUniqueId(), chatroom);
+                    helper.setNavigationBar(helper.getCreationMenu(chatroom),  player).getFirst().show(player);
+                    return true;
+                } else if (args.length == 2) {
+                    // Open creation menu with name set
+                    String name = args[1]; // TODO Validate data (e.g. name not taken)
+                    if (CreateChatroomInputEvent.isNameTaken(name)) {
+                        player.sendMessage(messages.getString("taken-name"));
+                        return true;
+                    }
+                    PreChatroom chatroom = new PreChatroom(player.getUniqueId());
+                    chatroom.setName(name);
+                    InventoryHelper helper = PlayerChannels.getInstance().getHelper();
+                    CreateChatroomInputEvent.getInstance().getInCreation().put(player.getUniqueId(), chatroom);
+                    helper.setNavigationBar(helper.getCreationMenu(chatroom),  player).getFirst().show(player);
+                    return true;
+                } else {
+                    // Open creation menu with name & description set
+                    String name = args[1]; // TODO Validate data (e.g. name not taken)
+                    if (CreateChatroomInputEvent.isNameTaken(name)) {
+                        player.sendMessage(messages.getString("taken-name"));
+                        return true;
+                    }
+                    StringBuilder builder = new StringBuilder();
+                    for (int j = 2; j < args.length; j++) {
+                        builder.append(args[j] +" ");
+                    }
+                    String description = builder.toString(); // This is not correct because it should be the remaining args but whatever
+                    PreChatroom chatroom = new PreChatroom(player.getUniqueId());
+                    chatroom.setName(name);
+                    chatroom.setDescription(description);
+                    InventoryHelper helper = PlayerChannels.getInstance().getHelper();
+                    CreateChatroomInputEvent.getInstance().getInCreation().put(player.getUniqueId(), chatroom);
+                    helper.setNavigationBar(helper.getCreationMenu(chatroom),  player).getFirst().show(player);
+                    return true;
+                }
+            }
             if (secondArg.equalsIgnoreCase(plugin.getConfig().getString("listen"))){
                 /*
                 Possible commands of this form
