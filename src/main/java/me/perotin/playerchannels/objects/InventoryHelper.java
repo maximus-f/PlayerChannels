@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,7 @@ public class InventoryHelper {
      **/
     private Consumer<InventoryClickEvent> doNothing;
 
+
     public InventoryHelper() {
         this.file = new ChannelFile(FileType.MENUS);
         this.navBar = new StaticPane(0, 0, 9, 1);
@@ -66,9 +68,12 @@ public class InventoryHelper {
      */
     public Pair<Gui, StaticPane> setNavigationBar(ChestGui inventory, OfflinePlayer owner) {
         Pair<ItemStack, Integer> playerHead = getItem("nav-bar.player-profile-head", owner);
+        Pair<ItemStack, Integer> helpItem = getItem("nav-bar.help-item", null);
+
         ItemStack playerHeadItem = playerHead.getFirst();
         ChannelUtils.replacePlaceHolderInDisplayName(playerHeadItem, "$name$", owner.getName());
 
+        navBar.addItem(new GuiItem(helpItem.getFirst(), inventoryClickEvent -> inventoryClickEvent.setCancelled(true)), helpItem.getSecond(), 0);
         navBar.addItem(new GuiItem(playerHeadItem, clickOnOwnHead(owner.getUniqueId())), getItem( "nav-bar.player-profile-head", owner).getSecond(), 0);
         Pair<ItemStack, Integer> invites = getItem( "nav-bar.manage-invites", null);
         navBar.addItem(new GuiItem(invites.getFirst(), event -> {
@@ -276,8 +281,8 @@ public class InventoryHelper {
         if (file.getConfiguration().isSet(path +".slot")){
             slot = file.getConfiguration().getInt(path + ".slot");
         }
-        return new Pair<>(builder.build(), slot);
 
+        return new Pair<>(builder.build(), slot);
     }
 
 
@@ -370,5 +375,8 @@ public class InventoryHelper {
             new PlayerProfileMenu(viewer, player, new MainMenuPaging(viewer, PlayerChannels.getInstance()).getMenu()).show();
         };
     }
+
+
+
 
 }

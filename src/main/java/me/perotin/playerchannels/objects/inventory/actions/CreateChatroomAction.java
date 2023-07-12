@@ -2,16 +2,20 @@ package me.perotin.playerchannels.objects.inventory.actions;
 
 /* Created by Perotin on 9/19/19 */
 
+import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
+import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.events.chat_events.CreateChatroomInputEvent;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.InventoryHelper;
 import me.perotin.playerchannels.objects.PreChatroom;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
+import me.perotin.playerchannels.objects.inventory.Menu;
 import me.perotin.playerchannels.objects.inventory.paging_objects.MainMenuPaging;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.utils.ChannelUtils;
+import me.perotin.playerchannels.utils.TutorialHelper;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -30,10 +34,20 @@ public class CreateChatroomAction {
     public static Consumer<InventoryClickEvent> createChatroomConsumer(){
         return clickEvent -> {
             clickEvent.setCancelled(true);
+            Player clicker = (Player) clickEvent.getWhoClicked();
+
             PreChatroom chatroom = new PreChatroom(clickEvent.getWhoClicked().getUniqueId());
             InventoryHelper helper = PlayerChannels.getInstance().getHelper();
             CreateChatroomInputEvent.getInstance().getInCreation().put(clickEvent.getWhoClicked().getUniqueId(), chatroom);
+            Gui creationMenu = helper.setNavigationBar(helper.getCreationMenu(chatroom), (OfflinePlayer) clickEvent.getWhoClicked()).getFirst();
+            Menu creationMenuObj = new Menu((ChestGui) creationMenu);
             helper.setNavigationBar(helper.getCreationMenu(chatroom), (OfflinePlayer) clickEvent.getWhoClicked()).getFirst().show(clickEvent.getWhoClicked());
+            if (TutorialHelper.inTutorial.contains(clicker)) {
+                // send them the message 3
+                ChannelFile messages = new ChannelFile(FileType.MESSAGES);
+                ChannelUtils.sendMenuMessage(messages.getString("help-msg-3"), clicker, creationMenuObj);
+            }
+
         };
     }
 
@@ -140,6 +154,11 @@ public class CreateChatroomAction {
             playerChannelUser.addChatroom(addedChatroom);
             input.getInCreation().remove(clicker.getUniqueId());
             new MainMenuPaging(clicker, PlayerChannels.getInstance()).show();
+
+            if (TutorialHelper.inTutorial.contains(clicker)) {
+                // end tutorial set
+                TutorialHelper.inTutorial.remove(clicker);
+            }
 
         };
     }

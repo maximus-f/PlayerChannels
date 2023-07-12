@@ -70,3 +70,11 @@ listen-help: "&cIncorrect arguments! &a/$command$ $listen$ <add/remove/off> <cha
 listen-not-currently-listening: "&cYou are not currently listening to that chatroom!"
 listen-off: "&cNo longer listening to any chatroom!"
 
+
+# Chatroom Help Messages
+help-msg-1: "&7⥤ &eTo cancel this tutorial at any time, please type '&c/$cancel$&e'"
+help-msg-2: "&7⥤ &ePlayerChannels works through &achannels. &eClick the &aAnvil to create one ."
+# Menu is brought up again
+help-msg-3: "Click the top-left icon to set the name and then click done!"
+
+help-msg-4: "Click on your chatroom in the menu!"

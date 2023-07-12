@@ -28,6 +28,12 @@ global-items:
 # Navigation-bar items
 # This is the row that appears at the top of most menus displaying things like player-profile, and create a chatroom
 nav-bar:
+   help-item:
+      slot: 0
+      display: "&eHelp?"
+      material: "FEATHER"
+      lore:
+         - "&7&oClick for for a quick guide!"
    player-profile-head:
       slot: 4
       display: "&e$name$"
@@ -49,7 +55,6 @@ nav-bar:
          - "&7&oClick to view your invites"
    deco-item:
       slots:
-        - "0"
         - "1"
         - "2"
         - "3"
