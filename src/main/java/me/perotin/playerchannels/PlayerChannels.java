@@ -1,5 +1,6 @@
 package me.perotin.playerchannels;
 
+import me.perotin.playerchannels.commands.CancelTutorialCommand;
 import me.perotin.playerchannels.commands.PlayerChannelsCommand;
 import me.perotin.playerchannels.events.chat_events.*;
 import me.perotin.playerchannels.events.join.PlayerChannelUserJoinEvent;
@@ -10,6 +11,7 @@ import me.perotin.playerchannels.objects.PlayerChannelUser;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.utils.ChannelUtils;
+import me.perotin.playerchannels.utils.TutorialHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -94,6 +96,7 @@ public class PlayerChannels extends JavaPlugin {
         this.chatrooms.clear();
         this.helper = null;
         instance = null;
+        TutorialHelper.inTutorial.clear();
     }
 
     private void init(){
@@ -110,6 +113,7 @@ public class PlayerChannels extends JavaPlugin {
 
 
         ChannelUtils.registerCommand(new PlayerChannelsCommand(getConfig().getString("command-name"), getConfig().getStringList("aliases"), this));
+        ChannelUtils.registerCommand(new CancelTutorialCommand(getConfig().getString("cancel-tutorial"), getConfig().getStringList("cancel-tutorial-aliases"), this));
 
     }
 

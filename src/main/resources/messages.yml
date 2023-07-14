@@ -73,8 +73,16 @@ listen-off: "&cNo longer listening to any chatroom!"
 
 # Chatroom Help Messages
 help-msg-1: "&7⥤ &eTo cancel this tutorial at any time, please type '&c/$cancel$&e'"
-help-msg-2: "&7⥤ &ePlayerChannels works through &achannels. &eClick the &aAnvil to create one ."
+help-msg-2: "&7⥤ &ePlayerChannels works through &achannels. &eClick the &aAnvil&e to create one."
 # Menu is brought up again
-help-msg-3: "Click the top-left icon to set the name and then click done!"
+help-msg-3: "Click the anvil on the top row"
+help-msg-4: "Click the top-left icon to set the name and then click done!"
+help-msg-5: "Click on your chatroom in the menu to see all the options!"
+help-msg-6: "&7⥤ &eTo chat in your new channel, put an '&a@&e' before your messages or click on '&aIn Chat&e' to send all messages there!"
+help-msg-7: "&7⥤ &eTo invite someone to your chatroom, you can find their head in the player list or set the channel to &apublic&e."
+help-msg-8: "&7⥤ &eNote that prefixing your message with an '&a@&e' will only work if you are in only one channel!"
+help-msg-9: "&eThis concludes the tutorial."
 
-help-msg-4: "Click on your chatroom in the menu!"
+cancel-tutorial-cancelled: "&eYou are no longer in the tutorial."
+cancel-tutorial-not-in: "&eYou are not in a tutorial currently. To see the tutorial, click the feather icon in '&a/playerchannels&e'"
+already-in-tutorial: "Already in the tutorial!"

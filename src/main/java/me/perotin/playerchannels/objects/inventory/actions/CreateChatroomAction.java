@@ -42,10 +42,10 @@ public class CreateChatroomAction {
             Gui creationMenu = helper.setNavigationBar(helper.getCreationMenu(chatroom), (OfflinePlayer) clickEvent.getWhoClicked()).getFirst();
             Menu creationMenuObj = new Menu((ChestGui) creationMenu);
             helper.setNavigationBar(helper.getCreationMenu(chatroom), (OfflinePlayer) clickEvent.getWhoClicked()).getFirst().show(clickEvent.getWhoClicked());
-            if (TutorialHelper.inTutorial.contains(clicker)) {
+            if (TutorialHelper.inTutorial.contains(clicker.getUniqueId())) {
                 // send them the message 3
                 ChannelFile messages = new ChannelFile(FileType.MESSAGES);
-                ChannelUtils.sendMenuMessage(messages.getString("help-msg-3"), clicker, creationMenuObj);
+                ChannelUtils.sendMenuMessage(messages.getString("help-msg-4"), clicker, creationMenuObj);
             }
 
         };
@@ -155,9 +155,18 @@ public class CreateChatroomAction {
             input.getInCreation().remove(clicker.getUniqueId());
             new MainMenuPaging(clicker, PlayerChannels.getInstance()).show();
 
-            if (TutorialHelper.inTutorial.contains(clicker)) {
+            if (TutorialHelper.inTutorial.contains(clicker.getUniqueId())) {
                 // end tutorial set
-                TutorialHelper.inTutorial.remove(clicker);
+                TutorialHelper.inTutorial.remove(clicker.getUniqueId());
+                ChannelUtils.sendMenuMessage(messages.getString("help-msg-5"), clicker, null);
+                clicker.sendMessage(messages.getString("help-msg-6"));
+                clicker.sendMessage(messages.getString("help-msg-7"));
+                clicker.sendMessage(messages.getString("help-msg-8"));
+                clicker.sendMessage(messages.getString("help-msg-9"));
+
+
+
+
             }
 
         };

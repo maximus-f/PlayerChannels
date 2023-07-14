@@ -11,6 +11,11 @@
 chat-colors: true
 command-name: "playerchannels"
 
+aliases:
+   - "pc"
+   - "chatrooms"
+   - "channels"
+
 # Subcommand name for disabling messages from global / other chatrooms
 # e.g. /playerchannels listen add <chatroom>
 listen: "listen"
@@ -19,10 +24,14 @@ listen: "listen"
 # e.g. /playerchannels create <name> <optional: description>
 create: "create"
 
-aliases:
-   - "pc"
-   - "chatrooms"
-   - "channels"
+
+# Command for cancelling the tutorial
+cancel-tutorial: "cancel"
+cancel-tutorial-aliases:
+   - "canceltut"
+   - "canceltutorial"
+   - "cancelpctutorial"
+
 
 
 saved-material: "OAK_SIGN"

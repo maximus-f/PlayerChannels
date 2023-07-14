@@ -17,6 +17,7 @@ import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.utils.ItemStackUtils;
 import me.perotin.playerchannels.utils.ChannelUtils;
+import me.perotin.playerchannels.utils.TutorialHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -72,8 +73,8 @@ public class InventoryHelper {
 
         ItemStack playerHeadItem = playerHead.getFirst();
         ChannelUtils.replacePlaceHolderInDisplayName(playerHeadItem, "$name$", owner.getName());
-
-        navBar.addItem(new GuiItem(helpItem.getFirst(), inventoryClickEvent -> inventoryClickEvent.setCancelled(true)), helpItem.getSecond(), 0);
+        Consumer<InventoryClickEvent> helperClickEvent = new TutorialHelper(PlayerChannels.getInstance()).clickOnHelp();
+        navBar.addItem(new GuiItem(helpItem.getFirst(), helperClickEvent), helpItem.getSecond(), 0);
         navBar.addItem(new GuiItem(playerHeadItem, clickOnOwnHead(owner.getUniqueId())), getItem( "nav-bar.player-profile-head", owner).getSecond(), 0);
         Pair<ItemStack, Integer> invites = getItem( "nav-bar.manage-invites", null);
         navBar.addItem(new GuiItem(invites.getFirst(), event -> {
