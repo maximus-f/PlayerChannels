@@ -24,7 +24,8 @@ listen: "listen"
 # e.g. /playerchannels create <name> <optional: description>
 create: "create"
 
-
+# Should the tutorial be in place (existance of tutorial)
+enable-tutorial: true
 # Command for cancelling the tutorial
 cancel-tutorial: "cancel"
 cancel-tutorial-aliases:

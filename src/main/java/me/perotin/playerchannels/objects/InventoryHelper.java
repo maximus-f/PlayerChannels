@@ -74,7 +74,11 @@ public class InventoryHelper {
         ItemStack playerHeadItem = playerHead.getFirst();
         ChannelUtils.replacePlaceHolderInDisplayName(playerHeadItem, "$name$", owner.getName());
         Consumer<InventoryClickEvent> helperClickEvent = new TutorialHelper(PlayerChannels.getInstance()).clickOnHelp();
-        navBar.addItem(new GuiItem(helpItem.getFirst(), helperClickEvent), helpItem.getSecond(), 0);
+        if (PlayerChannels.getInstance().getConfig().getBoolean("enable-tutorial")) {
+            navBar.addItem(new GuiItem(helpItem.getFirst(), helperClickEvent), helpItem.getSecond(), 0);
+        } else {
+            navBar.addItem(DECO_ITEM(), helpItem.getSecond(), 0);
+        }
         navBar.addItem(new GuiItem(playerHeadItem, clickOnOwnHead(owner.getUniqueId())), getItem( "nav-bar.player-profile-head", owner).getSecond(), 0);
         Pair<ItemStack, Integer> invites = getItem( "nav-bar.manage-invites", null);
         navBar.addItem(new GuiItem(invites.getFirst(), event -> {
