@@ -1,5 +1,6 @@
 package me.perotin.playerchannels;
 
+import me.perotin.playerchannels.commands.AdminCommand;
 import me.perotin.playerchannels.commands.CancelTutorialCommand;
 import me.perotin.playerchannels.commands.PlayerChannelsCommand;
 import me.perotin.playerchannels.events.chat_events.*;
@@ -114,7 +115,7 @@ public class PlayerChannels extends JavaPlugin {
 
         ChannelUtils.registerCommand(new PlayerChannelsCommand(getConfig().getString("command-name"), getConfig().getStringList("aliases"), this));
         ChannelUtils.registerCommand(new CancelTutorialCommand(getConfig().getString("cancel-tutorial"), getConfig().getStringList("cancel-tutorial-aliases"), this));
-
+        getCommand("pcadmin").setExecutor(new AdminCommand());
     }
 
     /**

@@ -5,4 +5,9 @@ version: 3.3
 api-version: 1.14
 description: The ultimate chatroom solution.
 commands:
+  pcadmin:
+    permission: playerchannels.admin
+    usage: /pcadmin
+    aliases: /pca
+    description: Admin commands
 
