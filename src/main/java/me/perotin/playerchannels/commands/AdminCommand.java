@@ -1,6 +1,8 @@
 package me.perotin.playerchannels.commands;
 
 import me.perotin.playerchannels.PlayerChannels;
+import me.perotin.playerchannels.storage.files.ChannelFile;
+import me.perotin.playerchannels.storage.files.FileType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -37,7 +39,6 @@ public class AdminCommand implements CommandExecutor {
                     player.sendMessage(ChatColor.RED + "You must specify a chatroom to delete.");
                     player.sendMessage(ChatColor.RED + "Usage: /pcadmin delete <chatroom-name>");
                 } else {
-                    // TODO: Implement delete chatroom functionality.
                     String chatroomName = args[1];
                     if (PlayerChannels.getInstance().getChatroom(chatroomName) != null) {
                         player.sendMessage(ChatColor.GREEN + "Deleting chatroom: " + chatroomName);
@@ -49,13 +50,14 @@ public class AdminCommand implements CommandExecutor {
                 break;
 
             case "reload":
-                // TODO: Implement reload functionality.
                 player.sendMessage(ChatColor.GREEN + "Reloading the plugin...");
                 PlayerChannels.getInstance().reloadConfig();
+                new ChannelFile(FileType.MESSAGES).reloadFile();
+                new ChannelFile(FileType.MENUS).reloadFile();
+
                 break;
 
             case "stop":
-                // TODO: Implement stop functionality.
                 player.sendMessage(ChatColor.GREEN + "Stopping the plugin...");
                 Bukkit.getPluginManager().disablePlugin(PlayerChannels.getInstance());
                 break;

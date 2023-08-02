@@ -56,7 +56,7 @@ public class CreateChatroomAction {
      */
     public static Consumer<InventoryClickEvent> setNameConsumer(){
         return clickEvent -> {
-            //clickEvent.setCancelled(true);
+            clickEvent.setCancelled(true);
 
             ChannelFile messages = new ChannelFile(FileType.MESSAGES);
             CreateChatroomInputEvent.getInstance().getSetName().add(clickEvent.getWhoClicked().getUniqueId());

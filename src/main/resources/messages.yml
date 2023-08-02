@@ -85,4 +85,4 @@ help-msg-9: "&eThis concludes the tutorial."
 
 cancel-tutorial-cancelled: "&eYou are no longer in the tutorial."
 cancel-tutorial-not-in: "&eYou are not in a tutorial currently. To see the tutorial, click the feather icon in '&a/playerchannels&e'"
-already-in-tutorial: "Already in the tutorial!"
+already-in-tutorial: "Already in the tutorial! Type /cancel to leave"

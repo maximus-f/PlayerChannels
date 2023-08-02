@@ -28,6 +28,7 @@ public class PlayerProfileAction {
                 // Need to put them in a set and check for a chat event, could maybe do an anvil here however
                 // TODO look into maybe using anvil GUI's for user input, however, looks overly
                 // complicated for the scope that I am looking for. Going native route first
+               event.setCancelled(true);
                 StatusInputEvent.enteringStatus.add(clicker);
                 clicker.closeInventory();
                 // send message

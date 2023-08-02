@@ -1,5 +1,6 @@
 package me.perotin.playerchannels.storage.files;
 
+import com.google.common.base.Charsets;
 import me.perotin.playerchannels.PlayerChannels;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -149,6 +150,19 @@ public class ChannelFile {
                 }
             }
         }
+    }
+
+    public void reloadFile(){
+
+        configuration = YamlConfiguration.loadConfiguration(file);
+
+        String name = type.name().toLowerCase();
+        final InputStream defConfigStream = PlayerChannels.getInstance().getResource(".yml");
+        if (defConfigStream == null) {
+            return;
+        }
+
+        configuration.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
     }
 
     public File getFile(){

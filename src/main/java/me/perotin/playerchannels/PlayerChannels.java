@@ -1,5 +1,6 @@
 package me.perotin.playerchannels;
 
+import com.google.common.base.Charsets;
 import me.perotin.playerchannels.commands.AdminCommand;
 import me.perotin.playerchannels.commands.CancelTutorialCommand;
 import me.perotin.playerchannels.commands.PlayerChannelsCommand;
@@ -12,11 +13,16 @@ import me.perotin.playerchannels.objects.PlayerChannelUser;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.utils.ChannelUtils;
+import me.perotin.playerchannels.utils.Metrics;
 import me.perotin.playerchannels.utils.TutorialHelper;
+import me.perotin.playerchannels.utils.UpdateChecker;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 /* Created by Perotin on 8/13/19 */
@@ -76,6 +82,11 @@ public class PlayerChannels extends JavaPlugin {
         QUICK_CHAT_PREFIX = getConfig().getString("quickchat-prefix");
         init();
         loadChatrooms();
+        int pluginId = 19355;
+        Metrics metrics = new Metrics(this, pluginId);
+
+        new UpdateChecker(this).checkForUpdate();
+
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             players.add(PlayerChannelUser.getPlayer(player.getUniqueId()));
@@ -188,4 +199,6 @@ public class PlayerChannels extends JavaPlugin {
     public Set<UUID> getListeningPlayers() {
         return disableGlobalChat;
     }
+
+
 }

@@ -509,6 +509,11 @@ public class Chatroom {
         broadcastMessage(messages.getString("chatroom-being-deleted").replace("$chatroom$", getName()));
         for (PlayerChannelUser player : getMembers().stream().map(PlayerChannelUser::getPlayer).collect(Collectors.toList())) {
             player.getChatrooms().remove(this);
+            // Check if deleted chatroom is currently focused, will cause messages to be sent to the void if not nullified
+            if (player.getFocusedChatroom() != null && player.getFocusedChatroom().equals(this)){
+                player.setFocusedChatroom(null);
+            }
+
         }
         PlayerChannels.getInstance().getChatrooms().remove(this);
         if (isSaved()) {
