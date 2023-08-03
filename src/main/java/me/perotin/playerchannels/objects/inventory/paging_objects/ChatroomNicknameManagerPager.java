@@ -96,6 +96,7 @@ public class ChatroomNicknameManagerPager extends PagingMenu {
                     .replace("$cancel$", messages.getString("cancel"));
             if (chatroom.hasModeratorPermissions(getViewer().getUniqueId())) {
                 getViewer().closeInventory();
+                getViewer().updateInventory();
                 getViewer().sendMessage(setNicknameMsg);
                 ChatroomSetNicknameEvent.setNickname.put(getViewer(), new Pair<>(chatroom, uuid));
 
@@ -105,6 +106,7 @@ public class ChatroomNicknameManagerPager extends PagingMenu {
                     // allow to set nickname
                     getViewer().closeInventory();
                     getViewer().sendMessage(setNicknameMsg);
+                    getViewer().updateInventory();
                     ChatroomSetNicknameEvent.setNickname.put(getViewer(), new Pair<>(chatroom, uuid));
                 }
             }

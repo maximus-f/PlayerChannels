@@ -36,6 +36,7 @@ public class TutorialHelper {
             ChannelFile messages = new ChannelFile(FileType.MESSAGES);
             Player clicker = (Player) event.getWhoClicked();
             clicker.closeInventory();
+            clicker.updateInventory();
             event.setCancelled(true);
             if (inTutorial.contains(clicker.getUniqueId())) {
                 // already contains it

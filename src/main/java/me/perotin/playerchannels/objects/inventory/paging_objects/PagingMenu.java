@@ -78,6 +78,7 @@ public abstract class PagingMenu extends Menu {
                 backMenu.show(viewer);
             } else {
                 getViewer().closeInventory();
+                getViewer().updateInventory();
             }
         }
     }

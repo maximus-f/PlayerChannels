@@ -65,6 +65,8 @@ public class CreateChatroomAction {
 
             clickEvent.getWhoClicked().sendMessage(messages.getString("set-name-message")
             .replace("$cancel$", messages.getString("cancel")));
+           Player clicker = (Player) clickEvent.getWhoClicked();
+           clicker.updateInventory();
         };
     }
 
@@ -80,6 +82,8 @@ public class CreateChatroomAction {
             clickEvent.getWhoClicked().closeInventory();
             clickEvent.getWhoClicked().sendMessage(messages.getString("set-description-message")
                     .replace("$cancel$", messages.getString("cancel")));
+            Player clicker = (Player) clickEvent.getWhoClicked();
+            clicker.updateInventory();
 
         };
     }

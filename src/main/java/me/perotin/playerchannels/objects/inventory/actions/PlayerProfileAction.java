@@ -31,6 +31,7 @@ public class PlayerProfileAction {
                event.setCancelled(true);
                 StatusInputEvent.enteringStatus.add(clicker);
                 clicker.closeInventory();
+                clicker.updateInventory();
                 // send message
                 ChannelFile messages = new ChannelFile(FileType.MESSAGES);
                 clicker.sendMessage(messages.getString("player-set-status")

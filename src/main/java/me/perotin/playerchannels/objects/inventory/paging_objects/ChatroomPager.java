@@ -289,6 +289,7 @@ public class ChatroomPager extends PagingMenu {
                 // If owner is leaving then tell them that this will delete their chatroom and have them confirm it
                 if (getChatroom().getRole(player.getUuid()) == ChatRole.OWNER && (getChatroom().getMembers().size() > 1 || chatroom.isSaved())) {
                     clicker.closeInventory();
+                    clicker.updateInventory();
                     ChatroomConfirmDeletionEvent.confirmDeletion.put(clicker, chatroom);
 
                     String warningDelete = messages.getString("owner-leave-chatroom")
@@ -377,6 +378,7 @@ public class ChatroomPager extends PagingMenu {
             if (chatroom.hasModeratorPermissions(getViewer().getUniqueId())){
                 ChatroomSetDescriptionEvent.setDescription.put(clicker, chatroom);
                 clicker.closeInventory();
+                clicker.updateInventory();
                 String setDesc = messages.getString("set-description").replace("$chatroom$", chatroom.getName())
                         .replace("$cancel$", messages.getString("cancel"));
                 clicker.sendMessage(setDesc);
