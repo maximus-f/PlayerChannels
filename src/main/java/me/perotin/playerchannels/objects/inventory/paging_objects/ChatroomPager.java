@@ -162,18 +162,19 @@ public class ChatroomPager extends PagingMenu {
      */
     protected List<GuiItem> generatePages() {
         List<GuiItem> items = new ArrayList<>();
-        for(ItemStack i : getHeads().keySet()) {
+        Map<ItemStack, PlayerChannelUser> heads = getHeads();
+        for(ItemStack i : heads.keySet()) {
             if (chatroom.getRole(getViewer().getUniqueId()) == ChatRole.OWNER && ChatRole.getRoleFrom(i) != ChatRole.OWNER) {
-                items.add(new GuiItem(i, viewModMenuFor(getHeads().get(i))));
+                items.add(new GuiItem(i, viewModMenuFor(heads.get(i))));
             } else if (chatroom.getRole(getViewer().getUniqueId()) == ChatRole.MODERATOR
             && ChatRole.getRoleFrom(i) == ChatRole.MEMBER) {
-                items.add(new GuiItem(i, viewModMenuFor(getHeads().get(i))));
+                items.add(new GuiItem(i, viewModMenuFor(heads.get(i))));
             } else if (chatroom.getRole(getViewer().getUniqueId()) == ChatRole.MODERATOR
                     && ChatRole.getRoleFrom(i) == ChatRole.MODERATOR || ChatRole.getRoleFrom(i) == ChatRole.OWNER) {
-                items.add(new GuiItem(i, viewProfile(getHeads().get(i))));
+                items.add(new GuiItem(i, viewProfile(heads.get(i))));
             } else {
                 // must be a member
-                items.add(new GuiItem(i, viewProfile(getHeads().get(i))));
+                items.add(new GuiItem(i, viewProfile(heads.get(i))));
 
             }
         }
@@ -255,12 +256,13 @@ public class ChatroomPager extends PagingMenu {
      *
      */
     private Map<ItemStack, PlayerChannelUser> sortListByRank(Map<ItemStack, PlayerChannelUser> items){
-        Map<ItemStack, PlayerChannelUser> sorted = new HashMap<>();
+        Map<ItemStack, PlayerChannelUser> sorted = new LinkedHashMap<>();
         List<ItemStack> sortedList = items.keySet().stream().sorted(new ChatRoleComparator()).collect(Collectors.toList());
         for(ItemStack item : sortedList){
             PlayerChannelUser value = items.get(item);
             sorted.put(item, value);
         }
+
         return sorted;
     }
 

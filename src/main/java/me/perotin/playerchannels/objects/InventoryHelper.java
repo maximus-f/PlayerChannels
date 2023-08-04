@@ -249,9 +249,7 @@ public class InventoryHelper {
 
         GuiItem decoItem = DECO_ITEM();
 
-        //Bukkit.broadcastMessage("SetPagingNav decoItem action: " + decoItem);
         for (int x : decoSlots) {
-          //  Bukkit.broadcastMessage("adding deco item for " + x);
 
             pagingNavigationBar.addItem(decoItem, x, 0);
 

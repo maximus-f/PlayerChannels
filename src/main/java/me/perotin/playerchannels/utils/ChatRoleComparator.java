@@ -1,6 +1,7 @@
 package me.perotin.playerchannels.utils;
 
 import me.perotin.playerchannels.objects.ChatRole;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Comparator;
@@ -23,7 +24,7 @@ public class ChatRoleComparator implements Comparator<ItemStack> {
         ChatRole o1 = ChatRole.getRoleFrom(o4);
         ChatRole o2 = ChatRole.getRoleFrom(o5);
        if(o1.getValue() == o2.getValue()) return 0;
-       if(o1.getValue() > o2.getValue()) return 1;
+       if(o1.getValue() < o2.getValue()) return 1;
        else return -1;
     }
 }
