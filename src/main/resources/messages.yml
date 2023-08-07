@@ -86,3 +86,6 @@ help-msg-9: "&eThis concludes the tutorial."
 cancel-tutorial-cancelled: "&eYou are no longer in the tutorial."
 cancel-tutorial-not-in: "&eYou are not in a tutorial currently. To see the tutorial, click the feather icon in '&a/playerchannels&e'"
 already-in-tutorial: "Already in the tutorial! Type /cancel to leave"
+
+fast-chat-invalid-range: "&cInvalid key. Use keys &e[&f1-$end$&e]&c to fast chat."
+fast-chat-invalid: "&cInvalid key. Use key &e[&f1&e]&c to fast chat."

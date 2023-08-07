@@ -96,9 +96,9 @@ public class ChatroomPager extends PagingMenu {
 
         //TODO use messages.yml values
         if (player.getFocusedChatroom() != null && player.getFocusedChatroom().equals(chatroom)) {
-            inChatToggle.setDisplayName(inChatToggle.getDisplayName() + " true");
+            inChatToggle.setDisplayName(inChatToggle.getDisplayName() + " " + messages.getString("true"));
         } else {
-            inChatToggle.setDisplayName(inChatToggle.getDisplayName() + " false");
+            inChatToggle.setDisplayName(inChatToggle.getDisplayName() + " " + messages.getString("false"));
 
         }
         inChat.getFirst().setItemMeta(inChatToggle);

@@ -78,6 +78,43 @@ public class ChatroomChatEvent implements Listener {
 
        // Player is using their index keys to "fast chat" in multiple chatrooms
         // TODO
+        if (message.matches("^[1-9][0-9]?:.*$")) {
+            event.setCancelled(true);
+
+            String[] parts = message.split(":", 2);
+            int chatroomIndex;
+            try {
+                chatroomIndex = Integer.parseInt(parts[0]) - 1;
+            } catch (NumberFormatException e) {
+                chatter.sendMessage("Invalid chatroom index");
+                return;
+            }
+
+            int chatroomsSize = playerChannelUser.getChatrooms().size();
+            if (chatroomIndex < 0 || chatroomIndex >= chatroomsSize) {
+                String errorMessage;
+                if (chatroomsSize == 1) {
+                    errorMessage = messages.getString("fast-chat-invalid");
+                } else {
+                    errorMessage = messages.getString("fast-chat-invalid-range")
+                            .replace("$end$", Integer.toString(chatroomsSize));
+                }
+                chatter.sendMessage(errorMessage);
+                return;
+            }
+
+            Chatroom fastChatroom = playerChannelUser.getChatrooms().get(chatroomIndex);
+            if (fastChatroom.isMuted(chatter.getUniqueId())) {
+                // Player is muted within the chatroom
+                chatter.sendMessage(messages.getString("muted-message")
+                        .replace("$chatroom$", fastChatroom.getName()));
+                return;
+            }
+            fastChatroom.chat(chatter.getName(), parts[1].trim(), chatter.getUniqueId());
+            return;
+        }
+
+
 
     }
 }
