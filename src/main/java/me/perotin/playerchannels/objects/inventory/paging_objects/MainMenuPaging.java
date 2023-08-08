@@ -97,8 +97,8 @@ public class MainMenuPaging extends PagingMenu {
     private int compare(ItemStack o, ItemStack o1){
         Material saved = Material.valueOf(plugin.getConfig().getString("saved-material"));
         if(o.getType() == o1.getType()) return 0;
-        else if(o.getType() == saved) return 1;
-        else if(o1.getType() == saved) return -1;
+        else if(o.getType() == saved) return -1;
+        else if(o1.getType() == saved) return 1;
         return 0;
     }
 }

@@ -413,23 +413,51 @@ public class ChatroomPager extends PagingMenu {
     }
 
     /**
+     * Toggles listening of this chatroom. Listening to a chatroom means it will block other channels besides for this one.
+     * @return click event where player toggles whether they are listening to this chatroom
+     */
+    private Consumer<InventoryClickEvent> toggleListenItem(){
+        return inventoryClickEvent -> {
+            inventoryClickEvent.setCancelled(true);
+            Player clicker = (Player) inventoryClickEvent.getWhoClicked();
+            PlayerChannelUser player = PlayerChannelUser.getPlayer(clicker.getUniqueId());
+
+            if (player.isListeningTo(getChatroom())) {
+                player.removeChannelToListen(getChatroom());
+            } else {
+                player.addChannelToListen(getChatroom());
+            }
+            new ChatroomPager(chatroom, clicker).show();
+
+        };
+    }
+
+    /**
      * Sets the bottom row for use of mod actions like viewing ban menu and members for setting nicknames
      */
     private void setBottomRow(){
         Pair<ItemStack, Integer> nicknames = InventoryHelper.getItem("chatroom-bottom-bar.nicknames", null);
+        Pair<ItemStack, Integer> listen = InventoryHelper.getItem("chatroom-bottom-bar.listen", null);
+
         Pair<ItemStack, Integer> banMenu = InventoryHelper.getItem("chatroom-bottom-bar.ban-menu", null);
 
+
+        String status = PlayerChannelUser.getPlayer(getViewer().getUniqueId()).isListeningTo(getChatroom()) ? messages.getString("on-status") : messages.getString("off-status");
+        ItemStack listenIn = ChannelUtils.replacePlaceHolderInDisplayName(ChannelUtils.replacePlaceHolderInDisplayName(listen.getFirst(), "$channel$", getChatroom().getName()), "$status$", status);
         GuiItem banItem = new GuiItem(banMenu.getFirst(), viewBanMenu());
         GuiItem nickNameItem = new GuiItem(nicknames.getFirst(), viewNicknameMenu());
+        GuiItem listenItem = new GuiItem(listenIn, toggleListenItem());
 
         if (chatroom.isNicknamesEnabled()) {
             bottomRow.addItem(nickNameItem, nicknames.getSecond(), 0);
         }
 
+
         if (chatroom.hasModeratorPermissions(getViewer().getUniqueId())){
 
             bottomRow.addItem(banItem, banMenu.getSecond(), 0);
         }
+        bottomRow.addItem(listenItem, listen.getSecond(), 0);
 
     }
 

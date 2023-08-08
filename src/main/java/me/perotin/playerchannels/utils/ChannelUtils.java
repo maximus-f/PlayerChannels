@@ -175,6 +175,13 @@ public class ChannelUtils {
         return new MainMenuPaging(viewer, PlayerChannels.getInstance()).getMenu();
     }
 
+    /**
+     * Replaces the display name of an item with actual input
+     * @param toEdit
+     * @param placeholder
+     * @param input
+     * @return
+     */
     public static ItemStack replacePlaceHolderInDisplayName(ItemStack toEdit, String placeholder, String input) {
         ItemMeta meta = toEdit.getItemMeta();
         meta.setDisplayName(meta.getDisplayName().replace(placeholder, input));

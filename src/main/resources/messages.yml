@@ -28,6 +28,8 @@ owner: "&cOwner"
 cancel: "cancel"
 true: "&atrue"
 false: "&cfalse"
+on-status: "&aon"
+off-status: "&coff"
 public: "&apublic"
 private: "&cprivate"
 

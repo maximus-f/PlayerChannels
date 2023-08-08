@@ -163,6 +163,12 @@ chatroom-bottom-bar:
       display: "&e&lNicknames menu"
       material: "NETHER_STAR"
       slot: 0
+   listen:
+      display: "&e&lListen to $channel$'s chat: $status$"
+      material: "CLOCK"
+      slot: 1
+      lore:
+         - "&7&oClick to only receive incoming chat from this channel"
    ban-menu:
       display: "&e&lBans"
       material: "ENDER_CHEST"
