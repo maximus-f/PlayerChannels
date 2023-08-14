@@ -62,7 +62,7 @@ public class ChatroomChatEvent implements Listener {
        }
 
        // Player used a special prefix and is only in one chatroom
-       if (message.startsWith(PlayerChannels.QUICK_CHAT_PREFIX) && playerChannelUser.getChatrooms().size() == 1){
+        else if (message.startsWith(PlayerChannels.QUICK_CHAT_PREFIX) && playerChannelUser.getChatrooms().size() == 1){
            event.setCancelled(true);
 
            Chatroom quickChatroom = playerChannelUser.getChatrooms().get(0);
@@ -78,7 +78,7 @@ public class ChatroomChatEvent implements Listener {
 
        // Player is using their index keys to "fast chat" in multiple chatrooms
         // TODO
-        if (message.matches("^[1-9][0-9]?:.*$")) {
+      else  if (message.matches("^[1-9][0-9]?:.*$")) {
             event.setCancelled(true);
 
             String[] parts = message.split(":", 2);

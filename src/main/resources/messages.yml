@@ -71,6 +71,7 @@ listen-removed-channel: "&cNo longer listening to $chatroom$&c!"
 listen-help: "&cIncorrect arguments! &a/$command$ $listen$ <add/remove/off> <chatroom>"
 listen-not-currently-listening: "&cYou are not currently listening to that chatroom!"
 listen-off: "&cNo longer listening to any chatroom!"
+listening-to-channel: "&aYou will now only receive messages from these channels:"
 
 
 # Chatroom Help Messages

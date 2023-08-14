@@ -144,7 +144,7 @@ public class ChannelUtils {
             Bukkit.getScheduler().runTaskLater(PlayerChannels.getInstance(), () -> {
                 progress.revokeCriteria("trigger");
                 Bukkit.getUnsafe().removeAdvancement(key);
-                Bukkit.getServer().reloadData();
+               Bukkit.getServer().reloadData();
             }, 20L);  // Remove the advancement after 20 ticks (1 second).
         }
     }

@@ -145,6 +145,8 @@ chatroom-bar:
       display: "&e&lIn Chat:&f"
       material: "NAME_TAG"
       slot: 2
+      lore:
+         - "&7&oClick to send all messages in this channel"
    nicknames:
       display: "&e&lNicknames:"
       material: "ARMOR_STAND"

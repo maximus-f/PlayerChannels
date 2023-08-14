@@ -120,6 +120,8 @@ public class PlayerChannels extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ChatroomSetNicknameEvent(this), this);
         Bukkit.getPluginManager().registerEvents(new ChatroomSetDescriptionEvent(this), this);
         Bukkit.getPluginManager().registerEvents(new ChatroomConfirmDeletionEvent(this), this);
+        //Bukkit.getPluginManager().registerEvents(new AntiDupeCloseEvent(), this);
+
 
 
 

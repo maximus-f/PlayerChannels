@@ -8,6 +8,7 @@ import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.utils.ChannelUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -77,6 +78,8 @@ public class PlayerChannelUser {
    public void addChannelToListen(Chatroom chatroom) {
         getListeningChatrooms().add(chatroom);
         PlayerChannels.getInstance().getListeningPlayers().add(getUuid());
+        tellListeningChannels();
+
    }
 
     /**
@@ -87,6 +90,19 @@ public class PlayerChannelUser {
        getListeningChatrooms().remove(chatroom);
        if (getListeningChatrooms().isEmpty()) {
            PlayerChannels.getInstance().getListeningPlayers().remove(getUuid());
+       }
+       tellListeningChannels();
+   }
+
+   private void tellListeningChannels() {
+       Player player = Bukkit.getPlayer(getUuid());
+       player.sendMessage(new ChannelFile(FileType.MESSAGES).getString("listening-to-channel"));
+       for (Chatroom chat : getListeningChatrooms()) {
+           String name = chat.getName();
+           if (!chat.getName().contains(ChatColor.COLOR_CHAR + "")){
+               name = ChatColor.YELLOW + name;
+           }
+           player.sendMessage(ChatColor.GREEN + "- " + name);
        }
    }
 

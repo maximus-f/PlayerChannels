@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import me.perotin.playerchannels.PlayerChannels;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -49,6 +50,9 @@ public class ChannelFile {
         }
     }
 
+    public ConfigurationSection getConfigSection(String path){
+        return configuration.getConfigurationSection(path);
+    }
     // some generic methods to speed up the process
     public boolean getBool(String path){
         return getConfiguration().getBoolean(path);
