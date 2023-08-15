@@ -17,9 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /* Created by Perotin on 8/21/19 */
 
@@ -31,6 +29,8 @@ public class ChannelUtils {
 
     private ChannelUtils(){}
 
+
+    private static final Map<UUID, Map<String, Long>> lastMessageSent = new HashMap<>();
 
     /**
      * @param command to register
@@ -97,15 +97,30 @@ public class ChannelUtils {
 //        // Create the BossBar
 //        BossBar bossBar = Bukkit.createBossBar(message, BarColor.PURPLE, BarStyle.SOLID);
 
-        sendAdvancementNotification(player, message, "", Material.WRITABLE_BOOK);
+        if (canSendMessage(player, message)) {
+            sendAdvancementNotification(player, message, "", Material.WRITABLE_BOOK);
 //        bossBar.addPlayer(player);
 
-        if (nextMenu != null){
+
+        }
+        if (nextMenu != null) {
             nextMenu.show(player);
         }
 
 //        Bukkit.getScheduler().runTaskLater(PrivateTalk.getInstance(), () -> bossBar.removePlayer(player), 5*20L); // 60L is approximately 3 seconds
 
+    }
+
+    private static boolean canSendMessage(Player player, String messageType) {
+        long now = System.currentTimeMillis();
+        Map<String, Long> playerMessages = lastMessageSent.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>());
+        Long lastSent = playerMessages.get(messageType);
+
+        if (lastSent == null || (now - lastSent) > 60 * 1000) {
+            playerMessages.put(messageType, now);
+            return true;
+        }
+        return false;
     }
 
 

@@ -20,12 +20,16 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
  * Class for InventoryClickEvent consumer events
  */
 public class CreateChatroomAction {
+
 
 
     /**
@@ -109,24 +113,24 @@ public class CreateChatroomAction {
     /**
      * Actions for toggling whether a chatroom should be persistent i.e. saved
      */
-    public static Consumer<InventoryClickEvent> toggleSavedConsumer(){
+    public static Consumer<InventoryClickEvent> toggleSavedConsumer() {
         return clickEvent -> {
-            // Can cast to player because will only be called in those scenarios
             clickEvent.setCancelled(true);
-
             Player clicker = (Player) clickEvent.getWhoClicked();
+
             if (clicker.hasPermission("playerchannels.saved")) {
                 CreateChatroomInputEvent input = CreateChatroomInputEvent.getInstance();
                 PreChatroom chatroom = input.getInCreation().get(clicker.getUniqueId());
-                // Toggle saved status
                 chatroom.setSaved(!chatroom.isSaved());
-
                 input.showUpdatedMenu(clicker, chatroom);
             } else {
-                ChannelUtils.sendMenuMessage(new ChannelFile(FileType.MESSAGES).getString("no-permission"), clicker, null);
+                String message = new ChannelFile(FileType.MESSAGES).getString("no-permission");
+                ChannelUtils.sendMenuMessage(message, clicker, null);
+
             }
         };
     }
+
 
     /**
      * Clicking the 'create' button
@@ -148,9 +152,12 @@ public class CreateChatroomAction {
 
             // may not be fully correct
             if(chatroom.getName().equals("")){
-                ChannelUtils.sendMenuMessage(messages.getString("name-missing"), clicker, null);
+                String message = messages.getString("name-missing");
+                ChannelUtils.sendMenuMessage(message, clicker, null);
 //                clicker.sendTitle(messages.getString("name-missing"), "", 10, 20*3, 10);
+
                 return;
+
             }
 
             // create the chatroom

@@ -457,7 +457,9 @@ public class ChatroomPager extends PagingMenu {
 
             bottomRow.addItem(banItem, banMenu.getSecond(), 0);
         }
-        bottomRow.addItem(listenItem, listen.getSecond(), 0);
+        if (chatroom.isInChatroom(getViewer().getUniqueId())) {
+            bottomRow.addItem(listenItem, listen.getSecond(), 0);
+        }
 
     }
 

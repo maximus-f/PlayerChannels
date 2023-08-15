@@ -72,6 +72,10 @@ public class PlayerListPager extends PagingMenu {
                 Player player = Bukkit.getPlayer(playerChannelUser.getUuid());
                 ItemStackUtils head = new ItemStackUtils(Material.PLAYER_HEAD);
                 head.setName(messages.getString("chatroom-head-display").replace("$player-name$", player.getName()));
+                // TODO: Make yellow if no chat color
+                if (!playerChannelUser.getStatus().isEmpty()) {
+                    head.setLore(playerChannelUser.getStatus());
+                }
                 head.setOwner(owner);
                 heads.put(head.build(), playerChannelUser);
             } else {
@@ -79,6 +83,9 @@ public class PlayerListPager extends PagingMenu {
                 ItemStackUtils head = new ItemStackUtils(Material.PLAYER_HEAD);
                 head.setName(messages.getString("chatroom-head-display").replace("$player-name$", player.getName()));
                 head.setOwner(owner);
+                if (!playerChannelUser.getStatus().isEmpty()) {
+                    head.setLore(playerChannelUser.getStatus());
+                }
                 heads.put(head.build(), playerChannelUser);
 
             }
