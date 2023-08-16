@@ -70,6 +70,8 @@ public class InventoryHelper {
     public Pair<Gui, StaticPane> setNavigationBar(ChestGui inventory, OfflinePlayer owner) {
         Pair<ItemStack, Integer> playerHead = getItem("nav-bar.player-profile-head", owner);
         Pair<ItemStack, Integer> helpItem = getItem("nav-bar.help-item", null);
+        Pair<ItemStack, Integer> adminMenu = getItem("nav-bar.admin-menu", null);
+
 
         ItemStack playerHeadItem = playerHead.getFirst();
         ChannelUtils.replacePlaceHolderInDisplayName(playerHeadItem, "$name$", owner.getName());
@@ -85,6 +87,13 @@ public class InventoryHelper {
             event.setCancelled(true);
             new ChatroomInvitationListPager(PlayerChannelUser.getPlayer(owner.getUniqueId()), (Player) owner, new MainMenuPaging((Player) owner, PlayerChannels.getInstance()).getMenu()).show();
         }),  invites.getSecond(), 0);
+
+//        Player player = Bukkit.getPlayer(owner.getUniqueId()); // should work since the player is online
+//
+//        if (player.hasPermission("playerchannels.admin")) {
+//            navBar.addItem(new GuiItem(adminMenu.getFirst()), adminMenu.getSecond(), 0);
+//        }
+
 
         inventory.addPane(navBar);
         return new Pair<>(inventory, navBar);
@@ -376,6 +385,13 @@ public class InventoryHelper {
             Player viewer = Bukkit.getPlayer(uuid);
             event.setCancelled(true);
             new PlayerProfileMenu(viewer, player, new MainMenuPaging(viewer, PlayerChannels.getInstance()).getMenu()).show();
+        };
+    }
+
+    private Consumer<InventoryClickEvent> clickAdminMenu() {
+        return event -> {
+          event.setCancelled(true);
+
         };
     }
 

@@ -202,8 +202,16 @@ public class Chatroom {
         return generateItem();
     }
 
+    /**
+     * When a new player joins the chatroom
+     * @param value
+     */
     public void addMember(Pair<UUID, ChatRole> value) {
         this.members.put(value.getFirst(), value.getSecond());
+        String name = Bukkit.getPlayer(value.getFirst()).getName();
+        broadcastMessage(new ChannelFile(MESSAGES).getString("new-player-join")
+                .replace("$name$", name)
+                .replace("$chatroom$", getName()));
     }
 
     /**
@@ -214,6 +222,11 @@ public class Chatroom {
      */
     public void removeMember(UUID key) {
         this.members.remove(key);
+        String name = Bukkit.getPlayer(key).getName();
+
+        broadcastMessage(new ChannelFile(MESSAGES).getString("player-leave")
+                .replace("$name$", name)
+                .replace("$chatroom$", getName()));
         if (getMembers().isEmpty() && !isSaved()){
             PlayerChannels.getInstance().getChatrooms().remove(this);
         }

@@ -149,6 +149,8 @@ public class PlayerChannelUser {
      */
     public void addChatroom(Chatroom chatroom) {
         if(!chatrooms.contains(chatroom)) chatrooms.add(chatroom);
+        Bukkit.getPlayer(getUuid()).sendMessage(new ChannelFile(FileType.MESSAGES).getString("player-join-message")
+                .replace("$chatroom$", chatroom.getName()));
     }
 
     /**
@@ -159,6 +161,8 @@ public class PlayerChannelUser {
         if (focusedChatroom != null && focusedChatroom.equals(chatroom)){
             setFocusedChatroom(null);
         }
+        Bukkit.getPlayer(getUuid()).sendMessage(new ChannelFile(FileType.MESSAGES).getString("player-leave-message")
+                .replace("$chatroom$", chatroom.getName()));
     }
 
     /**

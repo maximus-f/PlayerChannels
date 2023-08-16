@@ -60,6 +60,13 @@ nav-bar:
         - "3"
         - "6"
         - "7"
+   # The following item is only shown to admins, keep the deco item here so that it will not show for normal players
+   admin-menu:
+      slot: 3
+      display: "&cAdmin Menu"
+      material: "LAVA_BUCKET"
+      lore:
+         - "&7&oClick for admin tools"
 # Paging navigation-bar
 # This is the row at the bottom of menus where you can click to view multiple pages
 paging-nav-bar:
