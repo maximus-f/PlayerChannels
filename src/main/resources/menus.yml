@@ -251,3 +251,24 @@ invitations-menu:
       lore:
          - "&7&oRight click to &a&lACCEPT"
          - "&7&oLeft click to &c&lREJECT"
+admin-menu:
+   stop-plugin:
+      material: "REDSTONE_BLOCK"
+      display: "&cStop the plugin"
+      slot: 0
+   delete-chatroom:
+      material: "REDSTONE_BLOCK"
+      display: "&cDelete a Channel"
+      slot: 2
+   spy-chatroom:
+      material: "ENDER_EYE"
+      display: "&cSpy on a Channel"
+      slot: 4
+      lore:
+         - "&7- &e&lRIGHT&7 click to spy on a single channels"
+         - "&7- &e&lLEFT&7 click to spy on &e&lALL&7 channels"
+   reload-plugin:
+      material: "WRITABLE_BOOK"
+      display: "&cReload yaml files"
+      slot: 2
+

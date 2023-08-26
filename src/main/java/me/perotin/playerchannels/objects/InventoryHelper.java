@@ -11,6 +11,7 @@ import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.inventory.actions.CreateChatroomAction;
 import me.perotin.playerchannels.objects.inventory.paging_objects.ChatroomInvitationListPager;
 import me.perotin.playerchannels.objects.inventory.paging_objects.MainMenuPaging;
+import me.perotin.playerchannels.objects.inventory.static_inventories.AdminMenu;
 import me.perotin.playerchannels.objects.inventory.static_inventories.PlayerProfileMenu;
 import me.perotin.playerchannels.storage.Pair;
 import me.perotin.playerchannels.storage.files.FileType;
@@ -88,11 +89,11 @@ public class InventoryHelper {
             new ChatroomInvitationListPager(PlayerChannelUser.getPlayer(owner.getUniqueId()), (Player) owner, new MainMenuPaging((Player) owner, PlayerChannels.getInstance()).getMenu()).show();
         }),  invites.getSecond(), 0);
 
-//        Player player = Bukkit.getPlayer(owner.getUniqueId()); // should work since the player is online
-//
-//        if (player.hasPermission("playerchannels.admin")) {
-//            navBar.addItem(new GuiItem(adminMenu.getFirst()), adminMenu.getSecond(), 0);
-//        }
+        Player player = Bukkit.getPlayer(owner.getUniqueId()); // should work since the player is online
+
+        if (player.hasPermission("playerchannels.admin")) {
+            navBar.addItem(new GuiItem(adminMenu.getFirst(), clickAdminMenu()), adminMenu.getSecond(), 0);
+        }
 
 
         inventory.addPane(navBar);
@@ -390,7 +391,9 @@ public class InventoryHelper {
 
     private Consumer<InventoryClickEvent> clickAdminMenu() {
         return event -> {
+            Player admin = (Player) event.getWhoClicked();
           event.setCancelled(true);
+          new AdminMenu(admin, "Admin Menu").show(admin);
 
         };
     }
