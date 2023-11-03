@@ -80,7 +80,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
                 <configuration>
-                    <outputDirectory>/Users/maxfuligni/Desktop/network/server1/plugins</outputDirectory>
+                    <outputDirectory>/Users/maxfuligni/Desktop/network/server/plugins</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>

@@ -271,4 +271,9 @@ admin-menu:
       material: "WRITABLE_BOOK"
       display: "&cReload yaml files"
       slot: 2
+   delete-chatroom-info:
+      material: "OAK_SIGN"
+      display: "&eLeft click to Delete"
+      slot: 3
+
 

@@ -54,7 +54,7 @@ public class MainMenuPaging extends PagingMenu {
     @Override
     protected List<GuiItem> generatePages() {
         List<ItemStack> toDisplay = plugin.getChatrooms().stream().map(Chatroom::getItem).collect(Collectors.toList());
-        toDisplay = toDisplay.stream().sorted(this::compare).collect(Collectors.toList());
+        toDisplay = toDisplay.stream().sorted(MainMenuPaging::compare).collect(Collectors.toList());
         List<GuiItem> guiItems = toDisplay.stream().map(item -> new GuiItem(item, ChatroomItemStackAction.clickOnChatroom())).collect(Collectors.toList());
 
 //        List<GuiItem> test = new ArrayList<>();
@@ -94,8 +94,8 @@ public class MainMenuPaging extends PagingMenu {
      * @param o1
      * @return
      */
-    private int compare(ItemStack o, ItemStack o1){
-        Material saved = Material.valueOf(plugin.getConfig().getString("saved-material"));
+    public static int compare(ItemStack o, ItemStack o1){
+        Material saved = Material.valueOf(PlayerChannels.getInstance().getConfig().getString("saved-material"));
         if(o.getType() == o1.getType()) return 0;
         else if(o.getType() == saved) return -1;
         else if(o1.getType() == saved) return 1;
