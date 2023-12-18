@@ -44,6 +44,9 @@ public class Chatroom {
 
     private Map<UUID, String> nickNames;
     private ChannelFile messages;
+
+    /** List of UUIDs for admins spying**/
+    private Set<UUID> spyers;
     private ItemStack display;
 
 
@@ -68,6 +71,7 @@ public class Chatroom {
         this.mutedMembers = new ArrayList<>();
         this.bannedMembers = new ArrayList<>();
         this.nickNames = new HashMap<>();
+        this.spyers = new HashSet<>();
     }
 
     /**
@@ -82,6 +86,8 @@ public class Chatroom {
         this.mutedMembers = mutedMembers;
         this.nickNames = nicknames;
         this.nicknamesEnabled = nicknamesenabled;
+        this.spyers = new HashSet<>();
+
 
     }
 
@@ -307,6 +313,11 @@ public class Chatroom {
                         .replace("$role$", getStringRole(id))
                 .replace("$name$", sender))
                         .replace("$nickname$", nickname);
+        for (UUID spy : getSpyers()) {
+            if (Bukkit.getPlayer(spy) != null) {
+                Bukkit.getPlayer(spy).sendMessage(chatroomFormat);
+            }
+        }
 
         for (Player member : members) {
             // Send if not listening or is listening explicity to this one
@@ -316,6 +327,15 @@ public class Chatroom {
         }
     }
 
+
+
+    public void addSpy(UUID uuid) {
+        getSpyers().add(uuid);
+    }
+
+    public void removeSpy(UUID uuid) {
+        getSpyers().remove(uuid);
+    }
     /**
      * Broadcast any message to the entire chatroom
      * @param message
@@ -323,7 +343,6 @@ public class Chatroom {
     public void broadcastMessage(String message) {
         List<Player> members = getOnlinePlayers();
         members.forEach(member -> member.sendMessage(message));
-
 
     }
 
@@ -382,6 +401,13 @@ public class Chatroom {
 
     public boolean hasModeratorPermissions(UUID uuid) {
         return getRole(uuid) == ChatRole.MODERATOR || getRole(uuid) == ChatRole.OWNER;
+    }
+
+    /**
+     * @return Admins spying on the chatroom
+     */
+    public List<UUID> getSpyers() {
+        return spyers;
     }
 
     /**
