@@ -8,20 +8,23 @@ import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.InventoryHelper;
 import me.perotin.playerchannels.objects.inventory.actions.ChatroomItemStackAction;
+import me.perotin.playerchannels.objects.inventory.static_inventories.AdminDeletionConfirmMenu;
 import me.perotin.playerchannels.storage.Pair;
 import me.perotin.playerchannels.utils.ItemStackUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class AdminDeleteChatroomPager extends PagingMenu {
 
     private InventoryHelper helper;
-    private StaticPane infoPane;
 
     public AdminDeleteChatroomPager(Player viewer, Gui backMenu) {
         super("Delete a Channel", 6, viewer, backMenu);
@@ -30,17 +33,14 @@ public class AdminDeleteChatroomPager extends PagingMenu {
         helper.setSideDecorationSlots(getMenu());
         helper.setPagingNavBar(getMenu());
         setPaginatedPane();
-        this.infoPane = new StaticPane(1, 1, 6, 1);
-        getMenu().addPane(infoPane);
         getPaginatedPane().populateWithGuiItems(generatePages());
 
-        Pair<ItemStack, Integer> infoItem = InventoryHelper.getItem("admin-menu.delete-chatroom-info", null);
-        infoPane.addItem(new GuiItem(infoItem.getFirst()), infoItem.getSecond(), 0);
+
     }
 
     @Override
     protected void setPaginatedPane() {
-        this.pane = new PaginatedPane(1, 2, 7, 3);
+        this.pane = new PaginatedPane(1, 1, 7, 3);
         getMenu().addPane(pane);
 
     }
@@ -48,25 +48,39 @@ public class AdminDeleteChatroomPager extends PagingMenu {
     @Override
     protected List<GuiItem> generatePages() {
         List<ItemStack> toDisplay = PlayerChannels.getInstance().getChatrooms().stream()
-                .map(Chatroom::getItem)
+                .map(Chatroom::getItemForDeletion)
                 .collect(Collectors.toList());
         toDisplay = toDisplay.stream().map(item -> {
-            ItemMeta meta = item.getItemMeta();
-            List<String> lore = meta.getLore();
-            lore.add(ChatColor.GRAY + "Click to " + ChatColor.RED + ChatColor.BOLD + "DELETE");
-            meta.setLore(lore);
-            item.setItemMeta(meta);
+
             return item;
         }).collect(Collectors.toList());
 
         // Assuming MainMenuPaging::compare method is correctly implemented for sorting
         toDisplay.sort(MainMenuPaging::compare);
 
-        List<GuiItem> guiItems = toDisplay.stream()
-                .map(item -> new GuiItem(item, ChatroomItemStackAction.clickOnChatroom()))
+        return toDisplay.stream()
+                .map(item -> new GuiItem(item, goToDeletionConfirmationPage()))
                 .collect(Collectors.toList());
-
-        return guiItems;
     }
+
+    private Consumer<InventoryClickEvent> goToDeletionConfirmationPage() {
+        return inventoryClickEvent -> {
+            inventoryClickEvent.setCancelled(true);
+            ItemStack current = inventoryClickEvent.getCurrentItem();
+            if (current != null && current.hasItemMeta() && current.getItemMeta().hasDisplayName()) {
+                String displayName = current.getItemMeta().getDisplayName();
+                String[] parts = displayName.split(" ", 2); // Split the string into two parts
+
+                String channelName = "";
+                if (parts.length > 1) {
+                    channelName = parts[1]; // Get everything after the first space
+                }
+
+                // Rest of your code...
+                new AdminDeletionConfirmMenu(getViewer(), "Delete " + channelName + "?").show(getViewer());
+            }
+        };
+    }
+
 
 }

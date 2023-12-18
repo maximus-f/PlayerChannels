@@ -203,4 +203,26 @@ public class ChannelUtils {
         toEdit.setItemMeta(meta);
         return toEdit;
     }
+
+    /**
+     * Replaces the display name of an item with actual input
+     * @param toEdit
+     * @param placeholder
+     * @param input
+     * @return
+     */
+    public static ItemStack replacePlaceHolderInLore(ItemStack toEdit, String placeholder, String input, int line) {
+        ItemMeta meta = toEdit.getItemMeta();
+        if (meta != null) {
+            List<String> lore = meta.getLore();
+            if (lore != null && line >= 0 && line < lore.size()) {
+                String updatedLine = lore.get(line).replace(placeholder, input);
+                lore.set(line, updatedLine); // Update the line in the lore
+                meta.setLore(lore);
+                toEdit.setItemMeta(meta);
+            }
+        }
+        return toEdit;
+    }
+
 }

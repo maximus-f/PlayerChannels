@@ -202,6 +202,17 @@ public class Chatroom {
         return generateItem();
     }
 
+    public ItemStack getItemForDeletion(){
+        ItemStack item = generateItem();
+        ItemMeta meta = item.getItemMeta();
+        List<String> lores = new ArrayList<>();
+        lores.add(ChatColor.GRAY + "Click to " + ChatColor.RED + ChatColor.BOLD + "DELETE");
+
+        meta.setLore(lores);
+        item.setItemMeta(meta);
+        return item;
+    }
+
     /**
      * When a new player joins the chatroom
      * @param value

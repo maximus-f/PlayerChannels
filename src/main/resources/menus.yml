@@ -271,9 +271,17 @@ admin-menu:
       material: "WRITABLE_BOOK"
       display: "&cReload yaml files"
       slot: 2
-   delete-chatroom-info:
-      material: "OAK_SIGN"
-      display: "&eLeft click to Delete"
-      slot: 3
+   delete-chatroom-confirm:
+      material: "EMERALD_BLOCK"
+      display: "&aConfirm deletion"
+      lore:
+         - "&7Deleting $name$"
+      slot: 0
+   delete-chatroom-cancel:
+      material: "REDSTONE_BLOCK"
+      display: "&cCancel"
+      lore:
+         - "&7Click to cancel deletion"
+      slot: 2
 
 
