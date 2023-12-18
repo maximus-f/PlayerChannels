@@ -19,6 +19,13 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+
+<!--        Ultimate Adcancement api repo-->
+            <repository>
+                <id>fren_gor</id>
+                <url>https://nexus.frengor.com/repository/public/</url>
+            </repository>
+
         <!--Bungeecord Repo-->
         <repository>
             <id>bungeecord-repo</id>
@@ -31,7 +38,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.14.2-R0.1-SNAPSHOT</version>
+            <version>1.20.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- Inventory Framework Dependency-->
@@ -54,6 +61,17 @@
             <version>23.0.0</version>
             <scope>compile</scope>
         </dependency>
+
+
+<!--        Ultimate Advancement API for Toast messages-->
+        <dependency>
+            <groupId>com.frengor</groupId>
+            <artifactId>ultimateadvancementapi</artifactId>
+            <version>2.2.8</version>
+            <scope>compile</scope>
+        </dependency>
+
+
 
     </dependencies>
     <!-- Shading in IF -->
@@ -86,11 +104,15 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.5.1</version>
                 <configuration>
                     <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml
                     </dependencyReducedPomLocation>
                     <relocations>
+                        <relocation>
+                            <pattern>com.fren_gor.ultimateAdvancementAPI</pattern>
+                            <shadedPattern>me.perotin.playerchannels.ultimateAdvancementAPI</shadedPattern>
+                        </relocation>
                         <relocation>
                             <pattern>com.github.stefvanschie.inventoryframework</pattern>
                             <shadedPattern>me.perotin.playerchannels.inventoryframework</shadedPattern>

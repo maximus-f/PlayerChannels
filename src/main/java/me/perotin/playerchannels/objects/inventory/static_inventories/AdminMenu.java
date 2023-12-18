@@ -3,17 +3,22 @@ package me.perotin.playerchannels.objects.inventory.static_inventories;
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.playerchannels.PlayerChannels;
+import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.InventoryHelper;
 import me.perotin.playerchannels.objects.inventory.paging_objects.AdminDeleteChatroomPager;
+import me.perotin.playerchannels.objects.inventory.paging_objects.AdminSpyChatroomPager;
 import me.perotin.playerchannels.storage.Pair;
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.storage.files.FileType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class AdminMenu extends StaticMenu {
@@ -43,7 +48,7 @@ public class AdminMenu extends StaticMenu {
         Pair<ItemStack, Integer> reloadPlugin = InventoryHelper.getItem("admin-menu.reload-plugin", null);
         adminTools.addItem(new GuiItem(stopPlugin.getFirst(), stopPlugin()), stopPlugin.getSecond(), 0);
         adminTools.addItem(new GuiItem(deleteChat.getFirst(), deleteChatroom()), deleteChat.getSecond(), 0);
-        adminTools.addItem(new GuiItem(spyChatroom.getFirst()), spyChatroom.getSecond(), 0);
+        adminTools.addItem(new GuiItem(spyChatroom.getFirst(), spyFunction()), spyChatroom.getSecond(), 0);
         adminTools.addItem(new GuiItem(reloadPlugin.getFirst()), reloadPlugin.getSecond(), 1);
 
     }
@@ -70,41 +75,37 @@ public class AdminMenu extends StaticMenu {
         };
     }
 
-//    private Consumer<InventoryClickEvent> spyChatroom(){
-//        return inventoryClickEvent -> {
-//            inventoryClickEvent.setCancelled(true);
-//            Player clicker = (Player) inventoryClickEvent.getWhoClicked();
-//            clicker.closeInventory();
-//
-//            // Asking the admin for the name of the chatroom they wish to spy on.
-//            clicker.sendMessage(ChatColor.YELLOW + "Please type the name of the chatroom you want to spy on.");
-//
-//            // Waiting for player input for chatroom name.
-//            // (This is a hypothetical method, actual implementation might vary)
-//            PlayerInput.waitForInput(clicker, chatroomName -> {
-//                if (ChatroomManager.spyChatroom(clicker, chatroomName)) {
-//                    clicker.sendMessage(ChatColor.GREEN + "Now spying on chatroom '" + chatroomName + "'.");
-//                } else {
-//                    clicker.sendMessage(ChatColor.RED + "Error: Unable to spy on the chatroom. Ensure it exists.");
-//                }
-//            });
-//        };
-//    }
+    private Consumer<InventoryClickEvent> spyFunction() {
+        return event -> {
+            event.setCancelled(true);
+            if (event.getClick() == ClickType.LEFT) {
+                Player player = (Player) event.getWhoClicked();
+                UUID playerUuid = player.getUniqueId();
+                List<Chatroom> chatrooms = PlayerChannels.getInstance().getChatrooms();
+                boolean isSpyingOnAll = chatrooms.stream().allMatch(chatroom -> chatroom.getSpyers().contains(playerUuid));
 
-//    private Consumer<InventoryClickEvent> reloadPlugin(){
-//        return inventoryClickEvent -> {
-//            inventoryClickEvent.setCancelled(true);
-//            Player clicker = (Player) inventoryClickEvent.getWhoClicked();
-//            clicker.closeInventory();
-//
-//            // Reloading the plugin configuration or any other necessary parts.
-//            if (PlayerChannels.getInstance().reload()) {
-//                clicker.sendMessage(ChatColor.GREEN + "PlayerChannels plugin has been reloaded successfully.");
-//            } else {
-//                clicker.sendMessage(ChatColor.RED + "Error: Unable to reload the plugin.");
-//            }
-//        };
-//    }
+                if (isSpyingOnAll) {
+                    // The admin is spying on all chatrooms, remove them from all.
+                    chatrooms.forEach(chatroom -> chatroom.removeSpy(playerUuid));
+                    player.sendMessage(ChatColor.RED + "You are no longer spying on any chatrooms.");
+                } else {
+                    // The admin is not spying on all chatrooms, add them to all.
+                    chatrooms.forEach(chatroom -> {
+                        if (!chatroom.getSpyers().contains(playerUuid)) {
+                            chatroom.addSpy(playerUuid);
+                        }
+                    });
+                    player.sendMessage(ChatColor.GREEN + "You are now spying on all chatrooms.");
+                }
+            } else if (event.getClick() == ClickType.RIGHT) {
+                new AdminSpyChatroomPager((Player) event.getWhoClicked(), getMenu()).show(event.getWhoClicked());
+
+            }
+            // Right-click functionality can be implemented as previously discussed.
+        };
+    }
+
+
 
 
 

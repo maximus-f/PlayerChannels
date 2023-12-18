@@ -1,5 +1,7 @@
 package me.perotin.playerchannels;
 
+import com.fren_gor.ultimateAdvancementAPI.AdvancementMain;
+import com.fren_gor.ultimateAdvancementAPI.UltimateAdvancementAPI;
 import com.google.common.base.Charsets;
 import me.perotin.playerchannels.commands.AdminCommand;
 import me.perotin.playerchannels.commands.CancelTutorialCommand;
@@ -68,6 +70,13 @@ public class PlayerChannels extends JavaPlugin {
 
     private Set<UUID> disableGlobalChat;
 
+    private UltimateAdvancementAPI api;
+
+    private AdvancementMain main;
+
+
+
+
 
     // Enabling method
     @Override
@@ -75,6 +84,8 @@ public class PlayerChannels extends JavaPlugin {
         instance = this;
         saveDefaultConfig();
         ChannelFile.loadFiles();
+
+
         this.chatrooms = new ArrayList<>();
         this.players = new ArrayList<>();
         this.helper = new InventoryHelper();
@@ -91,12 +102,29 @@ public class PlayerChannels extends JavaPlugin {
         for (Player player : Bukkit.getOnlinePlayers()) {
             players.add(PlayerChannelUser.getPlayer(player.getUniqueId()));
         }
+
+        main.enableInMemory();
+        api = UltimateAdvancementAPI.getInstance(this);
+
     }
+
+    @Override
+    public void onLoad() {
+        main = new AdvancementMain(this);
+        main.load();
+
+    }
+
+
+
 
     // Clean up collections
     @Override
     public void onDisable(){
         // Save each to save chatroom to file, will worry about global chatrooms at another time
+
+        main.disable();
+
         chatrooms.stream().filter(Chatroom::isSaved).forEach(Chatroom::saveToFile);
 
         // Save each player to file
@@ -176,6 +204,10 @@ public class PlayerChannels extends JavaPlugin {
         }
     }
 
+    /** @returns toast api for toast messages **/
+    public UltimateAdvancementAPI getToastApi() {
+        return api;
+    }
     /**
      * Load all chatrooms stored in chatrooms.yml
      */

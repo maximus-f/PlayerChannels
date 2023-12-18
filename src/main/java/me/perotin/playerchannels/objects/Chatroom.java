@@ -219,6 +219,22 @@ public class Chatroom {
         return item;
     }
 
+    public ItemStack getItemForSpy(UUID admin){
+        ItemStack item = generateItem();
+        ItemMeta meta = item.getItemMeta();
+        List<String> lores = new ArrayList<>();
+        if (getSpyers().contains(admin)) {
+            lores.add(ChatColor.GRAY + "Click to " + ChatColor.RED + ChatColor.BOLD + "UNSPY");
+        } else {
+            lores.add(ChatColor.GRAY + "Click to " + ChatColor.GREEN + ChatColor.BOLD + "SPY");
+
+        }
+
+        meta.setLore(lores);
+        item.setItemMeta(meta);
+        return item;
+    }
+
     /**
      * When a new player joins the chatroom
      * @param value
@@ -313,9 +329,12 @@ public class Chatroom {
                         .replace("$role$", getStringRole(id))
                 .replace("$name$", sender))
                         .replace("$nickname$", nickname);
+
+
         for (UUID spy : getSpyers()) {
             if (Bukkit.getPlayer(spy) != null) {
-                Bukkit.getPlayer(spy).sendMessage(chatroomFormat);
+                Bukkit.getPlayer(spy).sendMessage(ChatColor.GRAY + "[Spy] " + chatroomFormat);
+
             }
         }
 
@@ -406,7 +425,7 @@ public class Chatroom {
     /**
      * @return Admins spying on the chatroom
      */
-    public List<UUID> getSpyers() {
+    public Set<UUID> getSpyers() {
         return spyers;
     }
 
