@@ -10,6 +10,7 @@ import me.perotin.playerchannels.objects.inventory.paging_objects.AdminSpyChatro
 import me.perotin.playerchannels.storage.Pair;
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.storage.files.FileType;
+import me.perotin.playerchannels.utils.ChannelUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -49,7 +50,7 @@ public class AdminMenu extends StaticMenu {
         adminTools.addItem(new GuiItem(stopPlugin.getFirst(), stopPlugin()), stopPlugin.getSecond(), 0);
         adminTools.addItem(new GuiItem(deleteChat.getFirst(), deleteChatroom()), deleteChat.getSecond(), 0);
         adminTools.addItem(new GuiItem(spyChatroom.getFirst(), spyFunction()), spyChatroom.getSecond(), 0);
-        adminTools.addItem(new GuiItem(reloadPlugin.getFirst()), reloadPlugin.getSecond(), 1);
+        adminTools.addItem(new GuiItem(reloadPlugin.getFirst(), reloadYaml()), reloadPlugin.getSecond(), 1);
 
     }
 
@@ -101,9 +102,25 @@ public class AdminMenu extends StaticMenu {
                 new AdminSpyChatroomPager((Player) event.getWhoClicked(), getMenu()).show(event.getWhoClicked());
 
             }
-            // Right-click functionality can be implemented as previously discussed.
         };
     }
+
+    private Consumer<InventoryClickEvent> reloadYaml() {
+        return event -> {
+            event.setCancelled(true);
+            // Assuming you have a reloadConfig method implemented
+            PlayerChannels.getInstance().reloadConfig("chatrooms.yml");
+            PlayerChannels.getInstance().reloadConfig("config.yml");
+            PlayerChannels.getInstance().reloadConfig("menus.yml");
+            PlayerChannels.getInstance().reloadConfig("messages.yml");
+            PlayerChannels.getInstance().reloadConfig("players.yml");
+
+            // Provide feedback to the player that the files have been reloaded.
+            Player player = (Player) event.getWhoClicked();
+            ChannelUtils.sendMenuMessage("Config files have been reloaded", player, null);
+        };
+    }
+
 
 
 

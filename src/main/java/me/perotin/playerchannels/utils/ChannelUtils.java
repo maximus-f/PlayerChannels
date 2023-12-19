@@ -102,7 +102,11 @@ public class ChannelUtils {
 //        BossBar bossBar = Bukkit.createBossBar(message, BarColor.PURPLE, BarStyle.SOLID);
 
         if (canSendMessage(player, message)) {
-            sendAdvancementNotification(player, message, "", Material.WRITABLE_BOOK);
+            try {
+                sendAdvancementNotification(player, message, "", Material.WRITABLE_BOOK);
+            } catch (Exception ex) {
+                player.sendMessage(message);
+            }
 //        bossBar.addPlayer(player);
 
 
@@ -130,8 +134,12 @@ public class ChannelUtils {
 
     private static void sendAdvancementNotification(Player player, String title, String description, Material iconMaterial) {
 
-        PlayerChannels.getInstance().getToastApi().displayCustomToast(player, new ItemStack(iconMaterial), title, AdvancementFrameType.GOAL);
+        try {
+            PlayerChannels.getInstance().getToastApi().displayCustomToast(player, new ItemStack(iconMaterial), title, AdvancementFrameType.GOAL);
 
+        } catch (Exception ex) {
+            player.sendMessage(title);
+        }
 //        // Generate a random UUID for this advancement.
 //        String uuid = UUID.randomUUID().toString();
 //

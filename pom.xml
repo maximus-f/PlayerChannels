@@ -12,7 +12,7 @@
 
     <groupId>me.perotin.playerchannels</groupId>
     <artifactId>PlayerChannels</artifactId>
-    <version>3.4.2</version>
+    <version>3.4.3</version>
 
     <repositories>
         <repository>
@@ -66,7 +66,7 @@
 <!--        Ultimate Advancement API for Toast messages-->
         <dependency>
             <groupId>com.frengor</groupId>
-            <artifactId>ultimateadvancementapi</artifactId>
+            <artifactId>ultimateadvancementapi-shadeable</artifactId>
             <version>2.2.8</version>
             <scope>compile</scope>
         </dependency>
@@ -104,15 +104,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.5.1</version> <!-- Use the latest version -->
                 <configuration>
-                    <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml
-                    </dependencyReducedPomLocation>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <minimizeJar>false</minimizeJar>
+                    <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
                     <relocations>
                         <relocation>
                             <pattern>com.fren_gor.ultimateAdvancementAPI</pattern>
-                            <shadedPattern>me.perotin.playerchannels.ultimateAdvancementAPI</shadedPattern>
+                            <shadedPattern>me.perotin.playerchannels.libs.com.fren_gor.ultimateAdvancementAPI</shadedPattern>
                         </relocation>
+                        <!-- Relocation for InventoryFramework -->
                         <relocation>
                             <pattern>com.github.stefvanschie.inventoryframework</pattern>
                             <shadedPattern>me.perotin.playerchannels.inventoryframework</shadedPattern>
@@ -128,6 +130,53 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-shade-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <createDependencyReducedPom>false</createDependencyReducedPom>-->
+<!--                    <minimizeJar>false</minimizeJar>-->
+<!--                    <relocations>-->
+<!--                        <relocation>-->
+<!--                            <pattern>com.fren_gor.ultimateAdvancementAPI</pattern>-->
+<!--                            <shadedPattern>me.perotin.playerchannels.libs.com.fren_gor.ultimateAdvancementAPI</shadedPattern>-->
+<!--                        </relocation>-->
+<!--                    </relocations>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>shade</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-shade-plugin</artifactId>-->
+<!--                <version>3.5.1</version>-->
+<!--                <configuration>-->
+<!--                    <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml-->
+<!--                    </dependencyReducedPomLocation>-->
+<!--                    <relocations>-->
+
+<!--                        <relocation>-->
+<!--                            <pattern>com.github.stefvanschie.inventoryframework</pattern>-->
+<!--                            <shadedPattern>me.perotin.playerchannels.inventoryframework</shadedPattern>-->
+<!--                        </relocation>-->
+<!--                    </relocations>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>shade</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 </project>

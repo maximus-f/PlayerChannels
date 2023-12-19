@@ -4,6 +4,7 @@ author: Perotin
 version: 3.4.3
 api-version: 1.14
 description: The ultimate chatroom solution.
+depends: UltimateAdvancementAPI
 commands:
   pcadmin:
     permission: playerchannels.admin

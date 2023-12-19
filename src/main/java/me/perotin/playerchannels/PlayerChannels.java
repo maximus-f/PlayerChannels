@@ -19,10 +19,14 @@ import me.perotin.playerchannels.utils.Metrics;
 import me.perotin.playerchannels.utils.TutorialHelper;
 import me.perotin.playerchannels.utils.UpdateChecker;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
@@ -103,6 +107,8 @@ public class PlayerChannels extends JavaPlugin {
             players.add(PlayerChannelUser.getPlayer(player.getUniqueId()));
         }
 
+//        main.load();
+
         main.enableInMemory();
         api = UltimateAdvancementAPI.getInstance(this);
 
@@ -114,6 +120,8 @@ public class PlayerChannels extends JavaPlugin {
         main.load();
 
     }
+
+
 
 
 
@@ -233,5 +241,20 @@ public class PlayerChannels extends JavaPlugin {
         return disableGlobalChat;
     }
 
+
+    public void reloadConfig(String fileName) {
+        File configFile = new File(getDataFolder(), fileName);
+        if (configFile.exists()) {
+            FileConfiguration config = getConfig();
+            try {
+                config.load(configFile);
+                getLogger().info(fileName + " has been reloaded!");
+            } catch (IOException | InvalidConfigurationException e) {
+                getLogger().severe("Could not reload " + fileName + ": " + e.getMessage());
+            }
+        } else {
+            getLogger().severe(fileName + " does not exist and cannot be reloaded!");
+        }
+    }
 
 }
