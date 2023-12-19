@@ -43,14 +43,14 @@ public class AdminMenu extends StaticMenu {
 
     private void setAdminTools() {
         ChannelFile messages = new ChannelFile(FileType.MESSAGES);
-        Pair<ItemStack, Integer> stopPlugin = InventoryHelper.getItem("admin-menu.stop-plugin", null);
+//        Pair<ItemStack, Integer> stopPlugin = InventoryHelper.getItem("admin-menu.stop-plugin", null);
         Pair<ItemStack, Integer> deleteChat = InventoryHelper.getItem("admin-menu.delete-chatroom", null);
         Pair<ItemStack, Integer> spyChatroom = InventoryHelper.getItem("admin-menu.spy-chatroom", null);
         Pair<ItemStack, Integer> reloadPlugin = InventoryHelper.getItem("admin-menu.reload-plugin", null);
-        adminTools.addItem(new GuiItem(stopPlugin.getFirst(), stopPlugin()), stopPlugin.getSecond(), 0);
+        adminTools.addItem(new GuiItem(reloadPlugin.getFirst(), reloadYaml()), reloadPlugin.getSecond(), 0);
         adminTools.addItem(new GuiItem(deleteChat.getFirst(), deleteChatroom()), deleteChat.getSecond(), 0);
         adminTools.addItem(new GuiItem(spyChatroom.getFirst(), spyFunction()), spyChatroom.getSecond(), 0);
-        adminTools.addItem(new GuiItem(reloadPlugin.getFirst(), reloadYaml()), reloadPlugin.getSecond(), 1);
+//        adminTools.addItem(new GuiItem(reloadPlugin.getFirst(), reloadYaml()), reloadPlugin.getSecond(), 1);
 
     }
 
@@ -61,8 +61,11 @@ public class AdminMenu extends StaticMenu {
             clicker.closeInventory();
             clicker.sendMessage(ChatColor.RED + "Stopping PlayerChannels plugin.");
             Bukkit.getPluginManager().disablePlugin(PlayerChannels.getInstance());
+
         };
     }
+
+
 
     private Consumer<InventoryClickEvent> deleteChatroom(){
         return inventoryClickEvent -> {

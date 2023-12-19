@@ -132,7 +132,6 @@ public class PlayerChannels extends JavaPlugin {
         // Save each to save chatroom to file, will worry about global chatrooms at another time
 
         main.disable();
-
         chatrooms.stream().filter(Chatroom::isSaved).forEach(Chatroom::saveToFile);
 
         // Save each player to file

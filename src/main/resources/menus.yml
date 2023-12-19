@@ -252,10 +252,10 @@ invitations-menu:
          - "&7&oRight click to &a&lACCEPT"
          - "&7&oLeft click to &c&lREJECT"
 admin-menu:
-   stop-plugin:
-      material: "REDSTONE_BLOCK"
-      display: "&cStop the plugin"
-      slot: 0
+#   stop-plugin: --- Coming soon
+#      material: "REDSTONE_BLOCK"
+#      display: "&cStop the plugin"
+#      slot: 0
    delete-chatroom:
       material: "REDSTONE_BLOCK"
       display: "&cDelete a Channel"
@@ -270,7 +270,7 @@ admin-menu:
    reload-plugin:
       material: "WRITABLE_BOOK"
       display: "&cReload yaml files"
-      slot: 2
+      slot: 0
    delete-chatroom-confirm:
       material: "EMERALD_BLOCK"
       display: "&aConfirm deletion"
