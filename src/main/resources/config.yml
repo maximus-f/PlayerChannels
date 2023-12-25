@@ -37,6 +37,8 @@ cancel-tutorial-aliases:
 
 saved-material: "OAK_SIGN"
 
+server-channel-material: "NETHER_STAR"
+
 quickchat-prefix: "@"
 
 # If $nickname$ is present, will use the player's chatroom nickname

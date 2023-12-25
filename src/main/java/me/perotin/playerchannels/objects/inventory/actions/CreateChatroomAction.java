@@ -131,6 +131,26 @@ public class CreateChatroomAction {
         };
     }
 
+    /**
+     * Actions for toggling whether a chatroom should be persistent i.e. saved
+     */
+    public static Consumer<InventoryClickEvent> toggleIsServerChannel() {
+        return clickEvent -> {
+            clickEvent.setCancelled(true);
+            Player clicker = (Player) clickEvent.getWhoClicked();
+
+            if (clicker.hasPermission("playerchannels.admin")) {
+                CreateChatroomInputEvent input = CreateChatroomInputEvent.getInstance();
+                PreChatroom chatroom = input.getInCreation().get(clicker.getUniqueId());
+                chatroom.setServerOwned(!chatroom.isServerOwned());
+                input.showUpdatedMenu(clicker, chatroom);
+            } else {
+                String message = new ChannelFile(FileType.MESSAGES).getString("no-permission");
+                ChannelUtils.sendMenuMessage(message, clicker, null);
+
+            }
+        };
+    }
 
     /**
      * Clicking the 'create' button

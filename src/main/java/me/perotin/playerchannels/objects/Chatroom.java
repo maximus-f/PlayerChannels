@@ -37,7 +37,7 @@ public class Chatroom {
     // true if chatroom is public, false if private
     private boolean isPublic;
     // true if saved, false if not
-    private boolean isSaved, nicknamesEnabled;
+    private boolean isSaved, nicknamesEnabled, isServerOwned;
     private List<UUID> bannedMembers;
 
     private List<UUID> mutedMembers;
@@ -51,6 +51,7 @@ public class Chatroom {
 
 
 
+
     /**
      * Players that are currently chatting in the chatroom
      */
@@ -58,7 +59,7 @@ public class Chatroom {
     /**
      * Initial chatroom constructor
      */
-    public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved) {
+    public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned) {
         this.members = new HashMap<>();
         this.members.put(owner, ChatRole.OWNER);
         this.owner = owner;
@@ -72,14 +73,15 @@ public class Chatroom {
         this.bannedMembers = new ArrayList<>();
         this.nickNames = new HashMap<>();
         this.spyers = new HashSet<>();
+        this.isServerOwned = isServerOwned;
     }
 
     /**
      * Used for loading a chatroom from file with members
      * @return chatroom
      */
-    public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, Map<UUID, ChatRole> members, List<UUID> bannedMembers, List<UUID> mutedMembers, Map<UUID, String> nicknames, boolean nicknamesenabled ) {
-        this(owner, name, description, isPublic, isSaved);
+    public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned, Map<UUID, ChatRole> members, List<UUID> bannedMembers, List<UUID> mutedMembers, Map<UUID, String> nicknames, boolean nicknamesenabled ) {
+        this(owner, name, description, isPublic, isSaved, isServerOwned);
         this.messages = new ChannelFile(MESSAGES);
         this.members = members;
         this.bannedMembers = bannedMembers;
@@ -129,7 +131,19 @@ public class Chatroom {
     private ItemStack generateItem(){
         ChannelFile messages = new ChannelFile(FileType.MENUS);
         ItemStack item;
-        if(isSaved){
+        if (isServerOwned()){
+            String serverString = PlayerChannels.getInstance().getConfig().getString("server-channel-material");
+            Material server;
+            try {
+                server = Material.valueOf(serverString);
+            } catch (IllegalArgumentException ex){
+                // exception handling
+                Bukkit.getLogger().severe("The material id for the server-channel-material key in /PlayerChannels/config.yml is invalid! Make sure to use a correct value.");
+                return null;
+            }
+            item = new ItemStack(server);
+
+        } else if(isSaved()){
            String savedString = PlayerChannels.getInstance().getConfig().getString("saved-material");
 
            Material saved;
@@ -150,12 +164,32 @@ public class Chatroom {
             item.setItemMeta(skull);
         }
         ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.setDisplayName(messages.getString("chatroom-items.name").replace("$name$", getName()));
-        itemMeta.setLore(Arrays.asList(messages.getString("chatroom-items.description").replace("$description$", getDescription()),
-                messages.getString("chatroom-items.status").replace("$status$", getStringStatus()),
-                messages.getString("chatroom-items.owner").replace("$owner$", Bukkit.getOfflinePlayer(getOwner()).getName()),
-                messages.getString("chatroom-items.members").replace("$member_count$", getMembers().size()+"" )));
+        if (!isServerOwned()) {
+            itemMeta.setDisplayName(messages.getString("chatroom-items.name").replace("$name$", getName()));
 
+            List<String> lores = new ArrayList<>();
+            if (!(getDescription().trim().isEmpty() || getDescription() == null)) {
+                lores.add(messages.getString("chatroom-items.description").replace("$description$", getDescription()));
+            } else {
+
+            }
+           lores.add(messages.getString("chatroom-items.status").replace("$status$", getStringStatus()));
+            lores.add(messages.getString("chatroom-items.owner").replace("$owner$", Bukkit.getOfflinePlayer(getOwner()).getName()));
+            lores.add(messages.getString("chatroom-items.members").replace("$member_count$", getMembers().size() + ""));
+            itemMeta.setLore(lores);
+        } else {
+            itemMeta.setDisplayName(messages.getString("server-chatroom-items.name").replace("$name$", getName()));
+
+            List<String> lores = new ArrayList<>();
+            if (!(getDescription().trim().isEmpty() || getDescription() == null)) {
+                lores.add(messages.getString("server-chatroom-items.description").replace("$description$", getDescription()));
+            } else {
+
+            }
+                    lores.add(messages.getString("server-chatroom-items.status").replace("$status$", getStringStatus()));
+                   lores.add(messages.getString("server-chatroom-items.members").replace("$member_count$", getMembers().size() + ""));
+                   itemMeta.setLore(lores);
+        }
         NamespacedKey chatroomName = new NamespacedKey(PlayerChannels.getInstance(), "chatroomName");  // 'plugin' is your JavaPlugin instance
 
         // Set the custom data
@@ -302,6 +336,9 @@ public class Chatroom {
         return bannedMembers;
     }
 
+    public boolean isServerOwned() {
+        return isServerOwned;
+    }
 
     public Map<UUID, String> getNickNames() {
         return nickNames;
@@ -489,6 +526,7 @@ public class Chatroom {
 
         chatrooms.set(name+".status", isPublic);
         chatrooms.set(name+".saved", isSaved);
+        chatrooms.set(name+".isServerOwned", isServerOwned);
         chatrooms.set(name+".nicknamesEnabled", nicknamesEnabled);
         chatrooms.set(name+".owner", getOwner().toString());
         chatrooms.set(name+".description", description);
@@ -522,6 +560,8 @@ public class Chatroom {
             boolean saved = chatrooms.getBool(name + ".saved");
             boolean isPublic = chatrooms.getBool(name + ".status");
             boolean nicknamesEnabled = chatrooms.getBool(name+".nicknamesEnabled");
+            boolean isServerOwned = chatrooms.getBool(name+".isServerOwned");
+
 
             List<UUID> banned = chatrooms.getStringList(name+".banned").stream()
                     .map(UUID::fromString).collect(Collectors.toList());
@@ -548,7 +588,7 @@ public class Chatroom {
                 UUID uuid = UUID.fromString(key);
                 loadedRoles.put(uuid, roleO);
             }
-            Chatroom loadedChat = new Chatroom(owner, name, description, isPublic, saved, loadedRoles, banned, muted, nicknames, nicknamesEnabled);
+            Chatroom loadedChat = new Chatroom(owner, name, description, isPublic, saved, isServerOwned, loadedRoles, banned, muted, nicknames, nicknamesEnabled);
             Bukkit.getLogger().info("Loaded chatroom " + name + " with values: ");
             Bukkit.getLogger().info(loadedChat.toString());
 

@@ -19,6 +19,8 @@ chatroom-name: "$chatroom-name$: Page $page$"
 chatroom-head-display: "&e$player-name$"
 chatroom-head-lore1: "$connected$ • $role$"
 
+
+
 # Short words that will appear in other messages
 online: "&aOnline"
 offline: "&cOffline"
@@ -76,6 +78,7 @@ listen-help: "&cIncorrect arguments! &a/$command$ $listen$ <add/remove/off> <cha
 listen-not-currently-listening: "&cYou are not currently listening to that chatroom!"
 listen-off: "&cNo longer listening to any chatroom!"
 listening-to-channel: "&aYou will now only receive messages from these channels:"
+listening-to-channels-empty: "&cNo longer listening to any channels"
 
 
 # Chatroom Help Messages

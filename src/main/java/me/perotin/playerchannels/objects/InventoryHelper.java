@@ -147,8 +147,11 @@ public class InventoryHelper {
         ChannelFile menus = new ChannelFile(FileType.MENUS);
         ChannelFile messages = new ChannelFile(FileType.MESSAGES);
 
+
         this.creationMenu = new StaticPane(1, 1, 7, 4);
         Pair<ItemStack, Integer> name = getItemFrom(Material.valueOf(menus.getString("creation-menu.name.material")), "creation-menu.name", null);
+        Pair<ItemStack, Integer> serverChannel = getItemFrom(Material.valueOf(menus.getString("creation-menu.server-channel.material")), "creation-menu.server-channel", null);
+
         Pair<ItemStack, Integer> description = getItemFrom(Material.valueOf(menus.getString("creation-menu.description.material")), "creation-menu.description", null);
         Pair<ItemStack, Integer> status = getItemFrom(Material.valueOf(menus.getString("creation-menu.status.material")), "creation-menu.status", null);
         Pair<ItemStack, Integer> saved = getItemFrom(Material.valueOf(menus.getString("creation-menu.saved.material")), "creation-menu.saved", null);
@@ -162,6 +165,12 @@ public class InventoryHelper {
 
         }
         name = new Pair<>(nameItem, name.getSecond());
+
+
+        ItemStack serverItem = serverChannel.getFirst();
+        String isServer = chatroom.isServerOwned() ? messages.getString("true") : messages.getString("false");
+        serverItem = ChannelUtils.appendToDisplayName(serverItem, isServer);
+        serverChannel = new Pair<>(serverItem, serverChannel.getSecond());
 
         ItemStack descItem = description.getFirst();
         if (chatroom.getDescription() != null) {
@@ -202,7 +211,10 @@ public class InventoryHelper {
         creationMenu.addItem(new GuiItem(saved.getFirst(), CreateChatroomAction.toggleSavedConsumer()), saved.getSecond(), 2);
         creationMenu.addItem(new GuiItem(createButton.getFirst(), CreateChatroomAction.clickCreateButtonConsumer()), createButton.getSecond(), 3);
 
+        if (Bukkit.getPlayer(chatroom.getOwner()).hasPermission("playerchannels.admin")) {
+            creationMenu.addItem(new GuiItem(serverChannel.getFirst(), CreateChatroomAction.toggleIsServerChannel()), serverChannel.getSecond(), 2);
 
+        }
     }
 
     /**

@@ -113,6 +113,13 @@ creation-menu:
          - "&7&oClick to toggle whether this should be saved or not."
       material: "ENDER_EYE"
       slot: 4
+   server-channel:
+      display: "&eServer Channel: "
+      lore:
+         - "&7&oClick to toggle whether this should be a server channel"
+         - "&7&oServer channels act as official channels without a player owner"
+      material: "OAK_SIGN"
+      slot: 3
    create-button:
       display: "&e&lClick to create!"
       lore:
@@ -128,6 +135,12 @@ chatroom-items:
    status: "&e&lStatus: $status$"
    owner: "&e&lOwner:&f $owner$"
    members: "&e&lMembers &e(&f$member_count$&e)"
+
+server-chatroom-items:
+   name: "&c&lChannel:&f $name$"
+   description: "&7&o$description$"
+   status: "&7Status: $status$"
+   members: "&7Members &7(&f$member_count$&7)"
 
 
 # Chatroom Bar Items

@@ -96,7 +96,13 @@ public class PlayerChannelUser {
 
    private void tellListeningChannels() {
        Player player = Bukkit.getPlayer(getUuid());
+       ChannelFile messages = new ChannelFile(FileType.MESSAGES);
+       if (getListeningChatrooms().isEmpty()){
+           player.sendMessage(messages.getString("listening-to-channels-empty"));
+           return;
+       }
        player.sendMessage(new ChannelFile(FileType.MESSAGES).getString("listening-to-channel"));
+
        for (Chatroom chat : getListeningChatrooms()) {
            String name = chat.getName();
            if (!chat.getName().contains(ChatColor.COLOR_CHAR + "")){

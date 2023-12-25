@@ -15,6 +15,8 @@ public class PreChatroom {
     private boolean isSaved = false;
     private UUID owner;
 
+    private boolean isServerOwned = false;
+
     public PreChatroom(UUID owner){
         this.owner = owner;
         this.name = "";
@@ -25,6 +27,19 @@ public class PreChatroom {
 
     public PreChatroom(){
         this(null);
+    }
+
+
+    public UUID getOwner() {
+        return owner;
+    }
+
+    public boolean isServerOwned() {
+        return isServerOwned;
+    }
+
+    public void setServerOwned(boolean serverOwned) {
+        isServerOwned = serverOwned;
     }
 
     public void setOwner(UUID owner) {
@@ -67,6 +82,6 @@ public class PreChatroom {
      * @return a chatroom
      */
     public Chatroom toChatroom(){
-        return new Chatroom(owner, name, description, isPublic, isSaved);
+        return new Chatroom(owner, name, description, isPublic, isSaved, isServerOwned);
     }
 }
