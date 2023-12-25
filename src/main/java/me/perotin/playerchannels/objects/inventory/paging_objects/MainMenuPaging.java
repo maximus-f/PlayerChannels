@@ -94,11 +94,21 @@ public class MainMenuPaging extends PagingMenu {
      * @param o1
      * @return
      */
-    public static int compare(ItemStack o, ItemStack o1){
+    public static int compare(ItemStack o, ItemStack o1) {
         Material saved = Material.valueOf(PlayerChannels.getInstance().getConfig().getString("saved-material"));
-        if(o.getType() == o1.getType()) return 0;
-        else if(o.getType() == saved) return -1;
-        else if(o1.getType() == saved) return 1;
+        Material server = Material.valueOf(PlayerChannels.getInstance().getConfig().getString("server-channel-material"));
+
+        if (o.getType() == o1.getType()) return 0;
+
+        // Check for server-channel material
+        if (o.getType() == server) return -1;
+        else if (o1.getType() == server) return 1;
+
+        // Check for saved material
+        if (o.getType() == saved) return -1;
+        else if (o1.getType() == saved) return 1;
+
         return 0;
     }
+
 }
