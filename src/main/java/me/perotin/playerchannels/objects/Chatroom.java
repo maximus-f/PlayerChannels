@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -283,8 +284,7 @@ public class Chatroom {
 
     /**
      * Chatroom method for removing a member or when a member leaves
-     * TODO make this more robust, currently very naive approach of deleting chatroom but probably want to make
-     * sure that the user is aware that this will delete their chatroom if they are the last ones left
+     *
      * @param key to remove
      */
     public void removeMember(UUID key) {
@@ -294,7 +294,7 @@ public class Chatroom {
         broadcastMessage(new ChannelFile(MESSAGES).getString("player-leave")
                 .replace("$name$", name)
                 .replace("$chatroom$", getName()));
-        if (getMembers().isEmpty() && !isSaved()){
+        if (getMembers().isEmpty() && !isSaved() && !isServerOwned()){
             PlayerChannels.getInstance().getChatrooms().remove(this);
         }
     }
@@ -479,14 +479,26 @@ public class Chatroom {
      * @return string version of their role, being either member, moderator, or owner
      */
     public String getStringRole(UUID member){
+        FileConfiguration config = PlayerChannels.getInstance().getConfig();
         String role = "";
         if(isInChatroom(member)){
             ChatRole value = getMemberMap().get(member);
             switch(value){
-                case OWNER: role = messages.getString("owner");
+                case OWNER:
+                    if (isServerOwned()){
+                        role = ChatColor.translateAlternateColorCodes('&', config.getString("server-channel-admin"));
+
+                    } else {
+                        role = messages.getString("owner");
+                    }
                 break;
-                case MODERATOR: role = messages.getString("moderator");
-                break;
+                case MODERATOR:
+                    if (isServerOwned()){
+                        role = ChatColor.translateAlternateColorCodes('&', config.getString("server-channel-mod"));
+
+                    } else {
+                        role = messages.getString("moderator");
+                    }                break;
                 case MEMBER: role = messages.getString("member");
                 break;
             }

@@ -138,7 +138,10 @@ public class ChatroomPager extends PagingMenu {
         } else {
             // Not a member
             // Check if chatroom is public or not and if player is not banned
-            if (chatroom.isPublic() && !chatroom.isBanned(getViewer().getUniqueId())) {
+            // Also check if the player is a mod or admin and allow them to join regardless of status
+            Player staff = Bukkit.getPlayer(player.getUuid());
+            if (chatroom.isPublic() && !chatroom.isBanned(getViewer().getUniqueId()) ||
+                    (staff.hasPermission("playerchannels.moderator") || staff.hasPermission("playerchannels.admin"))) {
                 chatroomBar.addItem(joinItem, join.getSecond(), 0);
             }
 
@@ -285,11 +288,26 @@ public class ChatroomPager extends PagingMenu {
                     return;
                 }
                 player.addChatroom(chatroom);
-                chatroom.addMember(new Pair<>(player.getUuid(), ChatRole.MEMBER));
+                if (!chatroom.isServerOwned() || (chatroom.isServerOwned()) && (!(clicker.hasPermission("playerchannels.admin") || clicker.hasPermission("playerchannels.moderator")))) {
+                    chatroom.addMember(new Pair<>(player.getUuid(), ChatRole.MEMBER));
+                } else {
+                    // Idea here is that we want to automatically promote those with OP/playerchannels.admin or playerchannels.moderator
+                    // to be automatic staff in this channel
+
+                    // Two options: is server owned and either a moderator or admin
+
+                    if (clicker.hasPermission("playerchannels.admin")) {
+                        chatroom.addMember(new Pair<>(player.getUuid(), ChatRole.OWNER));
+
+                    } else if (clicker.hasPermission("playerchannels.moderator")) {
+                        chatroom.addMember(new Pair<>(player.getUuid(), ChatRole.MODERATOR));
+                    }
+
+                }
             } else {
                 // Leaving the chatroom
-                // If owner is leaving then tell them that this will delete their chatroom and have them confirm it
-                if (getChatroom().getRole(player.getUuid()) == ChatRole.OWNER && (getChatroom().getMembers().size() > 1 || chatroom.isSaved())) {
+                // If owner is leaving and it is not a server channel then tell them that this will delete their chatroom and have them confirm it
+                if (!getChatroom().isServerOwned() && getChatroom().getRole(player.getUuid()) == ChatRole.OWNER && (getChatroom().getMembers().size() > 1 || chatroom.isSaved())) {
                     clicker.closeInventory();
                     clicker.updateInventory();
                     ChatroomConfirmDeletionEvent.confirmDeletion.put(clicker, chatroom);

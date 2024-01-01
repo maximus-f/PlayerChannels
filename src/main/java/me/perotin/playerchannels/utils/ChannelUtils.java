@@ -242,4 +242,13 @@ public class ChannelUtils {
         return toEdit;
     }
 
+    /**
+     * Simple method to colorize strings with '&'
+     * @param s
+     * @return
+     */
+    public static String colorize(String s) {
+        return ChatColor.translateAlternateColorCodes('&', s);
+    }
+
 }

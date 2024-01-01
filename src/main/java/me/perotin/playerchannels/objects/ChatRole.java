@@ -1,7 +1,10 @@
 package me.perotin.playerchannels.objects;
 
+import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
+import me.perotin.playerchannels.utils.ChannelUtils;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -35,10 +38,14 @@ public enum ChatRole implements ConfigurationSerializable {
     public static ChatRole getRoleFrom(ItemStack item) {
         // Define a mapping from the custom role names to the enum values
         ChannelFile messages = new ChannelFile(FileType.MESSAGES);
+        FileConfiguration config = PlayerChannels.getInstance().getConfig();
+
         Map<String, ChatRole> roleMap = new HashMap<>();
         roleMap.put(messages.getString("member"), ChatRole.MEMBER);
         roleMap.put(messages.getString("moderator"), ChatRole.MODERATOR);
         roleMap.put(messages.getString("owner"), ChatRole.OWNER);
+        roleMap.put(ChannelUtils.colorize(config.getString("server-channel-mod")), ChatRole.MODERATOR);
+        roleMap.put(ChannelUtils.colorize(config.getString("server-channel-admin")), ChatRole.OWNER);
 
         // Get the lore
         String lore = Objects.requireNonNull(item.getItemMeta()).getLore().get(0);

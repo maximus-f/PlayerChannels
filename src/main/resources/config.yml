@@ -39,6 +39,10 @@ saved-material: "OAK_SIGN"
 
 server-channel-material: "NETHER_STAR"
 
+# Roles that show up in server channels for admins and moderators (playerchannels.admin & playerchannels.moderator)
+server-channel-admin: "&cADMIN"
+server-channel-mod: "&bMOD"
+
 quickchat-prefix: "@"
 
 # If $nickname$ is present, will use the player's chatroom nickname

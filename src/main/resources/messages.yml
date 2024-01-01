@@ -55,6 +55,7 @@ moderator-promoted: "&7[$chatroom$&7] &a$name$&e has been promoted to &amoderato
 owner-leave-chatroom: "&7[&c&lAttention&7] &cLeaving $chatroom$ &cwill delete it! Either promote a moderator to owner or type '&e$chatroom$&c' to confirm this"
 owner-leave-chatroom2: "&cOr type anything else to cancel."
 chatroom-being-deleted: "&7[$chatroom$&7] &eThis chatroom is being deleted! Goodbye!"
+received-invite: "&aYou have received an invite to $chatroom$&a. Accept in /chatrooms in the top right. "
 
 # Menu titles
 main-menu-title: "Main Menu: "

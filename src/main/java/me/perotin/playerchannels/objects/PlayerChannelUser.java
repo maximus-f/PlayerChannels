@@ -151,6 +151,14 @@ public class PlayerChannelUser {
 
 
     /**
+     * @return true or false if player has a pending invite from specified chatroom
+     */
+
+    public boolean hasPendingInviteFrom(Chatroom chat) {
+        return getInvites().contains(chat);
+    }
+
+    /**
      * @param chatroom to add to their list
      */
     public void addChatroom(Chatroom chatroom) {

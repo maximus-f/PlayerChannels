@@ -5,7 +5,10 @@ import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.perotin.playerchannels.objects.ChatRole;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
+import me.perotin.playerchannels.storage.files.ChannelFile;
+import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.utils.ChannelUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -51,9 +54,23 @@ public class SelectChatroomToInviteMenu extends StaticMenu {
         return event -> {
             event.setCancelled(true);
             // Check if already have an invite
-            invited.addInvite(chatroom);
-            ChannelUtils.sendMenuMessage("You have invited " + invited.getName() + " to " + chatroom.getName(),
-                    (Player) event.getWhoClicked(), null);
+            Player online = Bukkit.getPlayer(invited.getUuid());
+            ChannelFile messages = new ChannelFile(FileType.MESSAGES);
+
+            if (!invited.hasPendingInviteFrom(chatroom)) {
+                invited.addInvite(chatroom);
+                ChannelUtils.sendMenuMessage("You have invited " + invited.getName() + " to " + chatroom.getName(),
+                        (Player) event.getWhoClicked(), null);
+                if (online != null) {
+                    online.sendMessage(messages.getString("received-invite")
+                            .replace("$chatroom$", chatroom.getName()));
+                }
+            } else {
+                ChannelUtils.sendMenuMessage( invited.getName() + " is already invited!",
+                        (Player) event.getWhoClicked(), null);
+            }
+
+
 
         };
 
