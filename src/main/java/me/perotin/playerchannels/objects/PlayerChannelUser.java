@@ -42,6 +42,7 @@ public class PlayerChannelUser {
         this.status = "";
         this.invites = new ArrayList<>();
         this.listeningChatrooms = new ArrayList<>();
+        this.isAcceptingInvites = true;
     }
 
     public PlayerChannelUser(UUID uuid, String name, String status, List<Chatroom> chatrooms) {
@@ -50,7 +51,7 @@ public class PlayerChannelUser {
         this.status = status;
         // store invites correctly as another list
         this.invites = new ArrayList<>();
-        this.invites = new ArrayList<>();
+        this.isAcceptingInvites = true;
 
 
     }

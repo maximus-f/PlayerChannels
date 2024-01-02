@@ -110,6 +110,9 @@ public class ChannelUtils {
 //        bossBar.addPlayer(player);
 
 
+        } else {
+            // avoid spamming it, so send as a basic message
+            player.sendMessage(message);
         }
         if (nextMenu != null) {
             nextMenu.show(player);

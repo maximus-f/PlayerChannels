@@ -131,7 +131,7 @@ public class PlayerChannels extends JavaPlugin {
     public void onDisable(){
         // Save each to save chatroom to file, will worry about global chatrooms at another time
 
-        main.disable();
+        //main.disable();
         chatrooms.stream().filter(Chatroom::isSaved).forEach(Chatroom::saveToFile);
 
         // Save each player to file
@@ -144,6 +144,7 @@ public class PlayerChannels extends JavaPlugin {
         this.helper = null;
         instance = null;
         TutorialHelper.inTutorial.clear();
+
     }
 
     private void init(){
