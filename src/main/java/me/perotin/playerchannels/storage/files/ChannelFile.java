@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.*;
 import java.util.List;
@@ -80,6 +81,12 @@ public class ChannelFile {
             return null;
         }
         return ChatColor.translateAlternateColorCodes('&', configuration.getString(path));
+    }
+
+    public void sendConfigMsg(Player player, String message) {
+        if (player != null) {
+            player.sendMessage(getString(message));
+        }
     }
 
     /**

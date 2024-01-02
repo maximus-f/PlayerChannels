@@ -46,8 +46,34 @@ public class PlayerChannelsCommand extends Command  {
         Player player = (Player) commandSender;
         PlayerChannelUser playerChannelUser = PlayerChannelUser.getPlayer(player.getUniqueId());
         if (args.length > 0) {
-            // Check if arg length is greater than 0 and if second key-word is "focus" or something of the sort
+            // Check if arg length is greater than 0 and if second key-word is "focus" or other subcommands
             String secondArg = args[0];
+            if (secondArg.equalsIgnoreCase(plugin.getConfig().getString("join"))) {
+                if (args.length == 1) {
+                    messages.sendConfigMsg(player, "join-subcommand-help");
+                    return true;
+                } else if (args.length > 1) {
+                    // Try to find chatroom with args[2]
+                    String chatroomName = args[1];
+                    Chatroom found = plugin.getChatroom(chatroomName);
+                    if (found == null) {
+                        messages.sendConfigMsg(player, "join-subcommand-not-found");
+                        return true;
+                    } else {
+                        // check if player can join the chatroom
+                        // Not staff and is private
+                        if (!(player.hasPermission("playerchannels.admin") || player.hasPermission("playerchannels.moderator"))){
+                            if (!found.isPublic()) {
+                                messages.sendConfigMsg(player, "join-subcommand-private");
+                                return true;
+                            }
+                        }
+                        // otherwise, let them join
+                        ChannelUtils.joinChatroom(playerChannelUser, found);
+
+                    }
+                }
+            }
             if (secondArg.equalsIgnoreCase(plugin.getConfig().getString("create"))){
                 if (args.length == 1) {
                     // Open creation menu with nothing set

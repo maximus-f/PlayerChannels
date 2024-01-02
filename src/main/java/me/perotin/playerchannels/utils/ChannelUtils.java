@@ -5,9 +5,12 @@ import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDispla
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
 import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import me.perotin.playerchannels.PlayerChannels;
+import me.perotin.playerchannels.objects.ChatRole;
 import me.perotin.playerchannels.objects.Chatroom;
+import me.perotin.playerchannels.objects.PlayerChannelUser;
 import me.perotin.playerchannels.objects.inventory.Menu;
 import me.perotin.playerchannels.objects.inventory.paging_objects.MainMenuPaging;
+import me.perotin.playerchannels.storage.Pair;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import org.bukkit.*;
@@ -132,6 +135,41 @@ public class ChannelUtils {
             return true;
         }
         return false;
+    }
+
+    public static void joinChatroom (PlayerChannelUser player, Chatroom chatroom){
+        ChannelFile messages = new ChannelFile(FileType.MESSAGES);
+        Player clicker = Bukkit.getPlayer(player.getUuid());
+
+        if (chatroom.isBanned(player.getUuid())){
+            messages.sendConfigMsg(clicker, "banned-from-chatroom");
+//            ChannelUtils.sendMenuMessage("You are banned!", clicker, null);
+            return;
+        }
+        // check if player already exists in this chatroom since that could happen with new addition
+        // of join command
+
+        if(player.isMemberOf(chatroom)){
+            messages.sendConfigMsg(clicker, "already-in-channel");
+            return;
+        }
+        player.addChatroom(chatroom);
+        if (!chatroom.isServerOwned() || (chatroom.isServerOwned()) && (!(clicker.hasPermission("playerchannels.admin") || clicker.hasPermission("playerchannels.moderator")))) {
+            chatroom.addMember(new Pair<>(player.getUuid(), ChatRole.MEMBER));
+        } else {
+            // Idea here is that we want to automatically promote those with OP/playerchannels.admin or playerchannels.moderator
+            // to be automatic staff in this channel
+
+            // Two options: is server owned and either a moderator or admin
+
+            if (clicker.hasPermission("playerchannels.admin")) {
+                chatroom.addMember(new Pair<>(player.getUuid(), ChatRole.OWNER));
+
+            } else if (clicker.hasPermission("playerchannels.moderator")) {
+                chatroom.addMember(new Pair<>(player.getUuid(), ChatRole.MODERATOR));
+            }
+
+        }
     }
 
 
