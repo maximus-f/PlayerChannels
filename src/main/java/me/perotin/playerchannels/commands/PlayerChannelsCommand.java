@@ -13,10 +13,14 @@ import me.perotin.playerchannels.utils.ChannelUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /* Created by Perotin on 8/20/19 */
@@ -24,7 +28,7 @@ import java.util.List;
 /**
  * Base command for PlayerChannels, extends (need to look into)Command for ability to set custom command names, aliases etc.
  */
-public class PlayerChannelsCommand extends Command  {
+public class PlayerChannelsCommand implements CommandExecutor {
 
 
 
@@ -32,8 +36,7 @@ public class PlayerChannelsCommand extends Command  {
     private ChannelFile messages;
 
 
-   public PlayerChannelsCommand(String name, List<String> aliases, PlayerChannels plugin){
-       super(name, "Main command for all chatrooms", "/" + name, aliases);
+   public PlayerChannelsCommand( PlayerChannels plugin){
        this.plugin = plugin;
        this.messages = new ChannelFile(FileType.MESSAGES);
     }
@@ -42,12 +45,23 @@ public class PlayerChannelsCommand extends Command  {
 // TODO send help message dialog
 
     @Override
-    public boolean execute(@NotNull CommandSender commandSender, @NotNull String s, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         Player player = (Player) commandSender;
         PlayerChannelUser playerChannelUser = PlayerChannelUser.getPlayer(player.getUniqueId());
         if (args.length > 0) {
             // Check if arg length is greater than 0 and if second key-word is "focus" or other subcommands
             String secondArg = args[0];
+            if (secondArg.equalsIgnoreCase(plugin.getConfig().getString("help"))) {
+                // Help command
+                ChannelUtils.sendMsgFromConfig(player, "help-msg");
+                ChannelUtils.sendMsgFromConfig(player, "help-msg-1");
+                ChannelUtils.sendMsgFromConfig(player, "help-msg-2");
+                ChannelUtils.sendMsgFromConfig(player, "help-msg-3");
+                ChannelUtils.sendMsgFromConfig(player, "help-msg-4");
+
+
+                return true;
+            }
             if (secondArg.equalsIgnoreCase(plugin.getConfig().getString("join"))) {
                 if (args.length == 1) {
                     messages.sendConfigMsg(player, "join-subcommand-help");
@@ -70,6 +84,7 @@ public class PlayerChannelsCommand extends Command  {
                         }
                         // otherwise, let them join
                         ChannelUtils.joinChatroom(playerChannelUser, found);
+                        return true;
 
                     }
                 }
@@ -208,4 +223,8 @@ public class PlayerChannelsCommand extends Command  {
 
         return true;
    }
+
+
+
+
 }

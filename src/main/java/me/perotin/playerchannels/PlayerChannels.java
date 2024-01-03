@@ -6,6 +6,7 @@ import com.google.common.base.Charsets;
 import me.perotin.playerchannels.commands.AdminCommand;
 import me.perotin.playerchannels.commands.CancelTutorialCommand;
 import me.perotin.playerchannels.commands.PlayerChannelsCommand;
+import me.perotin.playerchannels.commands.tabs_completer.PlayerChannelsTabCompleter;
 import me.perotin.playerchannels.events.chat_events.*;
 import me.perotin.playerchannels.events.join.PlayerChannelUserJoinEvent;
 import me.perotin.playerchannels.objects.Chatroom;
@@ -19,6 +20,7 @@ import me.perotin.playerchannels.utils.Metrics;
 import me.perotin.playerchannels.utils.TutorialHelper;
 import me.perotin.playerchannels.utils.UpdateChecker;
 import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -43,11 +45,20 @@ import java.util.*;
 
 /*
 TODO List
-5/6/23 Finished barebones main page, chatroom creation menu, and chatroom pager
+3.6.1 update
 
-Focus on show player
-Inviting other players
-Chatting in chatroom
+New config.yml msgs:
+
+
+# Subcommand for the help dialogue
+help: "help"
+
+# Help dialogue messages
+help-msg: "&a-------------------------------"
+help-msg-1: "&e/channels - &7Opens the channel menu"
+help-msg-2: "&e/channels &6create &e<&aname&e> <optional: &adescription&e> - &7Creates a channel"
+help-msg-3: "&e/channels &6join &e<&aname&e> - &7Joins a specified channel"
+help-msg-4: "&e/channels &6listen &e<&aadd&e/&cremove&e/&coff&e> <&aname&e> - &7Only receive chat from a specified channel"
 
 
 
@@ -112,6 +123,15 @@ public class PlayerChannels extends JavaPlugin {
         main.enableInMemory();
         api = UltimateAdvancementAPI.getInstance(this);
 
+
+
+
+
+
+
+
+
+
     }
 
     @Override
@@ -159,9 +179,13 @@ public class PlayerChannels extends JavaPlugin {
 
 
 
+        PlayerChannelsCommand cmd = new PlayerChannelsCommand(this);
+
+        getCommand("playerchannels").setExecutor(cmd);
+        getCommand("playerchannels").setTabCompleter(new PlayerChannelsTabCompleter());
 
 
-        ChannelUtils.registerCommand(new PlayerChannelsCommand(getConfig().getString("command-name"), getConfig().getStringList("aliases"), this));
+
         ChannelUtils.registerCommand(new CancelTutorialCommand(getConfig().getString("cancel-tutorial"), getConfig().getStringList("cancel-tutorial-aliases"), this));
         getCommand("pcadmin").setExecutor(new AdminCommand());
     }

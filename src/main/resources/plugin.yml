@@ -1,10 +1,14 @@
 name: PlayerChannels
 main: me.perotin.playerchannels.PlayerChannels
 author: Perotin
-version: 3.6
+version: 3.6.1
 api-version: 1.14
 description: The ultimate chatroom solution.
 commands:
+  playerchannels:
+    permission: playerchannels.use
+    usage: /playerchannels
+    aliases: [channels, pc, chatrooms]
   pcadmin:
     permission: playerchannels.admin
     usage: /pcadmin

@@ -5,6 +5,7 @@ import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDispla
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
 import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import me.perotin.playerchannels.PlayerChannels;
+import me.perotin.playerchannels.commands.tabs_completer.PlayerChannelsTabCompleter;
 import me.perotin.playerchannels.objects.ChatRole;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
@@ -18,6 +19,8 @@ import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -39,6 +42,8 @@ public class ChannelUtils {
 
     private static final Map<UUID, Map<String, Long>> lastMessageSent = new HashMap<>();
 
+
+
     /**
      * @param command to register
      */
@@ -50,10 +55,15 @@ public class ChannelUtils {
             final CommandMap commandMap = (CommandMap) commandMapField.get(Bukkit.getServer());
             commandMap.register(command.getLabel(), command);
 
+
+
+
         } catch(final Exception e) {
             e.printStackTrace();
         }
     }
+
+
 
     /**
      * @param name of chatroom
@@ -290,6 +300,12 @@ public class ChannelUtils {
      */
     public static String colorize(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
+    }
+
+    public static void sendMsgFromConfig(Player player, String path) {
+        if (player != null) {
+            player.sendMessage(colorize(PlayerChannels.getInstance().getConfig().getString(path)));
+        }
     }
 
 }

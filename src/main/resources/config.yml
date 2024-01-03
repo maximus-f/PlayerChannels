@@ -3,18 +3,15 @@
 #         Player Channels
 #   "The ultimate chat solution"
 #
-# Having issues? Contact me on discord @ Perotin#3447
+# Having issues? Contact me on Spigot @ Perotin
 
 #note most of the configuration comes in menus.yml / messages.yml!
 
 # Should chat colors be allowed throughout the plugin? (chatroom names, player statuses, etc.)
 chat-colors: true
-command-name: "playerchannels"
 
-aliases:
-   - "pc"
-   - "chatrooms"
-   - "channels"
+# Make sure to use your commands.yml to set custom aliases! https://bukkit.fandom.com/wiki/Commands.yml
+
 
 # Subcommand name for disabling messages from global / other chatrooms
 # e.g. /playerchannels listen add <chatroom>
@@ -31,6 +28,16 @@ join: "join"
 join-subcommand-help: "&cIncorrect usage: /pc join <channel-name>"
 join-subcommand-not-found: "&cThat channel could not be found!"
 join-subcommand-private: "&cYou do not have permission to join that channel!"
+
+# Subcommand for the help dialogue
+help: "help"
+
+# Help dialogue messages
+help-msg: "&a-------------------------------"
+help-msg-1: "&e/channels - &7Opens the channel menu"
+help-msg-2: "&e/channels &6create &e<&aname&e> <optional: &adescription&e> - &7Creates a channel"
+help-msg-3: "&e/channels &6join &e<&aname&e> - &7Joins a specified channel"
+help-msg-4: "&e/channels &6listen &e<&aadd&e/&cremove&e/&coff&e> <&aname&e> - &7Only receive chat from a specified channel"
 
 # Should the tutorial be in place (existance of tutorial)
 enable-tutorial: true
