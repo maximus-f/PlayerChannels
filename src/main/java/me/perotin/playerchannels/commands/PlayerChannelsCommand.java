@@ -10,6 +10,11 @@ import me.perotin.playerchannels.objects.inventory.paging_objects.MainMenuPaging
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.utils.ChannelUtils;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -53,11 +58,12 @@ public class PlayerChannelsCommand implements CommandExecutor {
             String secondArg = args[0];
             if (secondArg.equalsIgnoreCase(plugin.getConfig().getString("help"))) {
                 // Help command
-                ChannelUtils.sendMsgFromConfig(player, "help-msg");
-                ChannelUtils.sendMsgFromConfig(player, "help-msg-1");
-                ChannelUtils.sendMsgFromConfig(player, "help-msg-2");
-                ChannelUtils.sendMsgFromConfig(player, "help-msg-3");
-                ChannelUtils.sendMsgFromConfig(player, "help-msg-4");
+                  ChannelUtils.sendMsgFromConfig(player, "help-msg");
+                sendClickableCommand(player, "/channels", "help-msg-1");
+                sendClickableCommand(player, "/channels create <name> [Optional: description]", "help-msg-2");
+                sendClickableCommand(player, "/channels join <name>", "help-msg-3");
+                sendClickableCommand(player, "/channels listen <add/remove/off> <name>", "help-msg-4");
+                // Add more messages as needed
 
 
                 return true;
@@ -225,6 +231,17 @@ public class PlayerChannelsCommand implements CommandExecutor {
    }
 
 
+    private void sendClickableCommand(Player player, String command, String messageConfigPath) {
+        String message = plugin.getConfig().getString(messageConfigPath);
+        if (message != null) {
+            TextComponent messageComponent = new TextComponent(ChatColor.translateAlternateColorCodes('&', message));
+            messageComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command));
+            messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to copy").create()));
+            player.spigot().sendMessage(messageComponent);
+        } else {
+            player.sendMessage(ChatColor.RED + "There was an error loading the message for: " + messageConfigPath);
+        }
+    }
 
 
 }

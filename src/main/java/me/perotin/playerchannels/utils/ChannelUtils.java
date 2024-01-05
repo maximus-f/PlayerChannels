@@ -191,43 +191,7 @@ public class ChannelUtils {
         } catch (Exception ex) {
             player.sendMessage(title);
         }
-//        // Generate a random UUID for this advancement.
-//        String uuid = UUID.randomUUID().toString();
-//
-//        // Create a NamespacedKey for the advancement.
-//        NamespacedKey key = new NamespacedKey(PlayerChannels.getInstance(), uuid);
-//
-//        // Create the JSON for the advancement.
-//        String json = "{"
-//                + "\"display\": {"
-//                + "\"title\": {\"text\": \"" + title + "\", \"color\": \"yellow\"},"
-//                + "\"description\": {\"text\": \"" + description + "\", \"color\": \"white\"},"
-//                + "\"icon\": {\"item\": \"minecraft:" + iconMaterial.getKey().getKey() + "\"},"
-//                + "\"frame\": \"goal\","
-//                + "\"announce_to_chat\": false,"
-//                + "\"show_toast\": true,"
-//                + "\"hidden\": true,"
-//                + "\"background\": \"minecraft:textures/block/stone.png\""
-//                + "},"
-//                + "\"criteria\": {"
-//                + "\"trigger\": {\"trigger\": \"minecraft:impossible\"}"
-//                + "}"
-//                + "}";
-//
-//        // Load the advancement.
-//        Advancement advancement = Bukkit.getUnsafe().loadAdvancement(key, json);
-//        if (advancement != null) {
-//            // Grant the advancement to the player.
-//            AdvancementProgress progress = player.getAdvancementProgress(advancement);
-//            progress.awardCriteria("trigger");
-//
-//            // Schedule the removal of the advancement.
-//            Bukkit.getScheduler().runTaskLater(PlayerChannels.getInstance(), () -> {
-//                progress.revokeCriteria("trigger");
-//                Bukkit.getUnsafe().removeAdvancement(key);
-//               Bukkit.getServer().reloadData();
-//            }, 20L);  // Remove the advancement after 20 ticks (1 second).
-//        }
+
     }
 
 
