@@ -212,7 +212,6 @@ public class PlayerChannelsCommand implements CommandExecutor {
               }
 
                 player.sendMessage(messages.getString("listen-help")
-                        .replace("$command$", plugin.getConfig().getString("command-name"))
                         .replace("$listen$", plugin.getConfig().getString("listen")));
                 return true;
             }
