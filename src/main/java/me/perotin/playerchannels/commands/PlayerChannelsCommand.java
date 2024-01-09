@@ -1,6 +1,7 @@
 package me.perotin.playerchannels.commands;
 
 import me.perotin.playerchannels.PlayerChannels;
+import me.perotin.playerchannels.commands.subcommands.FocusChannelSubCommand;
 import me.perotin.playerchannels.events.chat_events.CreateChatroomInputEvent;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.InventoryHelper;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /* Created by Perotin on 8/20/19 */
 
@@ -214,13 +216,30 @@ public class PlayerChannelsCommand implements CommandExecutor {
                         .replace("$listen$", plugin.getConfig().getString("listen")));
                 return true;
             }
+            // Check if arg is any of the name of that which they are a member of
+            List<String> memberChatroomNames = playerChannelUser.getChatrooms().stream().map(Chatroom::getName).map(ChatColor::stripColor).map(String::toLowerCase).collect(Collectors.toList());
+
+            if (memberChatroomNames.contains(args[0].toLowerCase())) {
+                new FocusChannelSubCommand("").onCommand(player, playerChannelUser, args);
+                return true;
+            } else {
+                /*
+          focus-channel-not-found: "&cYou are not a member of that channel! You can only focus on channels you are a member of."
+focus-channel-list: "&a-&e $chatroom$"
+             */
+                messages.sendConfigMsg(player, "focus-channel-not-found");
+                if (playerChannelUser.getChatrooms().isEmpty()) {
+                    messages.sendConfigMsg(player, "focus-channel-no-channels");
+                } else {
+                    playerChannelUser.getChatrooms().forEach(c -> {
+                        player.sendMessage(messages.getString("focus-channel-list")
+                                .replace("$chatroom$", c.getName()));
+                    });
+                }
+            }
+
         }
         PreChatroom chat = new PreChatroom(player.getUniqueId());
-//        Gui menu =  plugin.getHelper().getCreationMenu(chat);
-//
-//        plugin.getHelper().setPagingNavBar(plugin.getHelper().setNavigationBar(menu, player), false, true).show(player);
-
-      //  CreateChatroomInputEvent.getInstance().getInCreation().put(player.getUniqueId(), chat);
 
         MainMenuPaging mainMenuPaging = new MainMenuPaging(player, plugin);
         mainMenuPaging.getMenu().show(player);

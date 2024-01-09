@@ -20,6 +20,7 @@ import me.perotin.playerchannels.utils.Metrics;
 import me.perotin.playerchannels.utils.TutorialHelper;
 import me.perotin.playerchannels.utils.UpdateChecker;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -255,7 +256,7 @@ public class PlayerChannels extends JavaPlugin {
 
     public Chatroom getChatroom(String name){
         for (Chatroom chat : chatrooms) {
-            if (chat.getName().equalsIgnoreCase(name))
+            if (ChatColor.stripColor(chat.getName()).equalsIgnoreCase(ChatColor.stripColor(name)))
                 return chat;
         }
         return null;
