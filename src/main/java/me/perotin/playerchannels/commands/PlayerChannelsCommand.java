@@ -2,6 +2,7 @@ package me.perotin.playerchannels.commands;
 
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.commands.subcommands.FocusChannelSubCommand;
+import me.perotin.playerchannels.commands.subcommands.InviteSubCommand;
 import me.perotin.playerchannels.events.chat_events.CreateChatroomInputEvent;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.InventoryHelper;
@@ -213,6 +214,12 @@ public class PlayerChannelsCommand implements CommandExecutor {
 
                 player.sendMessage(messages.getString("listen-help")
                         .replace("$listen$", plugin.getConfig().getString("listen")));
+                return true;
+            }
+            Bukkit.broadcastMessage("1: " + secondArg + " 2: " + plugin.getConfig().getString("invite"));
+            if (secondArg.equalsIgnoreCase(plugin.getConfig().getString("invite"))) {
+                Bukkit.broadcastMessage("11");
+                new InviteSubCommand("").onCommand(player, playerChannelUser, args);
                 return true;
             }
             // Check if arg is any of the name of that which they are a member of

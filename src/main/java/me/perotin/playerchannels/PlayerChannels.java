@@ -46,20 +46,9 @@ import java.util.*;
 
 /*
 TODO List
-3.6.1 update
+3.6.2
 
-New config.yml msgs:
-
-
-# Subcommand for the help dialogue
-help: "help"
-
-# Help dialogue messages
-help-msg: "&a-------------------------------"
-help-msg-1: "&e/channels - &7Opens the channel menu"
-help-msg-2: "&e/channels &6create &e<&aname&e> <optional: &adescription&e> - &7Creates a channel"
-help-msg-3: "&e/channels &6join &e<&aname&e> - &7Joins a specified channel"
-help-msg-4: "&e/channels &6listen &e<&aadd&e/&cremove&e/&coff&e> <&aname&e> - &7Only receive chat from a specified channel"
+Added /pc <chatroom> to focus on it, also wanting to simultaneously do /pc focus (configurable) <chatroom-name>
 
 
 

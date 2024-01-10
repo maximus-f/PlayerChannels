@@ -112,3 +112,16 @@ focus-channel-unset: "&cNo longer focusing on any channel."
 focus-channel-not-found: "&cYou are not a member of that channel! You can only focus on channels you are a member of:"
 focus-channel-list: "&a-&e $chatroom$"
 focus-channel-no-channels: "&cYou are not in any channels! Join one with &6/channels"
+
+
+# Messages related to invite subcommand
+help-command-usage: "&cUsage: /channels invite <player> [<channel-name>]."
+player-not-found: "&cPlayer not found. Please check the name and try again."
+no-permission-to-invite: "&cYou do not have permission to send invites in this channel."
+not-in-one-chatroom: "&cPlease specify which channel to invite:"
+channel-not-found: "&cChannel not found. Please check the channel name and try again."
+player-already-in-channel: "&cThe player is already a member of this channel."
+pending-invite-exists: "&cThe player already has a pending invite to this channel."
+invite-sent-successfully: "&aInvite sent successfully to &d$player$."
+invite-received: "&d$player$ &ahas invited you to join &d$chatroom$&a."
+

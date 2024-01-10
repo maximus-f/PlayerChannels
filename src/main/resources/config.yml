@@ -32,6 +32,9 @@ join-subcommand-private: "&cYou do not have permission to join that channel!"
 # Subcommand for the help dialogue
 help: "help"
 
+#Subcommand for the invite command
+invite: "invite"
+
 # Help dialogue messages
 help-msg: "&a-------------------------------"
 help-msg-1: "&e/channels - &7Opens the channel menu"
