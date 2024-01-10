@@ -6,6 +6,7 @@ import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.storage.files.FileType;
+import me.perotin.playerchannels.utils.ChannelUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -42,6 +43,7 @@ public class InviteSubCommand extends SubCommand{
                 Chatroom channel = user.getChatrooms().get(0);
                 if (!channel.isPublic() && channel.getRole(player.getUniqueId()).getValue() >= ChatRole.MODERATOR.getValue()) {
                     Player toSend = Bukkit.getPlayer(args[1]);
+                    PlayerChannelUser playerChannelUser = PlayerChannelUser.getPlayer(toSend.getUniqueId());
                     if (toSend != null) {
                         if (!channel.isInChatroom(toSend.getUniqueId())) {
                             PlayerChannelUser target = PlayerChannelUser.getPlayer(toSend.getUniqueId());
@@ -50,6 +52,13 @@ public class InviteSubCommand extends SubCommand{
                                 player.sendMessage(messages.getString("invite-sent-successfully").replace("$player$", toSend.getName()));
                                 toSend.sendMessage(messages.getString("invite-received").replace("$player$", player.getName())
                                         .replace("$chatroom$", channel.getName()));
+                                String msg = messages.getString("invite-received-2")
+                                        .replace("$chatroom$", channel.getName());
+                                ChannelUtils.sendClickableCommand(toSend, msg, "/channels join " + channel.getName());
+
+
+                                playerChannelUser.addInvite(channel);
+
                             } else {
                                 player.sendMessage(messages.getString("pending-invite-exists"));
                             }
@@ -88,6 +97,10 @@ public class InviteSubCommand extends SubCommand{
                         player.sendMessage(messages.getString("invite-sent-successfully").replace("$player$", invitee.getName()));
                         invitee.sendMessage(messages.getString("invite-received").replace("$player$", player.getName())
                                 .replace("$chatroom$", chatroom.getName()));
+                        String msg = messages.getString("invite-received-2")
+                                .replace("$chatroom$", chatroom.getName());
+                       ChannelUtils.sendClickableCommand(invitee, msg, "/channels join " + chatroom.getName());
+                        target.addInvite(chatroom);
                     } else {
                         player.sendMessage(messages.getString("pending-invite-exists"));
                     }
@@ -100,74 +113,5 @@ public class InviteSubCommand extends SubCommand{
         }
     }
 
-//    @Override
-//    public void onCommand(Player player, PlayerChannelUser user, String[] args) {
-//        // First work on case with member of one channel
-//        ChannelFile messages = new ChannelFile(FileType.MESSAGES);
-//        if (args.length == 1) {
-//            // Just did /channels invite, send help message for this command
-//        } else if (args.length == 2) {
-//            // Check if they are a member of a chatroom with permission to invite, then check if player exists
-//            if (user.getChatrooms().size() == 1) {
-//                // Check if arg[1] is a valid player
-//                Chatroom channel = user.getChatrooms().get(0);
-//
-//                if (!channel.isPublic() && channel.getRole(player.getUniqueId()).getValue() >= ChatRole.MODERATOR.getValue()) {
-//                    if (Bukkit.getPlayer(args[1]) != null) {
-//                        // Send invite
-//                        Player toSend = Bukkit.getPlayer(args[1]);
-//                        if (channel.isInChatroom(toSend.getUniqueId())) {
-//                            // Send message that they are already in the channel
-//                            return;
-//                        }
-//                        PlayerChannelUser target = PlayerChannelUser.getPlayer(toSend.getUniqueId());
-//                        if (target.hasPendingInviteFrom(channel)) {
-//                            // Send message that they already have a pending invite
-//                            return;
-//                        }
-//                    } else {
-//                        // Player not found
-//                    }
-//                } else {
-//                    // No permission to send
-//                }
-//
-//            } else {
-//                // Tell them they are not in only one chatroom
-//            }
-//
-//        } else if (args.length == 3) {
-//            // If in more than one chatroom, must specify channel name at the end
-//            Chatroom chatroom = PlayerChannels.getInstance().getChatroom(args[2]);
-//            Player invitee = Bukkit.getPlayer(args[1]);
-//
-//            if (invitee == null) {
-//                // Send message saying player not found
-//                return;
-//            }
-//            if (chatroom == null) {
-//                // Send message saying channel not found
-//                return;
-//            }
-//            if (!chatroom.isInChatroom(invitee.getUniqueId())) {
-//                // Send message saying they are not in that channel
-//                return;
-//            }
-//            if (!chatroom.isPublic() && chatroom.getRole(player.getUniqueId()).getValue() >= ChatRole.MODERATOR.getValue()) {
-//                if (chatroom.isInChatroom(invitee.getUniqueId())) {
-//                    // Send message saying that player is already in that channel
-//                    return;
-//                } else {
-//                    // Send invite
-//                    PlayerChannelUser target = PlayerChannelUser.getPlayer(invitee.getUniqueId());
-//                    if (target.hasPendingInviteFrom(chatroom)) {
-//                        // Send message that they already have a pending invite
-//                        return;
-//                    }
-//                }
-//            } else {
-//                // Send message saying that they do not have permission to do this
-//            }
-//        }
-//    }
+
 }

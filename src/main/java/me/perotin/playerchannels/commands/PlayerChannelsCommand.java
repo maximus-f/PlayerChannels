@@ -63,10 +63,11 @@ public class PlayerChannelsCommand implements CommandExecutor {
                 // Help command
                   ChannelUtils.sendMsgFromConfig(player, "help-msg");
                 sendClickableCommand(player, "/channels", "help-msg-1");
+                sendClickableCommand(player, "/channels <channel-name>", "help-msg-5");
                 sendClickableCommand(player, "/channels create <name> [Optional: description]", "help-msg-2");
+                sendClickableCommand(player, "/channels invite <player-name> <channel-name>", "help-msg-6");
                 sendClickableCommand(player, "/channels join <name>", "help-msg-3");
                 sendClickableCommand(player, "/channels listen <add/remove/off> <name>", "help-msg-4");
-                // Add more messages as needed
 
 
                 return true;
@@ -79,19 +80,28 @@ public class PlayerChannelsCommand implements CommandExecutor {
                     // Try to find chatroom with args[2]
                     String chatroomName = args[1];
                     Chatroom found = plugin.getChatroom(chatroomName);
+
                     if (found == null) {
                         messages.sendConfigMsg(player, "join-subcommand-not-found");
                         return true;
                     } else {
                         // check if player can join the chatroom
                         // Not staff and is private
+                        if (found.isInChatroom(player.getUniqueId())) {
+                            messages.sendConfigMsg(player, "join-subcommand-already-in");
+                            return true;
+                        }
                         if (!(player.hasPermission("playerchannels.admin") || player.hasPermission("playerchannels.moderator"))){
-                            if (!found.isPublic()) {
+                            if (!found.isPublic() && !playerChannelUser.hasPendingInviteFrom(found)) {
                                 messages.sendConfigMsg(player, "join-subcommand-private");
                                 return true;
                             }
                         }
                         // otherwise, let them join
+                        if (playerChannelUser.hasPendingInviteFrom(found)) {
+                            // Remove the invite
+                            playerChannelUser.getInvites().remove(found);
+                        }
                         ChannelUtils.joinChatroom(playerChannelUser, found);
                         return true;
 
@@ -216,9 +226,7 @@ public class PlayerChannelsCommand implements CommandExecutor {
                         .replace("$listen$", plugin.getConfig().getString("listen")));
                 return true;
             }
-            Bukkit.broadcastMessage("1: " + secondArg + " 2: " + plugin.getConfig().getString("invite"));
             if (secondArg.equalsIgnoreCase(plugin.getConfig().getString("invite"))) {
-                Bukkit.broadcastMessage("11");
                 new InviteSubCommand("").onCommand(player, playerChannelUser, args);
                 return true;
             }

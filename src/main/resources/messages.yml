@@ -104,6 +104,7 @@ fast-chat-invalid: "&cInvalid key. Use key &e[&f1&e]&c to fast chat."
 join-subcommand-help: "&cIncorrect usage: /pc join <channel-name>"
 join-subcommand-not-found: "&cThat channel could not be found!"
 join-subcommand-private: "&cYou do not have permission to join that channel!"
+join-subcommand-already-in: "&cYou are already a member of that channel!"
 banned-from-chatroom: "&cYou are banned from that channel!"
 already-in-channel: "&cYou are already in that channel!"
 
@@ -124,4 +125,5 @@ player-already-in-channel: "&cThe player is already a member of this channel."
 pending-invite-exists: "&cThe player already has a pending invite to this channel."
 invite-sent-successfully: "&aInvite sent successfully to &d$player$."
 invite-received: "&d$player$ &ahas invited you to join &d$chatroom$&a."
+invite-received-2: "&aTo join, type &e/channels join $chatroom$&a or click here."
 

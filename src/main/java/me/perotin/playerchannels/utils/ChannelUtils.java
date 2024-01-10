@@ -14,6 +14,10 @@ import me.perotin.playerchannels.objects.inventory.paging_objects.MainMenuPaging
 import me.perotin.playerchannels.storage.Pair;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
@@ -183,6 +187,16 @@ public class ChannelUtils {
     }
 
 
+    public static void sendClickableCommand(Player player, String message, String command) {
+        if (message != null) {
+            TextComponent messageComponent = new TextComponent(ChatColor.translateAlternateColorCodes('&', message));
+            messageComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command));
+            messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to copy").create()));
+            player.spigot().sendMessage(messageComponent);
+        } else {
+            player.sendMessage(ChatColor.RED + "There was an error loading the message for: " + message);
+        }
+    }
     private static void sendAdvancementNotification(Player player, String title, String description, Material iconMaterial) {
 
         try {

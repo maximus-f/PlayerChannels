@@ -152,6 +152,14 @@ public class PlayerChannelUser {
 
 
     /**
+     * @return List of chatrooms where the player has at least moderator permissions
+     */
+    public List<Chatroom> getChatroomsWithModeratorPermissions() {
+        return chatrooms.stream().filter(chatroom -> chatroom.getRole(getUuid()).getValue() >= ChatRole.MODERATOR.getValue()).collect(Collectors.toList());
+
+    }
+
+    /**
      * @return true or false if player has a pending invite from specified chatroom
      */
 
