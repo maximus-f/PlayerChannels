@@ -6,6 +6,7 @@ import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameT
 import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.commands.tabs_completer.PlayerChannelsTabCompleter;
+import me.perotin.playerchannels.events.chat_events.ChatroomConfirmDeletionEvent;
 import me.perotin.playerchannels.objects.ChatRole;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
@@ -151,6 +152,29 @@ public class ChannelUtils {
         return false;
     }
 
+    public static void leaveChatroom (PlayerChannelUser user, Chatroom channel, boolean showMainMenu) {
+        ChannelFile messages = new ChannelFile(FileType.MESSAGES);
+        if (!channel.isServerOwned() && channel.getRole(user.getUuid()) == ChatRole.OWNER && (channel.getMembers().size() > 1 || channel.isSaved())) {
+            Player player = Bukkit.getPlayer(user.getUuid());
+            ChatroomConfirmDeletionEvent.confirmDeletion.put(player, channel);
+
+            String warningDelete = messages.getString("owner-leave-chatroom")
+                    .replace("$chatroom$", channel.getName());
+            player.sendMessage(warningDelete);
+            player.sendMessage(messages.getString("owner-leave-chatroom2"));
+
+        } else {
+            // let them leave simply
+            Player player = Bukkit.getPlayer(user.getUuid());
+
+            user.leaveChatroom(channel);
+            channel.removeMember(user.getUuid());
+            // so it doesn't show them the empty chatroom
+            if (channel.getMembers().size() == 0 && showMainMenu){
+                new MainMenuPaging(player, PlayerChannels.getInstance()).show();
+            }
+        }
+    }
     public static void joinChatroom (PlayerChannelUser player, Chatroom chatroom){
         ChannelFile messages = new ChannelFile(FileType.MESSAGES);
         Player clicker = Bukkit.getPlayer(player.getUuid());
@@ -188,10 +212,12 @@ public class ChannelUtils {
 
 
     public static void sendClickableCommand(Player player, String message, String command) {
+        ChannelFile msgs = new ChannelFile(FileType.MESSAGES);
+
         if (message != null) {
             TextComponent messageComponent = new TextComponent(ChatColor.translateAlternateColorCodes('&', message));
             messageComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command));
-            messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to copy").create()));
+            messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(msgs.getString("click-to-copy")).create()));
             player.spigot().sendMessage(messageComponent);
         } else {
             player.sendMessage(ChatColor.RED + "There was an error loading the message for: " + message);

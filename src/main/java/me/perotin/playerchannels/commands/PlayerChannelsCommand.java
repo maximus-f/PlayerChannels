@@ -3,6 +3,7 @@ package me.perotin.playerchannels.commands;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.commands.subcommands.FocusChannelSubCommand;
 import me.perotin.playerchannels.commands.subcommands.InviteSubCommand;
+import me.perotin.playerchannels.commands.subcommands.LeaveSubCommand;
 import me.perotin.playerchannels.events.chat_events.CreateChatroomInputEvent;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.InventoryHelper;
@@ -67,6 +68,7 @@ public class PlayerChannelsCommand implements CommandExecutor {
                 sendClickableCommand(player, "/channels create <name> [Optional: description]", "help-msg-2");
                 sendClickableCommand(player, "/channels invite <player-name> <channel-name>", "help-msg-6");
                 sendClickableCommand(player, "/channels join <name>", "help-msg-3");
+                sendClickableCommand(player, "/channels leave [Optional: name]", "help-msg-7");
                 sendClickableCommand(player, "/channels listen <add/remove/off> <name>", "help-msg-4");
 
 
@@ -230,6 +232,10 @@ public class PlayerChannelsCommand implements CommandExecutor {
                 new InviteSubCommand("").onCommand(player, playerChannelUser, args);
                 return true;
             }
+            if (secondArg.equalsIgnoreCase(plugin.getConfig().getString("leave"))) {
+                new LeaveSubCommand("").onCommand(player, playerChannelUser, args);
+                return true;
+            }
             // Check if arg is any of the name of that which they are a member of
             List<String> memberChatroomNames = playerChannelUser.getChatrooms().stream().map(Chatroom::getName).map(ChatColor::stripColor).map(String::toLowerCase).collect(Collectors.toList());
 
@@ -266,10 +272,11 @@ focus-channel-list: "&a-&e $chatroom$"
 
     private void sendClickableCommand(Player player, String command, String messageConfigPath) {
         String message = plugin.getConfig().getString(messageConfigPath);
+        ChannelFile msgs = new ChannelFile(FileType.MESSAGES);
         if (message != null) {
             TextComponent messageComponent = new TextComponent(ChatColor.translateAlternateColorCodes('&', message));
             messageComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command));
-            messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to copy").create()));
+            messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(msgs.getString("click-to-copy")).create()));
             player.spigot().sendMessage(messageComponent);
         } else {
             player.sendMessage(ChatColor.RED + "There was an error loading the message for: " + messageConfigPath);

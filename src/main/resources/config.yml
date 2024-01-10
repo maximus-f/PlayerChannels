@@ -35,6 +35,9 @@ help: "help"
 #Subcommand for the invite command
 invite: "invite"
 
+# Subcommand for the leave subcommand
+leave: "leave"
+
 # Help dialogue messages
 help-msg: "&a-------------------------------"
 help-msg-1: "&e/channels - &7Opens the channel menu"
@@ -42,6 +45,7 @@ help-msg-5: "&e/channels <&aname&e> - &7Choose a channel to chat in"
 help-msg-2: "&e/channels &6create &e<&aname&e> <optional: &adescription&e> - &7Creates a channel"
 help-msg-6: "&e/channels &6invite &e<&aplayer-name&e> <optional: &achannel-name&e> - &7Invite specified player to channel, must specify channel if in more than one channel. "
 help-msg-3: "&e/channels &6join &e<&aname&e> - &7Joins a specified channel"
+help-msg-7: "&e/channels &6leave &e<optional: &aname&e> - &7Leaves a channel, if in more than one must specify name"
 help-msg-4: "&e/channels &6listen &e<&aadd&e/&cremove&e/&coff&e> <&aname&e> - &7Only receive chat from a specified channel"
 
 # Should the tutorial be in place (existance of tutorial)

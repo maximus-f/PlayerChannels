@@ -42,6 +42,7 @@ name-missing: "&cYou must set a name!"
 description-missing: "&cYou must set a description!"
 no-permission: "&cNo permission to do that!"
 taken-name: "&cThat name is taken!"
+click-to-copy: "Click to copy"
 
 # Messages related to chatrooms
 new-player-join: "&7[&e$chatroom$&7] &a+ $name$"
@@ -127,3 +128,6 @@ invite-sent-successfully: "&aInvite sent successfully to &d$player$."
 invite-received: "&d$player$ &ahas invited you to join &d$chatroom$&a."
 invite-received-2: "&aTo join, type &e/channels join $chatroom$&a or click here."
 
+
+# Messages related to
+leave-more-than-one-channel: "&cYou are in more than one channel! Please specify which one"
