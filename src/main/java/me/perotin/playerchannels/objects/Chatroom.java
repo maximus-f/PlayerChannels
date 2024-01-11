@@ -67,6 +67,7 @@ public class Chatroom {
         this.name = name;
         this.description = description;
         this.isPublic = isPublic;
+        this.nicknamesEnabled = true;
         this.messages = new ChannelFile(MESSAGES);
         this.isSaved = isSaved;
         this.display = generateItem();

@@ -129,5 +129,6 @@ invite-received: "&d$player$ &ahas invited you to join &d$chatroom$&a."
 invite-received-2: "&aTo join, type &e/channels join $chatroom$&a or click here."
 
 
-# Messages related to
+# Messages related to leave
 leave-more-than-one-channel: "&cYou are in more than one channel! Please specify which one"
+leave-command-usage: "&cUsage: &e/channels &6leave &e<optional: &aname&e>"

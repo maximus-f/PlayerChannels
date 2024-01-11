@@ -30,6 +30,10 @@ public class PlayerChannelsTabCompleter implements TabCompleter {
         String invite = config.getString("invite");
         String help = config.getString("help");
         String leave = config.getString("leave");
+        if (!user.getChatrooms().isEmpty()) {
+            List<String> chatrooms = user.getChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList());
+            completions.addAll(chatrooms);
+        }
 
 
         if (args.length == 1) {
@@ -49,16 +53,19 @@ public class PlayerChannelsTabCompleter implements TabCompleter {
             }
             if (args[0].equalsIgnoreCase(join)) {
                 completions.addAll(getChannelNames());
+
             }
             if (args[0].equalsIgnoreCase(leave)) {
                 if (!user.getChatrooms().isEmpty()) {
                     completions.addAll(user.getChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList()));
+
                 }
             }
             if (args[0].equalsIgnoreCase(invite)){
                 List<String> names = Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
                 names.remove(user.getName());
                 completions.addAll(names);
+
             }
 
         } else if (args.length == 3) {

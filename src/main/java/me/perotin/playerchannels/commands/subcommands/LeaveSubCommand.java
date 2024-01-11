@@ -50,10 +50,13 @@ public class LeaveSubCommand extends SubCommand {
                     ChannelUtils.leaveChatroom(user, channel, false);
 
                 }
-            } else {
-                // In more than one chatroom, tell them to specify which channel to leave
+            } else  if (user.getChatrooms().isEmpty()){
+                // In no chatrooms
                 messages.sendConfigMsg(player, "focus-channel-no-channels");
 
+            } else {
+                // In more than one chatroom
+                messages.sendConfigMsg(player, "leave-more-than-one-channel");
             }
         } else if (args.length == 2) {
             Chatroom channel = PlayerChannels.getInstance().getChatroom(args[1]);
@@ -81,6 +84,7 @@ public class LeaveSubCommand extends SubCommand {
 
         } else {
             // Send usage message, may be irrelevant however since impossible to access from main command class
+            messages.sendConfigMsg(player, "leave-command-usage");
         }
     }
 }
