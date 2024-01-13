@@ -17,6 +17,7 @@ import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.utils.ChannelUtils;
 import me.perotin.playerchannels.utils.TutorialHelper;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -183,6 +184,7 @@ public class CreateChatroomAction {
             // create the chatroom
             Chatroom addedChatroom = PlayerChannels.getInstance().createChatroom(chatroom);
             playerChannelUser.addChatroom(addedChatroom);
+            clicker.playSound(clicker.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 5, 5);
             input.getInCreation().remove(clicker.getUniqueId());
             new MainMenuPaging(clicker, PlayerChannels.getInstance()).show();
 
