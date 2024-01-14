@@ -241,10 +241,21 @@ public class PlayerChannelsCommand implements CommandExecutor {
             // Check if arg is any of the name of that which they are a member of
             List<String> memberChatroomNames = playerChannelUser.getChatrooms().stream().map(Chatroom::getName).map(ChatColor::stripColor).map(String::toLowerCase).collect(Collectors.toList());
 
+            Chatroom channel = PlayerChannels.getInstance().getChatroom(args[0]);
+
             if (memberChatroomNames.contains(args[0].toLowerCase())) {
                 new FocusChannelSubCommand("").onCommand(player, playerChannelUser, args);
                 return true;
-            } else {
+            } else if (channel != null && channel.isPublic()) {
+                // if server channel and public, let them focus chat and join simultaneously
+                new FocusChannelSubCommand("").onCommand(player, playerChannelUser, args);
+                ChannelUtils.joinChatroom(playerChannelUser, channel);
+                if (playerChannelUser.hasPendingInviteFrom(channel)) {
+                    playerChannelUser.getInvites().remove(channel);
+                }
+                return true;
+
+            }else{
                 /*
           focus-channel-not-found: "&cYou are not a member of that channel! You can only focus on channels you are a member of."
 focus-channel-list: "&a-&e $chatroom$"

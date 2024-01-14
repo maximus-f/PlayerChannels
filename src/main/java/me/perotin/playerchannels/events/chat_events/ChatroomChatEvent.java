@@ -57,6 +57,13 @@ public class ChatroomChatEvent implements Listener {
                        .replace("$chatroom$", focusedChatroom.getName()));
                return;
            }
+
+           if (!playerChannelUser.getListeningChatrooms().isEmpty() && !playerChannelUser.isListeningTo(focusedChatroom)) {
+               // Sending a message in a channel they are not lsitening to
+               // Add them to the listening
+               playerChannelUser.addChannelToListen(focusedChatroom);
+
+           }
            focusedChatroom.chat(chatter.getName(), event.getMessage(), chatter.getUniqueId());
 
        }
@@ -71,6 +78,13 @@ public class ChatroomChatEvent implements Listener {
                chatter.sendMessage(messages.getString("muted-message")
                        .replace("$chatroom$", quickChatroom.getName()));
                return;
+           }
+
+           if (!playerChannelUser.getListeningChatrooms().isEmpty() && !playerChannelUser.isListeningTo(quickChatroom)) {
+               // Sending a message in a channel they are not lsitening to
+               // Add them to the listening
+               playerChannelUser.addChannelToListen(quickChatroom);
+
            }
            quickChatroom.chat(chatter.getName(), event.getMessage().substring(1), chatter.getUniqueId());
            return;
@@ -109,6 +123,12 @@ public class ChatroomChatEvent implements Listener {
                 chatter.sendMessage(messages.getString("muted-message")
                         .replace("$chatroom$", fastChatroom.getName()));
                 return;
+            }
+            if (!playerChannelUser.getListeningChatrooms().isEmpty() && !playerChannelUser.isListeningTo(fastChatroom)) {
+                // Sending a message in a channel they are not lsitening to
+                // Add them to the listening
+                playerChannelUser.addChannelToListen(fastChatroom);
+
             }
             fastChatroom.chat(chatter.getName(), parts[1].trim(), chatter.getUniqueId());
             return;
