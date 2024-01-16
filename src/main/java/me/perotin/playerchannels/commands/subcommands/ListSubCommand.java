@@ -34,17 +34,16 @@ public class ListSubCommand extends SubCommand{
                     .replace("$status$", status)
                     .replace("$count$", channel.getMembers().size()+"");
 
-            sendJoinableMessage(player, "/channels join " + channel.getName(), finalMessage);
+            sendJoinableMessage(player, "/channels join " + channel.getName(), finalMessage, channel.getName());
         }
 
     }
 
-    private void sendJoinableMessage(Player player, String command, String message) {
-        ChannelFile msgs = new ChannelFile(FileType.MESSAGES);
+    private void sendJoinableMessage(Player player, String command, String message, String name) {
         if (message != null) {
             TextComponent messageComponent = new TextComponent(ChatColor.translateAlternateColorCodes('&', message));
             messageComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
-            messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.GREEN + "Click to join").create()));
+            messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.GREEN + "Click to join " + ChatColor.YELLOW +  name).create()));
             player.spigot().sendMessage(messageComponent);
         } else {
             player.sendMessage(ChatColor.RED + "There was an error loading the message for: " + message);

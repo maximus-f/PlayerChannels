@@ -67,7 +67,7 @@ public class PlayerChannelsCommand implements CommandExecutor {
                 // Help command
                   ChannelUtils.sendMsgFromConfig(player, "help-msg");
                 sendClickableCommand(player, "/channels", "help-msg-1");
-                sendClickableCommand(player, "/channels <channel-name>", "help-msg-5");                sendClickableCommand(player, "/channels <channel-name>", "help-msg-5");
+                sendClickableCommand(player, "/channels <channel-name>", "help-msg-5");
                 sendClickableCommand(player, "/channels list", "help-msg-8");
                 sendClickableCommand(player, "/channels create <name> [Optional: description]", "help-msg-2");
                 sendClickableCommand(player, "/channels invite <player-name> <channel-name>", "help-msg-6");

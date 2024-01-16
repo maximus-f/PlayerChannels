@@ -108,6 +108,7 @@ join-subcommand-private: "&cYou do not have permission to join that channel!"
 join-subcommand-already-in: "&cYou are already a member of that channel!"
 banned-from-chatroom: "&cYou are banned from that channel!"
 already-in-channel: "&cYou are already in that channel!"
+join-focus-chat-tip: "&7&oClick &ehere &7&oto chat in this channel, or try '&e&o/channels $chatroom$&7&o' later."
 
 focus-channel-set: "&aYou are now focusing chat on: $chatroom$"
 focus-channel-unset: "&cNo longer focusing on any channel."
@@ -135,4 +136,5 @@ leave-command-usage: "&cUsage: &e/channels &6leave &e<optional: &aname&e>"
 
 # Messages related to list
 list-message-1: "&aActive channels (click to join):"
-list-message-2: "&a- &e$chatroom$ &e: &fMembers(&e$count$&f) &e> $status$"
+list-message-2: "&a- &e$chatroom$ &e: &fMembers(&e$count$&f) >> $status$"
+list-message-3: "&7&o*(in)"

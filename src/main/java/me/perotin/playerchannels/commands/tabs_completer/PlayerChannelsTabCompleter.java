@@ -30,6 +30,7 @@ public class PlayerChannelsTabCompleter implements TabCompleter {
         String invite = config.getString("invite");
         String help = config.getString("help");
         String leave = config.getString("leave");
+        String list = config.getString("list");
         if (!user.getChatrooms().isEmpty()) {
             List<String> chatrooms = user.getChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList());
             completions.addAll(chatrooms);
@@ -43,6 +44,7 @@ public class PlayerChannelsTabCompleter implements TabCompleter {
             completions.add(invite);
             completions.add(listen);
             completions.add(leave);
+            completions.add(list);
 
         } else if (args.length == 2) {
             // If the second argument is being typed and it's the 'listen' subcommand

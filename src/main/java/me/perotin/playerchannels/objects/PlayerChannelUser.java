@@ -7,6 +7,10 @@ import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.utils.ChannelUtils;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -172,8 +176,18 @@ public class PlayerChannelUser {
      */
     public void addChatroom(Chatroom chatroom) {
         if(!chatrooms.contains(chatroom)) chatrooms.add(chatroom);
-        Bukkit.getPlayer(getUuid()).sendMessage(new ChannelFile(FileType.MESSAGES).getString("player-join-message")
+        Player player = Bukkit.getPlayer(getUuid());
+        ChannelFile msgs = new ChannelFile(FileType.MESSAGES);
+        player.sendMessage(msgs.getString("player-join-message")
                 .replace("$chatroom$", chatroom.getName()));
+
+        String message = msgs.getString("join-focus-chat-tip")
+                .replace("$chatroom$", ChatColor.stripColor(chatroom.getName()));
+        TextComponent messageComponent = new TextComponent(ChatColor.translateAlternateColorCodes('&', message));
+        messageComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/playerchannels " + chatroom.getName()));
+        messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.GREEN + "Click to chat in " + chatroom.getName()).create()));
+        player.spigot().sendMessage(messageComponent);
+
     }
 
     /**
