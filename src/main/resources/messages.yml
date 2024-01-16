@@ -132,3 +132,7 @@ invite-received-2: "&aTo join, type &e/channels join $chatroom$&a or click here.
 # Messages related to leave
 leave-more-than-one-channel: "&cYou are in more than one channel! Please specify which one"
 leave-command-usage: "&cUsage: &e/channels &6leave &e<optional: &aname&e>"
+
+# Messages related to list
+list-message-1: "&aActive channels (click to join):"
+list-message-2: "&a- &e$chatroom$ &e: &fMembers(&e$count$&f) &e> $status$"
