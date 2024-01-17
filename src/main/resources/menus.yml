@@ -95,6 +95,12 @@ creation-menu:
       material: "ANVIL"
       # range is 0-2
       slot: 2
+   global:
+      display: "&eGlobal:"
+      lore:
+         - "&7&oClick to make this a global channel (all servers)"
+      material: "BEACON"
+      slot: 3
    description:
       display: "&eDescription:"
       lore:

@@ -7,6 +7,7 @@ import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.utils.ChannelUtils;
+import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -14,6 +15,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -272,7 +274,17 @@ public class PlayerChannelUser {
      * @param sets the playeres current focused chatroom
      */
     public void setFocusedChatroom(Chatroom focusedChatroom) {
+
+
         this.focusedChatroom = focusedChatroom;
+        if (focusedChatroom != null) {
+            Bukkit.getPlayer(getUuid()).spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Focused Channel: " + ChatColor.YELLOW + focusedChatroom.getName()));
+
+        } else {
+            Bukkit.getPlayer(getUuid()).spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Focused Channel: " + ChatColor.RED + "None"));
+
+        }
+
     }
 
     public String getStatus() {

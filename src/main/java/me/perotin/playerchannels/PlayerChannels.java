@@ -3,6 +3,8 @@ package me.perotin.playerchannels;
 import com.fren_gor.ultimateAdvancementAPI.AdvancementMain;
 import com.fren_gor.ultimateAdvancementAPI.UltimateAdvancementAPI;
 import com.google.common.base.Charsets;
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
 import me.perotin.playerchannels.commands.AdminCommand;
 import me.perotin.playerchannels.commands.CancelTutorialCommand;
 import me.perotin.playerchannels.commands.PlayerChannelsCommand;
@@ -13,6 +15,7 @@ import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.InventoryHelper;
 import me.perotin.playerchannels.objects.PreChatroom;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
+import me.perotin.playerchannels.proxy.BungeeMessageHandler;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.utils.ChannelUtils;
@@ -27,6 +30,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +63,7 @@ Added /pc <chatroom> to focus on it, also wanting to simultaneously do /pc focus
 
 /*
  */
-public class PlayerChannels extends JavaPlugin {
+public class PlayerChannels extends JavaPlugin implements PluginMessageListener {
 
 
     /**
@@ -132,7 +136,11 @@ public class PlayerChannels extends JavaPlugin {
     }
 
 
-
+    @Override
+    public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+        BungeeMessageHandler handler = new BungeeMessageHandler(this);
+        handler.handlePluginMessage(channel, player, message);
+    }
 
 
 
@@ -270,5 +278,7 @@ public class PlayerChannels extends JavaPlugin {
             getLogger().severe(fileName + " does not exist and cannot be reloaded!");
         }
     }
+
+
 
 }

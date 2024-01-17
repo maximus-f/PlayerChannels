@@ -150,6 +150,10 @@ public class InventoryHelper {
 
         this.creationMenu = new StaticPane(1, 1, 7, 4);
         Pair<ItemStack, Integer> name = getItemFrom(Material.valueOf(menus.getString("creation-menu.name.material")), "creation-menu.name", null);
+
+        Pair<ItemStack, Integer> global = getItemFrom(Material.valueOf(menus.getString("creation-menu.global.material")), "creation-menu.global", null);
+
+
         Pair<ItemStack, Integer> serverChannel = getItemFrom(Material.valueOf(menus.getString("creation-menu.server-channel.material")), "creation-menu.server-channel", null);
 
         Pair<ItemStack, Integer> description = getItemFrom(Material.valueOf(menus.getString("creation-menu.description.material")), "creation-menu.description", null);
@@ -210,7 +214,7 @@ public class InventoryHelper {
         creationMenu.addItem(new GuiItem(status.getFirst(), CreateChatroomAction.toggleStatusConsumer()), status.getSecond(), 2);
         creationMenu.addItem(new GuiItem(saved.getFirst(), CreateChatroomAction.toggleSavedConsumer()), saved.getSecond(), 2);
         creationMenu.addItem(new GuiItem(createButton.getFirst(), CreateChatroomAction.clickCreateButtonConsumer()), createButton.getSecond(), 3);
-
+        creationMenu.addItem(new GuiItem(global.getFirst()), global.getSecond(), 1);
         if (Bukkit.getPlayer(chatroom.getOwner()).hasPermission("playerchannels.admin")) {
             creationMenu.addItem(new GuiItem(serverChannel.getFirst(), CreateChatroomAction.toggleIsServerChannel()), serverChannel.getSecond(), 2);
 
