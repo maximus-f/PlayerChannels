@@ -23,6 +23,25 @@ public class GlobalChatroom extends Chatroom {
         writeToAllServers();
     }
 
+
+
+    @Override
+    public void chat(String sender, String message, UUID id){
+        chat(sender, message, id);
+        chatToAllServers(message);
+    }
+
+    /**
+     * Send message to all servers
+     * @param message
+     */
+    private void chatToAllServers(String message) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("Forward");
+        out.writeUTF("ALL");
+        out.writeUTF(getName());
+    }
+
     /**
      * Function to send message to all servers to contain the chatroom
      */
@@ -52,6 +71,7 @@ public class GlobalChatroom extends Chatroom {
             ex.printStackTrace();
         }
     }
+
 
 
 

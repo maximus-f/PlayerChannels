@@ -83,6 +83,8 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
     private AdvancementMain main;
 
+    private boolean bungeecord;
+
 
 
 
@@ -118,7 +120,16 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         api = UltimateAdvancementAPI.getInstance(this);
 
 
+       this.bungeecord = getConfig().getBoolean("bungeecord");
+       // Enable bungeecord support
+       if (isBungeecord()) {
+           Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Loading Bungeecord hook.");
+           this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+           this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
+           Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Bungeecord channels registered.");
 
+
+       }
 
 
 
@@ -162,6 +173,11 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         this.helper = null;
         instance = null;
         TutorialHelper.inTutorial.clear();
+
+        if (isBungeecord()) {
+            this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
+            this.getServer().getMessenger().unregisterIncomingPluginChannel(this);
+        }
 
     }
 
@@ -223,6 +239,15 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
     public Chatroom createChatroom(PreChatroom chatroom){
         chatrooms.add(chatroom.toChatroom());
         return chatrooms.get(chatrooms.size() - 1);
+    }
+
+
+    /**
+
+     * @return if bungeecord is enabled
+     */
+    public boolean isBungeecord() {
+        return bungeecord;
     }
 
     /**

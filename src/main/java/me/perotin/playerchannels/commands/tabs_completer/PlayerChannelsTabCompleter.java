@@ -4,6 +4,7 @@ import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -33,6 +34,7 @@ public class PlayerChannelsTabCompleter implements TabCompleter {
         String list = config.getString("list");
         if (!user.getChatrooms().isEmpty()) {
             List<String> chatrooms = user.getChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList());
+            chatrooms = chatrooms.stream().map(ChatColor::stripColor).collect(Collectors.toList());
             completions.addAll(chatrooms);
         }
 
@@ -59,7 +61,7 @@ public class PlayerChannelsTabCompleter implements TabCompleter {
             }
             if (args[0].equalsIgnoreCase(leave)) {
                 if (!user.getChatrooms().isEmpty()) {
-                    completions.addAll(user.getChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList()));
+                    completions.addAll(user.getChatrooms().stream().map(Chatroom::getName).map(ChatColor::stripColor).collect(Collectors.toList()));
 
                 }
             }
@@ -91,6 +93,6 @@ public class PlayerChannelsTabCompleter implements TabCompleter {
 
 
     private List<String> getChannelNames (){
-        return PlayerChannels.getInstance().getChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList());
+        return PlayerChannels.getInstance().getChatrooms().stream().map(Chatroom::getName).map(ChatColor::stripColor).collect(Collectors.toList());
     }
 }

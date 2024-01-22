@@ -215,13 +215,13 @@ public class InventoryHelper {
         creationMenu.addItem(new GuiItem(status.getFirst(), CreateChatroomAction.toggleStatusConsumer()), status.getSecond(), 2);
         creationMenu.addItem(new GuiItem(saved.getFirst(), CreateChatroomAction.toggleSavedConsumer()), saved.getSecond(), 2);
         creationMenu.addItem(new GuiItem(createButton.getFirst(), CreateChatroomAction.clickCreateButtonConsumer()), createButton.getSecond(), 3);
-        if (creator != null && creator.hasPermission("playerchannels.global")) {
+        if (creator != null && creator.hasPermission("playerchannels.global") && PlayerChannels.getInstance().isBungeecord()) {
             ItemStack globalItem = global.getFirst();
             ItemMeta globalMeta = globalItem.getItemMeta();
             if(chatroom.isGlobal()) {
-                globalMeta.setDisplayName(savedMeta.getDisplayName() + " " +messages.getString("true") );
+                globalMeta.setDisplayName(globalMeta.getDisplayName() + " " +messages.getString("true") );
             } else {
-                globalMeta.setDisplayName(savedMeta.getDisplayName() + " " + messages.getString("false"));
+                globalMeta.setDisplayName(globalMeta.getDisplayName() + " " + messages.getString("false"));
             }
             globalItem.setItemMeta(globalMeta);
             global = new Pair<>(globalItem, global.getSecond());
