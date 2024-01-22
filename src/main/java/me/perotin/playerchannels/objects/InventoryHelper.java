@@ -208,13 +208,26 @@ public class InventoryHelper {
         status = new Pair<>(statusItem, status.getSecond());
         saved = new Pair<>(savedItem, saved.getSecond());
 
+        Player creator = Bukkit.getPlayer(chatroom.getOwner());
 
         creationMenu.addItem(new GuiItem(name.getFirst(), CreateChatroomAction.setNameConsumer()), name.getSecond(), 1);
         creationMenu.addItem(new GuiItem(description.getFirst(), CreateChatroomAction.setDescriptionConsumer()), description.getSecond(), 1);
         creationMenu.addItem(new GuiItem(status.getFirst(), CreateChatroomAction.toggleStatusConsumer()), status.getSecond(), 2);
         creationMenu.addItem(new GuiItem(saved.getFirst(), CreateChatroomAction.toggleSavedConsumer()), saved.getSecond(), 2);
         creationMenu.addItem(new GuiItem(createButton.getFirst(), CreateChatroomAction.clickCreateButtonConsumer()), createButton.getSecond(), 3);
-        creationMenu.addItem(new GuiItem(global.getFirst()), global.getSecond(), 1);
+        if (creator != null && creator.hasPermission("playerchannels.global")) {
+            ItemStack globalItem = global.getFirst();
+            ItemMeta globalMeta = globalItem.getItemMeta();
+            if(chatroom.isGlobal()) {
+                globalMeta.setDisplayName(savedMeta.getDisplayName() + " " +messages.getString("true") );
+            } else {
+                globalMeta.setDisplayName(savedMeta.getDisplayName() + " " + messages.getString("false"));
+            }
+            globalItem.setItemMeta(globalMeta);
+            global = new Pair<>(globalItem, global.getSecond());
+
+            creationMenu.addItem(new GuiItem(global.getFirst(), CreateChatroomAction.toggleGlobalStatus()), global.getSecond(), 1);
+        }
         if (Bukkit.getPlayer(chatroom.getOwner()).hasPermission("playerchannels.admin")) {
             creationMenu.addItem(new GuiItem(serverChannel.getFirst(), CreateChatroomAction.toggleIsServerChannel()), serverChannel.getSecond(), 2);
 

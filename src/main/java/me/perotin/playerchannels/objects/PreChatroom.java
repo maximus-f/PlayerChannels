@@ -15,6 +15,8 @@ public class PreChatroom {
     private boolean isSaved = false;
     private UUID owner;
 
+    private boolean global = false;
+
     private boolean isServerOwned = false;
 
     public PreChatroom(UUID owner){
@@ -29,6 +31,14 @@ public class PreChatroom {
         this(null);
     }
 
+
+    public boolean isGlobal() {
+        return global;
+    }
+
+    public void setGlobal(boolean global) {
+        this.global = global;
+    }
 
     public UUID getOwner() {
         return owner;
@@ -82,6 +92,11 @@ public class PreChatroom {
      * @return a chatroom
      */
     public Chatroom toChatroom(){
-        return new Chatroom(owner, name, description, isPublic, isSaved, isServerOwned);
+
+        if (isGlobal()){
+            return new GlobalChatroom(owner, name, description, isPublic, isSaved, isServerOwned);
+        } else {
+            return new Chatroom(owner, name, description, isPublic, isSaved, isServerOwned);
+        }
     }
 }

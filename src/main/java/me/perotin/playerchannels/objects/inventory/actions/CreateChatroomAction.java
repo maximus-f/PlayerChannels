@@ -112,6 +112,24 @@ public class CreateChatroomAction {
     }
 
     /**
+     * Actions for toggling if a channel is global across a network
+     */
+    public static Consumer<InventoryClickEvent> toggleGlobalStatus(){
+        return clickEvent -> {
+            // Can cast to player because will only be called in those scenarios
+            clickEvent.setCancelled(true);
+
+            Player clicker = (Player) clickEvent.getWhoClicked();
+            CreateChatroomInputEvent input = CreateChatroomInputEvent.getInstance();
+            PreChatroom chatroom = input.getInCreation().get(clicker.getUniqueId());
+            chatroom.setGlobal(!chatroom.isGlobal());
+
+            input.showUpdatedMenu(clicker, chatroom);
+
+        };
+    }
+
+    /**
      * Actions for toggling whether a chatroom should be persistent i.e. saved
      */
     public static Consumer<InventoryClickEvent> toggleSavedConsumer() {
