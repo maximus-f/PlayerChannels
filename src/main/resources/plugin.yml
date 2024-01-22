@@ -3,7 +3,7 @@ main: me.perotin.playerchannels.PlayerChannels
 author: Perotin
 version: 3.7
 api-version: 1.14
-description: The ultimate chatroom solution.
+description: The ultimate chat channels solution.
 commands:
   playerchannels:
     permission: playerchannels.use
@@ -12,6 +12,6 @@ commands:
   pcadmin:
     permission: playerchannels.admin
     usage: /pcadmin
-    aliases: /pca
+    aliases: [pca]
     description: Admin commands
 
