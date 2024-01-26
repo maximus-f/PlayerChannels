@@ -26,9 +26,10 @@ public class GlobalChatroom extends Chatroom {
 
 
     @Override
-    public void chat(String sender, String message, UUID id){
-        chat(sender, message, id);
-        chatToAllServers(message);
+    public String chat(String sender, String message, UUID id){
+        String msg = chat(sender, message, id);
+        chatToAllServers(msg);
+        return msg;
     }
 
     /**
@@ -36,10 +37,8 @@ public class GlobalChatroom extends Chatroom {
      * @param message
      */
     private void chatToAllServers(String message) {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("Forward");
-        out.writeUTF("ALL");
-        out.writeUTF(getName());
+        sendBungeeWrite(getName(), message);
+
     }
 
     /**
@@ -64,6 +63,37 @@ public class GlobalChatroom extends Chatroom {
             msgout.writeBoolean(isPublic());
             msgout.writeBoolean(isSaved());
             msgout.writeBoolean(isServerOwned());
+            out.writeShort(msgbytes.toByteArray().length);
+            out.write(msgbytes.toByteArray());
+            Iterables.getFirst(Bukkit.getOnlinePlayers(), null).sendPluginMessage(PlayerChannels.getInstance(), "BungeeCord", out.toByteArray());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void sendBungeeWrite(String channel, Object ...o) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("Forward");
+        out.writeUTF("ALL");
+        out.writeUTF(channel);
+
+        ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
+        DataOutputStream msgout = new DataOutputStream(msgbytes);
+        try {
+
+            for (Object obj : o) {
+                if (obj instanceof String) {
+                    msgout.writeUTF((String) obj);
+                } else if (obj instanceof Integer) {
+                    msgout.writeInt((Integer) obj);
+                } else if (obj instanceof Boolean) {
+                    msgout.writeBoolean((boolean) obj);
+                } else {
+                    msgout.write((Integer) obj);
+                }
+
+            }
+
             out.writeShort(msgbytes.toByteArray().length);
             out.write(msgbytes.toByteArray());
             Iterables.getFirst(Bukkit.getOnlinePlayers(), null).sendPluginMessage(PlayerChannels.getInstance(), "BungeeCord", out.toByteArray());

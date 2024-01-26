@@ -352,7 +352,7 @@ public class Chatroom {
      * In the future, members may be able to mute a chatroom so will have to account for this.
      * @param message
      */
-    public void chat(String sender, String message, UUID id){
+    public String chat(String sender, String message, UUID id){
         List<Player> members = getOnlinePlayers();
         // Perform operations to format message accordingly
         String nickname = sender;
@@ -381,6 +381,17 @@ public class Chatroom {
             if (!PlayerChannels.getInstance().getListeningPlayers().contains(member.getUniqueId()) || PlayerChannelUser.getPlayer(member.getUniqueId()).getListeningChatrooms().contains(this)){
                 member.sendMessage(chatroomFormat);
             }
+        }
+        return chatroomFormat;
+    }
+
+    /**
+     * Simplified chat method for bungee messaging that already has completed message
+     * @param message
+     */
+    public void chat (String message) {
+        for (Player player : getOnlinePlayers()) {
+            player.sendMessage(message);
         }
     }
 
