@@ -98,7 +98,9 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
                 <configuration>
-                    <outputDirectory>/Users/maxfuligni/Desktop/network/server/plugins</outputDirectory>
+                    <outputDirectory>/Users/maxfuligni/Desktop/network/bungee_server1/plugins</outputDirectory>
+                    <outputDirectory>/Users/maxfuligni/Desktop/network/bungee_server2/plugins</outputDirectory>
+
                 </configuration>
             </plugin>
             <plugin>
@@ -126,6 +128,29 @@
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>copy-jar</id>
+                        <phase>install</phase>
+                        <configuration>
+                            <target>
+                                <echo message="Copying built JAR to target directories..."/>
+                                <copy file="/Users/maxfuligni/Desktop/network/bungee_server2/plugins/PlayerChannels-3.7.jar"
+                                      todir="/Users/maxfuligni/Desktop/network/bungee_server1/plugins"/>
+
+
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
                         </goals>
                     </execution>
                 </executions>

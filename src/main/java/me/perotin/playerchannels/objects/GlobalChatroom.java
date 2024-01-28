@@ -4,11 +4,14 @@ import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import me.perotin.playerchannels.PlayerChannels;
+import me.perotin.playerchannels.storage.Pair;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -20,14 +23,31 @@ import java.util.UUID;
 public class GlobalChatroom extends Chatroom {
     public GlobalChatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned) {
         super(owner, name, description, isPublic, isSaved, isServerOwned);
-        writeToAllServers();
+    }
+
+
+    @Override
+    public void addMember(Pair<UUID, ChatRole> value, String name) {
+        if (name.equalsIgnoreCase("")) {
+            Player player = Bukkit.getPlayer(value.getFirst());
+            name = "failed"; // Default name if the player is not found
+
+            if (player != null) { // Check if the player object is not null
+                name = player.getName(); // Get the player's name if they are online
+            }
+        }
+
+
+        super.addMember(value, name);
+        sendBungeeWrite("AddMember", getName(), value.getFirst().toString(), value.getSecond().getValue(), name);
+
     }
 
 
 
     @Override
     public String chat(String sender, String message, UUID id){
-        String msg = chat(sender, message, id);
+        String msg = super.chat(sender, message, id);
         chatToAllServers(msg);
         return msg;
     }
@@ -44,7 +64,7 @@ public class GlobalChatroom extends Chatroom {
     /**
      * Function to send message to all servers to contain the chatroom
      */
-    private void writeToAllServers() {
+    public void writeToAllServers() {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("Forward");
         out.writeUTF("ALL");
@@ -88,7 +108,10 @@ public class GlobalChatroom extends Chatroom {
                     msgout.writeInt((Integer) obj);
                 } else if (obj instanceof Boolean) {
                     msgout.writeBoolean((boolean) obj);
-                } else {
+                } else if (obj instanceof UUID) {
+                    UUID uuid = (UUID) obj;
+                    msgout.writeUTF(uuid.toString());
+                }else {
                     msgout.write((Integer) obj);
                 }
 

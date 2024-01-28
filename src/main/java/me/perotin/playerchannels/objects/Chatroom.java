@@ -275,11 +275,14 @@ public class Chatroom {
      * When a new player joins the chatroom
      * @param value
      */
-    public void addMember(Pair<UUID, ChatRole> value) {
+    public void addMember(Pair<UUID, ChatRole> value, String addedPlayerName) {
         this.members.put(value.getFirst(), value.getSecond());
-        String name = Bukkit.getPlayer(value.getFirst()).getName();
+
+        if (addedPlayerName.equalsIgnoreCase("")) {
+            addedPlayerName = Bukkit.getPlayer(value.getFirst()).getName();
+        }
         broadcastMessage(new ChannelFile(MESSAGES).getString("new-player-join")
-                .replace("$name$", name)
+                .replace("$name$", addedPlayerName)
                 .replace("$chatroom$", getName()));
     }
 

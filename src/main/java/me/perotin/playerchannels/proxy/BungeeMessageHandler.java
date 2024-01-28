@@ -3,8 +3,11 @@ package me.perotin.playerchannels.proxy;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import me.perotin.playerchannels.PlayerChannels;
+import me.perotin.playerchannels.objects.ChatRole;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.GlobalChatroom;
+import me.perotin.playerchannels.storage.Pair;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -39,13 +42,42 @@ public class BungeeMessageHandler {
         if (subchannel.equalsIgnoreCase("Create")) {
             handleCreateMessage(in);
         }
+        if (subchannel.equalsIgnoreCase("AddMember")) {
+            handleAddMember(in);
+        }
 
-        if (channelNames.contains(channel.toLowerCase())) {
+        if (channelNames.contains(subchannel.toLowerCase())) {
             // Bungee Chat Message
-            handleChatMessage(in, channel);
+            handleChatMessage(in, subchannel);
 
         }
 
+
+
+    }
+
+    private void handleAddMember(ByteArrayDataInput in) {
+        short len = in.readShort();
+        byte[] msgbytes = new byte[len];
+        in.readFully(msgbytes);
+
+        DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+        try {
+            String channelName = msgin.readUTF();
+            Chatroom channel = plugin.getChatroom(channelName);
+            String stringId = msgin.readUTF();
+            int role = msgin.readInt();
+            String name = msgin.readUTF();
+            UUID id = UUID.fromString(stringId);
+            Pair<UUID, ChatRole> value = new Pair<>(id, ChatRole.getRole(role));
+
+            if (!channel.isInChatroom(id)) {
+
+                channel.addMember(value, name);
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
 
@@ -86,7 +118,9 @@ public class BungeeMessageHandler {
                 boolean isSaved = msgin.readBoolean();
                 boolean serverChatroom = msgin.readBoolean();
                 GlobalChatroom newChatroom = new GlobalChatroom(owner, name, description, isPrivate, isSaved,  serverChatroom);
-                if (!plugin.getChatrooms().contains(newChatroom)) plugin.getChatrooms().add(newChatroom);
+                if (!plugin.getChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList()).contains(name)) {
+                    plugin.getChatrooms().add(newChatroom);
+                }
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

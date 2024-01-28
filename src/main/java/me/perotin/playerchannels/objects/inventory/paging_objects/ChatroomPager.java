@@ -289,7 +289,7 @@ public class ChatroomPager extends PagingMenu {
                 }
                 player.addChatroom(chatroom);
                 if (!chatroom.isServerOwned() || (chatroom.isServerOwned()) && (!(clicker.hasPermission("playerchannels.admin") || clicker.hasPermission("playerchannels.moderator")))) {
-                    chatroom.addMember(new Pair<>(player.getUuid(), ChatRole.MEMBER));
+                    chatroom.addMember(new Pair<>(player.getUuid(), ChatRole.MEMBER), "");
                 } else {
                     // Idea here is that we want to automatically promote those with OP/playerchannels.admin or playerchannels.moderator
                     // to be automatic staff in this channel
@@ -297,10 +297,10 @@ public class ChatroomPager extends PagingMenu {
                     // Two options: is server owned and either a moderator or admin
 
                     if (clicker.hasPermission("playerchannels.admin")) {
-                        chatroom.addMember(new Pair<>(player.getUuid(), ChatRole.OWNER));
+                        chatroom.addMember(new Pair<>(player.getUuid(), ChatRole.OWNER), "");
 
                     } else if (clicker.hasPermission("playerchannels.moderator")) {
-                        chatroom.addMember(new Pair<>(player.getUuid(), ChatRole.MODERATOR));
+                        chatroom.addMember(new Pair<>(player.getUuid(), ChatRole.MODERATOR), "");
                     }
 
                 }

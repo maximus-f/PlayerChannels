@@ -78,7 +78,7 @@ public class ChatroomInvitationListPager extends PagingMenu {
                   return;
               }
               clicker.addChatroom(chatroom);
-              chatroom.addMember(new Pair<>(clicker.getUuid(), ChatRole.MEMBER));
+              chatroom.addMember(new Pair<>(clicker.getUuid(), ChatRole.MEMBER), "");
               new ChatroomPager(chatroom, Bukkit.getPlayer(clicker.getUuid())).show();
 
           }
