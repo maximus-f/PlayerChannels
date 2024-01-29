@@ -38,7 +38,7 @@ public class Chatroom {
     // true if chatroom is public, false if private
     private boolean isPublic;
     // true if saved, false if not
-    private boolean isSaved, nicknamesEnabled, isServerOwned;
+    private boolean isSaved, nicknamesEnabled, isServerOwned, isGlobal;
     private List<UUID> bannedMembers;
 
     private List<UUID> mutedMembers;
@@ -60,7 +60,7 @@ public class Chatroom {
     /**
      * Initial chatroom constructor
      */
-    public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned) {
+    public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned, boolean isGlobal) {
         this.members = new HashMap<>();
         this.members.put(owner, ChatRole.OWNER);
         this.owner = owner;
@@ -68,6 +68,7 @@ public class Chatroom {
         this.description = description;
         this.isPublic = isPublic;
         this.nicknamesEnabled = true;
+        this.isGlobal = isGlobal;
         this.messages = new ChannelFile(MESSAGES);
         this.isSaved = isSaved;
         this.display = generateItem();
@@ -82,8 +83,8 @@ public class Chatroom {
      * Used for loading a chatroom from file with members
      * @return chatroom
      */
-    public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned, Map<UUID, ChatRole> members, List<UUID> bannedMembers, List<UUID> mutedMembers, Map<UUID, String> nicknames, boolean nicknamesenabled ) {
-        this(owner, name, description, isPublic, isSaved, isServerOwned);
+    public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned, boolean isGlobal, Map<UUID, ChatRole> members, List<UUID> bannedMembers, List<UUID> mutedMembers, Map<UUID, String> nicknames, boolean nicknamesenabled ) {
+        this(owner, name, description, isPublic, isSaved, isServerOwned, isGlobal);
         this.messages = new ChannelFile(MESSAGES);
         this.members = members;
         this.bannedMembers = bannedMembers;
@@ -127,6 +128,13 @@ public class Chatroom {
 
 
     /**
+     * @return if global
+     */
+    public boolean isGlobal() {
+        return isGlobal;
+    }
+
+    /**
      * Called only once to generate the itemstack to represent the chatroom in player-profiles and the main menu
      * @return Itemstack representation of the chatroom
      */
@@ -167,17 +175,23 @@ public class Chatroom {
         }
         ItemMeta itemMeta = item.getItemMeta();
         if (!isServerOwned()) {
-            itemMeta.setDisplayName(messages.getString("chatroom-items.name").replace("$name$", getName()));
+            String displayName = isGlobal() ? messages.getString("global-chatroom.name") : messages.getString("chatroom-items.name");
+            String description = isGlobal() ? messages.getString("global-chatroom.description") : messages.getString("chatroom-items.description");
+            String status = isGlobal() ? messages.getString("global-chatroom.status") : messages.getString("chatroom-items.status");
+            String owner = isGlobal() ? messages.getString("global-chatroom.owner") : messages.getString("chatroom-items.owner");
+            String members = isGlobal() ? messages.getString("global-chatroom.members") : messages.getString("chatroom-items.members");
+
+            itemMeta.setDisplayName(displayName.replace("$name$", getName()));
 
             List<String> lores = new ArrayList<>();
             if (!(getDescription().trim().isEmpty() || getDescription() == null)) {
-                lores.add(messages.getString("chatroom-items.description").replace("$description$", getDescription()));
+                lores.add(messages.getString(description).replace("$description$", getDescription()));
             } else {
 
             }
-           lores.add(messages.getString("chatroom-items.status").replace("$status$", getStringStatus()));
-            lores.add(messages.getString("chatroom-items.owner").replace("$owner$", Bukkit.getOfflinePlayer(getOwner()).getName()));
-            lores.add(messages.getString("chatroom-items.members").replace("$member_count$", getMembers().size() + ""));
+           lores.add(status.replace("$status$", getStringStatus()));
+            lores.add(owner.replace("$owner$", Bukkit.getOfflinePlayer(getOwner()).getName()));
+            lores.add(members.replace("$member_count$", getMembers().size() + ""));
             itemMeta.setLore(lores);
         } else {
             itemMeta.setDisplayName(messages.getString("server-chatroom-items.name").replace("$name$", getName()));
@@ -297,6 +311,8 @@ public class Chatroom {
         String name = "";
         if (remove != null) {
             name = remove.getName();
+        } else if (Bukkit.getOfflinePlayer(key).getName() != null) {
+            name = Bukkit.getOfflinePlayer(key).getName();
         }
 
         broadcastMessage(new ChannelFile(MESSAGES).getString("player-leave")
@@ -619,7 +635,7 @@ public class Chatroom {
                 UUID uuid = UUID.fromString(key);
                 loadedRoles.put(uuid, roleO);
             }
-            Chatroom loadedChat = new Chatroom(owner, name, description, isPublic, saved, isServerOwned, loadedRoles, banned, muted, nicknames, nicknamesEnabled);
+            Chatroom loadedChat = new Chatroom(owner, name, description, isPublic, saved, isServerOwned, false, loadedRoles, banned, muted, nicknames, nicknamesEnabled);
             Bukkit.getLogger().info("Loaded chatroom " + name + " with values: ");
             Bukkit.getLogger().info(loadedChat.toString());
 
@@ -670,6 +686,6 @@ public class Chatroom {
 
     @Override
     public String toString(){
-        return "Chatroom[name=" + name+", description=" + description+", owner=" + owner +", isSaved=" + isSaved +", isPublic=" + isPublic + ", isNicknamesEnabled=" + isNicknamesEnabled()+"]";
+        return "Chatroom[name=" + name+", description=" + description+", owner=" + owner +", isSaved=" + isSaved +", isPublic=" + isPublic + ", isNicknamesEnabled=" + isNicknamesEnabled()+", isGlobal=" + isGlobal+"]";
     }
 }

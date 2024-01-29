@@ -22,7 +22,7 @@ import java.util.UUID;
  */
 public class GlobalChatroom extends Chatroom {
     public GlobalChatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned) {
-        super(owner, name, description, isPublic, isSaved, isServerOwned);
+        super(owner, name, description, isPublic, isSaved, isServerOwned, true);
     }
 
 

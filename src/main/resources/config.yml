@@ -11,6 +11,8 @@
 # Would you wish to enable bungeecord support? (Channels that are global on all servers)
 bungeecord: false
 
+
+
 # Should chat colors be allowed throughout the plugin? (chatroom names, player statuses, etc.)
 chat-colors: true
 
@@ -86,4 +88,8 @@ quickchat-prefix: "@"
 # $name$ - Real minecraft name of plaeyer
 
 chatroom-message-format: "&7[&e$chatroom$&7] &e$role$ $nickname$ &7➤ &e$message$"
+
+chatroom-message-format-global: "&7[&e$chatroom$&7: &o($server$)&7] &e$role$ $nickname$ &7➤ &e$message$"
+
+
 

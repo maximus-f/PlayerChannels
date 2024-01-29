@@ -98,7 +98,7 @@ public class PreChatroom {
             c.writeToAllServers();
             return c;
         } else {
-            return new Chatroom(owner, name, description, isPublic, isSaved, isServerOwned);
+            return new Chatroom(owner, name, description, isPublic, isSaved, isServerOwned, false);
         }
     }
 }

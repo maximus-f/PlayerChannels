@@ -69,7 +69,10 @@ public class BungeeMessageHandler {
             String channelName = msgin.readUTF();
             UUID key = UUID.fromString(msgin.readUTF());
             Chatroom channel = plugin.getChatroom(channelName);
-            channel.removeMember(key);
+            if (channel.isInChatroom(key)) {
+                channel.removeMember(key);
+            } else {
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -93,6 +96,7 @@ public class BungeeMessageHandler {
             if (!channel.isInChatroom(id)) {
 
                 channel.addMember(value, name);
+            } else{
             }
         } catch (IOException ex) {
             ex.printStackTrace();
