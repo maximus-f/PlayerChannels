@@ -50,13 +50,17 @@ import java.util.*;
 
 /*
 TODO List
-3.6.2
+3.7
 
-Added /pc <chatroom> to focus on it, also wanting to simultaneously do /pc focus (configurable) <chatroom-name>
+- Did creation
+- Did chat
+- Did join -- maybe refactor to use offline player name
+- Leave
 
-
-
-
+Need to do
+- Promote/Demote
+- Punishments
+- Nicknames
 
  */
 

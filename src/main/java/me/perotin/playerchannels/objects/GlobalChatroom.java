@@ -43,6 +43,12 @@ public class GlobalChatroom extends Chatroom {
 
     }
 
+    @Override
+    public void removeMember(UUID key) {
+        super.removeMember(key);
+        sendBungeeWrite("Remove", getName(), key.toString());
+    }
+
 
 
     @Override

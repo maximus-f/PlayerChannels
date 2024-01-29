@@ -293,7 +293,11 @@ public class Chatroom {
      */
     public void removeMember(UUID key) {
         this.members.remove(key);
-        String name = Bukkit.getPlayer(key).getName();
+        Player remove = Bukkit.getPlayer(key);
+        String name = "";
+        if (remove != null) {
+            name = remove.getName();
+        }
 
         broadcastMessage(new ChannelFile(MESSAGES).getString("player-leave")
                 .replace("$name$", name)

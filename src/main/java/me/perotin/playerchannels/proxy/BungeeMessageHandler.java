@@ -45,6 +45,9 @@ public class BungeeMessageHandler {
         if (subchannel.equalsIgnoreCase("AddMember")) {
             handleAddMember(in);
         }
+        if (subchannel.equalsIgnoreCase("Remove")) {
+            handleRemoveMember(in);
+        }
 
         if (channelNames.contains(subchannel.toLowerCase())) {
             // Bungee Chat Message
@@ -54,6 +57,22 @@ public class BungeeMessageHandler {
 
 
 
+    }
+
+    private void handleRemoveMember(ByteArrayDataInput in) {
+        short len = in.readShort();
+        byte[] msgbytes = new byte[len];
+        in.readFully(msgbytes);
+
+        DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+        try {
+            String channelName = msgin.readUTF();
+            UUID key = UUID.fromString(msgin.readUTF());
+            Chatroom channel = plugin.getChatroom(channelName);
+            channel.removeMember(key);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void handleAddMember(ByteArrayDataInput in) {
