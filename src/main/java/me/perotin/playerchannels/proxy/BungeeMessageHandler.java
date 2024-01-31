@@ -48,6 +48,15 @@ public class BungeeMessageHandler {
         if (subchannel.equalsIgnoreCase("Remove")) {
             handleRemoveMember(in);
         }
+        if (subchannel.equalsIgnoreCase("PromoteToMod")) {
+            handleModPromotion(in);
+        }
+        if (subchannel.equalsIgnoreCase("DemoteToMember")) {
+            handleDemoteToMember(in);
+        }
+        if (subchannel.equalsIgnoreCase("PromoteModToOwner")) {
+            handlePromoteToOwner(in);
+        }
 
         if (channelNames.contains(subchannel.toLowerCase())) {
             // Bungee Chat Message
@@ -59,6 +68,68 @@ public class BungeeMessageHandler {
 
     }
 
+    private void handlePromoteToOwner(ByteArrayDataInput in) {
+        short len = in.readShort();
+        byte[] msgbytes = new byte[len];
+        in.readFully(msgbytes);
+
+        DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+        try {
+            String channelName = msgin.readUTF();
+            UUID toOwner = UUID.fromString(msgin.readUTF());
+            UUID toMod = UUID.fromString(msgin.readUTF());
+            Chatroom channel = plugin.getChatroom(channelName);
+            if (channel.isInChatroom(toOwner) && channel.isInChatroom(toMod)) {
+                channel.promoteModeratorToOwner(toOwner, toMod);
+            } else {
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void handleDemoteToMember(ByteArrayDataInput in) {
+        short len = in.readShort();
+        byte[] msgbytes = new byte[len];
+        in.readFully(msgbytes);
+
+        DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+        try {
+            String channelName = msgin.readUTF();
+            UUID key = UUID.fromString(msgin.readUTF());
+            Chatroom channel = plugin.getChatroom(channelName);
+            if (channel.isInChatroom(key)) {
+                channel.demoteModeratorToMember(key);
+            } else {
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void handleModPromotion(ByteArrayDataInput in) {
+        short len = in.readShort();
+        byte[] msgbytes = new byte[len];
+        in.readFully(msgbytes);
+
+        DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+        try {
+            String channelName = msgin.readUTF();
+            UUID key = UUID.fromString(msgin.readUTF());
+            Chatroom channel = plugin.getChatroom(channelName);
+            if (channel.isInChatroom(key)) {
+                channel.promoteMemberToModerator(key);
+            } else {
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Funcion for when a player leaves a global channel
+     * @param in
+     */
     private void handleRemoveMember(ByteArrayDataInput in) {
         short len = in.readShort();
         byte[] msgbytes = new byte[len];
@@ -78,6 +149,10 @@ public class BungeeMessageHandler {
         }
     }
 
+    /**
+     * Function to handle when someone joins a global channel
+     * @param in
+     */
     private void handleAddMember(ByteArrayDataInput in) {
         short len = in.readShort();
         byte[] msgbytes = new byte[len];
@@ -123,6 +198,10 @@ public class BungeeMessageHandler {
         }
     }
 
+    /**
+     * Function to handle a new global chatroom creation event
+     * @param in
+     */
     private void handleCreateMessage (ByteArrayDataInput in) {
             short len = in.readShort();
             byte[] msgbytes = new byte[len];

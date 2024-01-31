@@ -49,7 +49,23 @@ public class GlobalChatroom extends Chatroom {
         sendBungeeWrite("Remove", getName(), key.toString());
     }
 
+    @Override
+    public void promoteMemberToModerator(UUID member) {
+        super.promoteMemberToModerator(member);
+        sendBungeeWrite("PromoteToMod", getName(), member.toString());
+    }
+    @Override
+    public void demoteModeratorToMember(UUID member) {
+        super.demoteModeratorToMember(member);
+        sendBungeeWrite("DemoteToMember", getName(), member.toString());
 
+    }
+
+    @Override
+    public void promoteModeratorToOwner(UUID member, UUID oldOwner) {
+        super.promoteModeratorToOwner(member, oldOwner);
+        sendBungeeWrite("PromoteModToOwner", getName(), member.toString(), oldOwner.toString());
+    }
 
     @Override
     public String chat(String sender, String message, UUID id){

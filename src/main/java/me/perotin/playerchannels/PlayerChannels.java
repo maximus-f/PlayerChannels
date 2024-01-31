@@ -165,7 +165,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         // Save each to save chatroom to file, will worry about global chatrooms at another time
 
         //main.disable();
-        chatrooms.stream().filter(Chatroom::isSaved).forEach(Chatroom::saveToFile);
+        chatrooms.stream().filter(c -> c.isSaved() && !c.isGlobal()).forEach(Chatroom::saveToFile);
 
         // Save each player to file
         for (PlayerChannelUser playerChannelUser : players) {
