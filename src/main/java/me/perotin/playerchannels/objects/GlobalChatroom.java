@@ -74,6 +74,13 @@ public class GlobalChatroom extends Chatroom {
         return msg;
     }
 
+    @Override
+    public void ban(UUID uuid) {
+        super.ban(uuid);
+        sendBungeeWrite("Ban", getName(), uuid.toString());
+    }
+
+
     /**
      * Send message to all servers
      * @param message

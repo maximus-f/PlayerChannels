@@ -57,6 +57,9 @@ public class BungeeMessageHandler {
         if (subchannel.equalsIgnoreCase("PromoteModToOwner")) {
             handlePromoteToOwner(in);
         }
+        if (subchannel.equalsIgnoreCase("Ban")) {
+            handleBanMember(in);
+        }
 
         if (channelNames.contains(subchannel.toLowerCase())) {
             // Bungee Chat Message
@@ -67,6 +70,26 @@ public class BungeeMessageHandler {
 
 
     }
+
+    private void handleBanMember(ByteArrayDataInput in) {
+        short len = in.readShort();
+        byte[] msgbytes = new byte[len];
+        in.readFully(msgbytes);
+
+        DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+        try {
+            String channelName = msgin.readUTF();
+            UUID member = UUID.fromString(msgin.readUTF());
+            Chatroom channel = plugin.getChatroom(channelName);
+            if (channel.isInChatroom(member) ) {
+                channel.ban(member);
+            } else {
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
 
     private void handlePromoteToOwner(ByteArrayDataInput in) {
         short len = in.readShort();

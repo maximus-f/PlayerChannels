@@ -56,11 +56,12 @@ TODO List
 - Did chat
 - Did join -- maybe refactor to use offline player name
 - Leave
+- Promotions/Demotions
 
 Need to do
-- Promote/Demote
 - Punishments
 - Nicknames
+- Deletion (from memory, not dealing with saving yet)
 
  */
 
