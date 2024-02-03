@@ -102,9 +102,13 @@ public class BungeeMessageHandler {
             UUID toOwner = UUID.fromString(msgin.readUTF());
             UUID toMod = UUID.fromString(msgin.readUTF());
             Chatroom channel = plugin.getChatroom(channelName);
-            if (channel.isInChatroom(toOwner) && channel.isInChatroom(toMod)) {
+            if (channel.isInChatroom(toOwner) && channel.isInChatroom(toMod) && channel.getMemberMap().get(toOwner) == ChatRole.MODERATOR) {
                 channel.promoteModeratorToOwner(toOwner, toMod);
+                Bukkit.broadcastMessage("Promoted to owner in " + channelName);
             } else {
+                Bukkit.broadcastMessage("Tried to promote to owner in " + channelName);
+
+
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -121,7 +125,8 @@ public class BungeeMessageHandler {
             String channelName = msgin.readUTF();
             UUID key = UUID.fromString(msgin.readUTF());
             Chatroom channel = plugin.getChatroom(channelName);
-            if (channel.isInChatroom(key)) {
+            Bukkit.broadcastMessage(channel.toString());
+            if (channel.isInChatroom(key) && channel.getMemberMap().get(key) == ChatRole.MODERATOR) {
                 channel.demoteModeratorToMember(key);
             } else {
             }
@@ -139,9 +144,11 @@ public class BungeeMessageHandler {
         try {
             String channelName = msgin.readUTF();
             UUID key = UUID.fromString(msgin.readUTF());
-            Chatroom channel = plugin.getChatroom(channelName);
-            if (channel.isInChatroom(key)) {
+            Chatroom channel = plugin.getChatroom(channelName); // How to ensure this is Chatroom obj and not GlobalChatroom?
+            Bukkit.broadcastMessage(channel.toString());
+            if (channel.isInChatroom(key) && channel.getMemberMap().get(key) == ChatRole.MEMBER) {
                 channel.promoteMemberToModerator(key);
+
             } else {
             }
         } catch (IOException ex) {
@@ -165,7 +172,9 @@ public class BungeeMessageHandler {
             Chatroom channel = plugin.getChatroom(channelName);
             if (channel.isInChatroom(key)) {
                 channel.removeMember(key);
+
             } else {
+
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -194,6 +203,7 @@ public class BungeeMessageHandler {
             if (!channel.isInChatroom(id)) {
 
                 channel.addMember(value, name);
+
             } else{
             }
         } catch (IOException ex) {
@@ -245,6 +255,8 @@ public class BungeeMessageHandler {
                 GlobalChatroom newChatroom = new GlobalChatroom(owner, name, description, isPrivate, isSaved,  serverChatroom);
                 if (!plugin.getChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList()).contains(name)) {
                     plugin.getChatrooms().add(newChatroom);
+
+                } else {
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();

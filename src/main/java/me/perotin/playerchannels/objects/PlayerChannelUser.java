@@ -200,8 +200,10 @@ public class PlayerChannelUser {
         if (focusedChatroom != null && focusedChatroom.equals(chatroom)){
             setFocusedChatroom(null);
         }
-        Bukkit.getPlayer(getUuid()).sendMessage(new ChannelFile(FileType.MESSAGES).getString("player-leave-message")
-                .replace("$chatroom$", chatroom.getName()));
+        if (Bukkit.getPlayer(getUuid()) != null) {
+            Bukkit.getPlayer(getUuid()).sendMessage(new ChannelFile(FileType.MESSAGES).getString("player-leave-message")
+                    .replace("$chatroom$", chatroom.getName()));
+        }
     }
 
     /**

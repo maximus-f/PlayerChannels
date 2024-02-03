@@ -686,6 +686,6 @@ public class Chatroom {
 
     @Override
     public String toString(){
-        return "Chatroom[name=" + name+", description=" + description+", owner=" + owner +", isSaved=" + isSaved +", isPublic=" + isPublic + ", isNicknamesEnabled=" + isNicknamesEnabled()+", isGlobal=" + isGlobal+"]";
+        return  getClass().getName() + "[name=" + name+", description=" + description+", owner=" + owner +", isSaved=" + isSaved +", isPublic=" + isPublic + ", isNicknamesEnabled=" + isNicknamesEnabled()+", isGlobal=" + isGlobal+"]";
     }
 }
