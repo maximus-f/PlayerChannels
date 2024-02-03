@@ -70,6 +70,11 @@ public class GlobalChatroom extends Chatroom {
     }
 
     @Override
+    public void broadcastMessage(String message){
+        super.broadcastMessage(message);
+        sendBungeeWrite("BroadcastMessageToAll_", getName(), message);
+    }
+    @Override
     public void promoteModeratorToOwner(UUID member, UUID oldOwner) {
         super.promoteModeratorToOwner(member, oldOwner);
         sendBungeeWrite("PromoteModToOwner", getName(), member.toString(), oldOwner.toString());

@@ -4,6 +4,8 @@ import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
 import me.perotin.playerchannels.objects.inventory.paging_objects.ChatroomPager;
 import me.perotin.playerchannels.objects.inventory.static_inventories.ChatroomModeratorMenu;
+import me.perotin.playerchannels.storage.files.ChannelFile;
+import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.utils.ChannelUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -82,6 +84,9 @@ public class ChatroomModeratorAction {
             player.leaveChatroom(chatroom);
             ChannelUtils.sendMenuMessage("You have kicked " + player.getName() +"!", mod,
                     new ChatroomPager(chatroom, mod));
+            chatroom.broadcastMessage(new ChannelFile(FileType.MESSAGES).getString("chatroom-kicked")
+                    .replace("$chatroom$", chatroom.getName())
+                    .replace("$player$", player.getName()));
 
         };
     }

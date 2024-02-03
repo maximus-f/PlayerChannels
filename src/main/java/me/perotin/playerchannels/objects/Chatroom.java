@@ -295,9 +295,10 @@ public class Chatroom {
         if (addedPlayerName.equalsIgnoreCase("")) {
             addedPlayerName = Bukkit.getPlayer(value.getFirst()).getName();
         }
-        broadcastMessage(new ChannelFile(MESSAGES).getString("new-player-join")
-                .replace("$name$", addedPlayerName)
-                .replace("$chatroom$", getName()));
+        String finalAddedPlayerName = addedPlayerName;
+        getOnlinePlayers().forEach(p->p.sendMessage(new ChannelFile(MESSAGES).getString("new-player-join")
+                .replace("$name$", finalAddedPlayerName)
+                .replace("$chatroom$", getName())));
     }
 
     /**
@@ -308,16 +309,18 @@ public class Chatroom {
     public void removeMember(UUID key) {
         this.members.remove(key);
         Player remove = Bukkit.getPlayer(key);
-        String name = "";
+        String playerName;
         if (remove != null) {
-            name = remove.getName();
+            playerName = remove.getName();
         } else if (Bukkit.getOfflinePlayer(key).getName() != null) {
-            name = Bukkit.getOfflinePlayer(key).getName();
+            playerName = Bukkit.getOfflinePlayer(key).getName();
+        } else {
+            playerName = "";
         }
 
-        broadcastMessage(new ChannelFile(MESSAGES).getString("player-leave")
-                .replace("$name$", name)
-                .replace("$chatroom$", getName()));
+        getOnlinePlayers().forEach(p->p.sendMessage(new ChannelFile(MESSAGES).getString("player-leave")
+                .replace("$name$", playerName)
+                .replace("$chatroom$", getName())));
         if (getMembers().isEmpty() && !isSaved() && !isServerOwned()){
             PlayerChannels.getInstance().getChatrooms().remove(this);
         }

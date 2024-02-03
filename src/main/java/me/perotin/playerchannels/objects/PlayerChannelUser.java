@@ -236,6 +236,12 @@ public class PlayerChannelUser {
         return chatrooms.contains(chatroom);
     }
 
+    public void sendMessage(String message) {
+        if (Bukkit.getPlayer(getUuid()) != null){
+            Bukkit.getPlayer(getUuid()).sendMessage(message);
+        }
+    }
+
     /**
      * @return chatroom that the player is currently chatting in
      */

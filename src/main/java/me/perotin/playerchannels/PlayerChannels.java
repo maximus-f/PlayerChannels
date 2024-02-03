@@ -52,17 +52,20 @@ import java.util.*;
 TODO List
 3.7
 
-- Did creation
+- Did creation -- added puser sync
 - Did chat
 - Did join -- maybe refactor to use offline player name
-- Leave
+- Leave -- added psuser sync
 - Promotions/Demotions
 
 Need to do
-- Punishments
+- Punishments - did mute, ban not syncing it appears
 - Nicknames
 - Deletion (from memory, not dealing with saving yet)
 
+
+Currently adding broadcastMessage support, but sends message twice on join / leave because once is the add/Leave member sending locally
+and then its happening with bungee broadcast, not sure how to fix, besides just changing the internals to not broadcast this
  */
 
 
