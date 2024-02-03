@@ -180,16 +180,17 @@ public class PlayerChannelUser {
         if(!chatrooms.contains(chatroom)) chatrooms.add(chatroom);
         Player player = Bukkit.getPlayer(getUuid());
         ChannelFile msgs = new ChannelFile(FileType.MESSAGES);
-        player.sendMessage(msgs.getString("player-join-message")
-                .replace("$chatroom$", chatroom.getName()));
+        if (player != null) {
+            player.sendMessage(msgs.getString("player-join-message")
+                    .replace("$chatroom$", chatroom.getName()));
 
-        String message = msgs.getString("join-focus-chat-tip")
-                .replace("$chatroom$", ChatColor.stripColor(chatroom.getName()));
-        TextComponent messageComponent = new TextComponent(ChatColor.translateAlternateColorCodes('&', message));
-        messageComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/playerchannels " + chatroom.getName()));
-        messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.GREEN + "Click to chat in " + chatroom.getName()).create()));
-        player.spigot().sendMessage(messageComponent);
-
+            String message = msgs.getString("join-focus-chat-tip")
+                    .replace("$chatroom$", ChatColor.stripColor(chatroom.getName()));
+            TextComponent messageComponent = new TextComponent(ChatColor.translateAlternateColorCodes('&', message));
+            messageComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/playerchannels " + chatroom.getName()));
+            messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.GREEN + "Click to chat in " + chatroom.getName()).create()));
+            player.spigot().sendMessage(messageComponent);
+        }
     }
 
     /**
@@ -324,11 +325,30 @@ public class PlayerChannelUser {
                 }
             }
 
-            return new PlayerChannelUser(uuid, name, status, playerChatrooms);
+            PlayerChannelUser user =  new PlayerChannelUser(uuid, name, status, playerChatrooms);
+            PlayerChannels.getInstance().addPlayer(user);
+            return user;
         } else {
             // New player so create new objectc
-            return new PlayerChannelUser(uuid, Bukkit.getPlayer(uuid).getName());
+            if (Bukkit.getPlayer(uuid) != null) {
+                PlayerChannelUser user = new PlayerChannelUser(uuid, Bukkit.getPlayer(uuid).getName());
+                PlayerChannels.getInstance().addPlayer(user);
+                return user;
+            } else if (Bukkit.getOfflinePlayer(uuid).getName() != null){
+                PlayerChannelUser user = new PlayerChannelUser(uuid, Bukkit.getOfflinePlayer(uuid).getName());
+                PlayerChannels.getInstance().addPlayer(user);
+                return user;
+
+            } else {
+                // Have never played on this server before, Bungeecord moment
+                PlayerChannelUser user = new PlayerChannelUser(uuid, "-1");
+                PlayerChannels.getInstance().addPlayer(user);
+                return user;
+
+
+            }
         }
     }
+
 
 }

@@ -6,6 +6,7 @@ import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.ChatRole;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.GlobalChatroom;
+import me.perotin.playerchannels.objects.PlayerChannelUser;
 import me.perotin.playerchannels.storage.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -48,6 +49,9 @@ public class BungeeMessageHandler {
         if (subchannel.equalsIgnoreCase("Remove")) {
             handleRemoveMember(in);
         }
+        if (subchannel.equalsIgnoreCase("Mute")) {
+            handleMuteMember(in);
+        }
         if (subchannel.equalsIgnoreCase("PromoteToMod")) {
             handleModPromotion(in);
         }
@@ -69,6 +73,28 @@ public class BungeeMessageHandler {
 
 
 
+    }
+
+    private void handleMuteMember(ByteArrayDataInput in) {
+        short len = in.readShort();
+        byte[] msgbytes = new byte[len];
+        in.readFully(msgbytes);
+
+        DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+        try {
+            String channelName = msgin.readUTF();
+            UUID member = UUID.fromString(msgin.readUTF());
+            Chatroom channel = plugin.getChatroom(channelName);
+            if (channel.isInChatroom(member) && !channel.isMuted(member)) {
+                channel.mute(member);
+                Bukkit.broadcastMessage("Muted in " + channelName);
+            } else {
+                Bukkit.broadcastMessage("Tried to mute in " + channelName);
+
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void handleBanMember(ByteArrayDataInput in) {
@@ -172,6 +198,9 @@ public class BungeeMessageHandler {
             Chatroom channel = plugin.getChatroom(channelName);
             if (channel.isInChatroom(key)) {
                 channel.removeMember(key);
+               PlayerChannelUser.getPlayer(key).leaveChatroom(channel);
+
+
 
             } else {
 
@@ -203,6 +232,16 @@ public class BungeeMessageHandler {
             if (!channel.isInChatroom(id)) {
 
                 channel.addMember(value, name);
+                // Need to find their PlayerChannelUser object and store it their too
+                PlayerChannelUser user = PlayerChannelUser.getPlayer(id);
+
+                if (user.getName().equalsIgnoreCase("-1")) {
+                    // Name not found, set it to proper name
+                    user.setName(name);
+                }
+                if (!user.isMemberOf(channel)) {
+                    user.addChatroom(channel);
+                }
 
             } else{
             }
@@ -252,9 +291,17 @@ public class BungeeMessageHandler {
                 boolean isPrivate = msgin.readBoolean();
                 boolean isSaved = msgin.readBoolean();
                 boolean serverChatroom = msgin.readBoolean();
+                String ownerName = msgin.readUTF();
                 GlobalChatroom newChatroom = new GlobalChatroom(owner, name, description, isPrivate, isSaved,  serverChatroom);
+                PlayerChannelUser user = PlayerChannelUser.getPlayer(owner);
+                if (user.getName().equalsIgnoreCase("-1")) {
+                    user.setName(ownerName);
+                }
+
                 if (!plugin.getChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList()).contains(name)) {
                     plugin.getChatrooms().add(newChatroom);
+
+                    user.addChatroom(newChatroom);
 
                 } else {
                 }

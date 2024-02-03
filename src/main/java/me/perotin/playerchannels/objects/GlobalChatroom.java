@@ -26,7 +26,15 @@ public class GlobalChatroom extends Chatroom {
     }
 
 
+
     @Override
+    public void mute(UUID uuid) {
+        super.mute(uuid);
+        sendBungeeWrite("Mute", getName(), uuid.toString());
+    }
+
+
+        @Override
     public void addMember(Pair<UUID, ChatRole> value, String name) {
         if (name.equalsIgnoreCase("")) {
             Player player = Bukkit.getPlayer(value.getFirst());
@@ -112,6 +120,7 @@ public class GlobalChatroom extends Chatroom {
             msgout.writeBoolean(isPublic());
             msgout.writeBoolean(isSaved());
             msgout.writeBoolean(isServerOwned());
+            msgout.writeUTF(Objects.requireNonNull(Bukkit.getPlayer(getOwner())).getName());
             out.writeShort(msgbytes.toByteArray().length);
             out.write(msgbytes.toByteArray());
             Iterables.getFirst(Bukkit.getOnlinePlayers(), null).sendPluginMessage(PlayerChannels.getInstance(), "BungeeCord", out.toByteArray());
