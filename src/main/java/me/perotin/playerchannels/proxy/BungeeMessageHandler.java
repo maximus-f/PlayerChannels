@@ -41,6 +41,7 @@ public class BungeeMessageHandler {
 
 
 
+
         if (subchannel.equalsIgnoreCase("Create")) {
             handleCreateMessage(in);
         }
@@ -94,9 +95,31 @@ public class BungeeMessageHandler {
             handleReceiveGlobalChannels(in);
         }
 
+        if (subchannel.equals("CheckPlayerPresence")) {
+            String targetPlayerName = in.readUTF();
+            String channelName = in.readUTF(); // The channel for context, if needed
+            String requestName = in.readUTF();
+
+            Player targetPlayer = Bukkit.getPlayerExact(targetPlayerName);
+            if (targetPlayer != null) {
+                // Player found, send a response back
+                PlayerChannelUser.getPlayer(targetPlayer.getUniqueId()).addInvite(PlayerChannels.getInstance().getChatroom(channelName));
+                sendPlayerFoundResponse(targetPlayer, player.getName(), channelName, requestName);
+            }
+        }
+
+        if (subchannel.equals("PlayerFoundResponse")) {
+            handlePlayerFoundResponse(in);
+
+        }
 
 
-    }
+
+
+
+
+
+        }
 
     private void handleSetNickname(ByteArrayDataInput in) {
         short len = in.readShort();
@@ -455,6 +478,70 @@ public class BungeeMessageHandler {
 
     }
 
+    private void sendPlayerFoundResponse(Player targetPlayer, String senderName, String channelName, String requestName) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("ForwardToPlayer");
+        out.writeUTF(senderName); // Sender's name is used to route the message
+        out.writeUTF("PlayerFoundResponse"); // A custom sub-channel for this purpose
+
+        // Prepare the actual data to send back
+        ByteArrayOutputStream msgBytes = new ByteArrayOutputStream();
+        DataOutputStream msgOut = new DataOutputStream(msgBytes);
+        try {
+            msgOut.writeUTF(targetPlayer.getUniqueId().toString()); // Send the found player's UUID
+            msgOut.writeUTF(channelName); // Include the channel name for context
+            msgOut.writeUTF(requestName);
+
+            out.writeShort(msgBytes.toByteArray().length);
+            out.write(msgBytes.toByteArray());
+
+            // Send the plugin message. Assuming `PlayerChannels.getInstance()` gets your plugin instance correctly.
+            targetPlayer.sendPluginMessage(PlayerChannels.getInstance(), "BungeeCord", out.toByteArray());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void handlePlayerFoundResponse(ByteArrayDataInput in) {
+        short len = in.readShort();
+        byte[] msgbytes = new byte[len];
+        in.readFully(msgbytes);
+        DataInputStream msgIn = new DataInputStream(new ByteArrayInputStream(msgbytes));
+
+        try {
+            String playerUUIDStr = msgIn.readUTF();
+            UUID playerUUID = UUID.fromString(playerUUIDStr);
+            String channelName = msgIn.readUTF();
+            String requestName = msgIn.readUTF();
+            GlobalChatroom chatroom = (GlobalChatroom) PlayerChannels.getInstance().getChatroom(channelName);
+
+            // Now that you have the UUID, you can proceed with the invite logic
+            // This would typically involve inviting the player to the channel, possibly by creating a new invite object
+            // and notifying the player if they are currently online on this server.
+            PlayerChannelUser.getPlayer(playerUUID).addInvite(chatroom);
+            Bukkit.broadcastMessage("Found player and added chatroom invite");
+            sendFoundPlayerMessage(requestName);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
+    private void sendFoundPlayerMessage(String name) {
+
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("Message");
+        out.writeUTF(name);
+        out.writeUTF( "That has been invited from another server!");
+
+        ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
+        DataOutputStream msgout = new DataOutputStream(msgbytes);
+        out.writeShort(msgbytes.toByteArray().length);
+        out.write(msgbytes.toByteArray());
+        Iterables.getFirst(Bukkit.getOnlinePlayers(), null).sendPluginMessage(PlayerChannels.getInstance(), "BungeeCord", out.toByteArray());
+
+
+    }
     private void sendGlobalChannels() {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("Forward");

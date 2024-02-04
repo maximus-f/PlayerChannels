@@ -54,11 +54,13 @@ TODO List
 - Did join -- maybe refactor to use offline player name
 - Leave -- added psuser sync
 - Promotions/Demotions
+- Nicknames
+- Deletion
+- Punishments
+
 
 Need to do
-- Punishments - did mute, ban not syncing it appears
-- Nicknames
-- Deletion (from memory, not dealing with saving yet)
+- Invites
 
 
 Currently adding broadcastMessage support, but sends message twice on join / leave because once is the add/Leave member sending locally

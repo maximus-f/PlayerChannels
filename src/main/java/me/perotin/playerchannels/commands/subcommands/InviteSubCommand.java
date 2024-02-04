@@ -1,5 +1,7 @@
 package me.perotin.playerchannels.commands.subcommands;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.ChatRole;
 import me.perotin.playerchannels.objects.Chatroom;
@@ -41,10 +43,19 @@ public class InviteSubCommand extends SubCommand{
             // Inviting a player when the sender is in only one chatroom
             if (user.getChatrooms().size() == 1) {
                 Chatroom channel = user.getChatrooms().get(0);
+
                 if (!channel.isPublic() && channel.getRole(player.getUniqueId()).getValue() >= ChatRole.MODERATOR.getValue()) {
+
                     Player toSend = Bukkit.getPlayer(args[1]);
+                    if (toSend == null && PlayerChannels.getInstance().isBungeecord() && channel.isGlobal()) {
+                        requestPlayerCheck(player, args[1], channel.getName());
+                        Bukkit.broadcastMessage("Requesting player on all servers");
+
+
+                    }
+
                     PlayerChannelUser playerChannelUser = PlayerChannelUser.getPlayer(toSend.getUniqueId());
-                    if (toSend != null) {
+                    if (toSend.getUniqueId() != null) {
                         if (!channel.isInChatroom(toSend.getUniqueId())) {
                             PlayerChannelUser target = PlayerChannelUser.getPlayer(toSend.getUniqueId());
                             if (!target.hasPendingInviteFrom(channel)) {
@@ -65,8 +76,9 @@ public class InviteSubCommand extends SubCommand{
                         } else {
                             player.sendMessage(messages.getString("player-already-in-channel"));
                         }
-                    } else {
+                    }else {
                         player.sendMessage(messages.getString("player-not-found"));
+
                     }
                 } else {
                     player.sendMessage(messages.getString("no-permission-to-invite"));
@@ -111,6 +123,18 @@ public class InviteSubCommand extends SubCommand{
                 player.sendMessage(messages.getString("no-permission-to-invite"));
             }
         }
+    }
+
+    private void requestPlayerCheck(Player sender, String targetPlayerName, String channelName) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("Forward");
+        out.writeUTF("ALL");
+        out.writeUTF("CheckPlayerPresence"); // Custom sub-channel for this purpose
+        out.writeUTF(targetPlayerName);
+        out.writeUTF(channelName); // Send the channel name for context in the response
+        out.writeUTF(sender.getName());
+
+        sender.sendPluginMessage(PlayerChannels.getInstance(), "BungeeCord", out.toByteArray());
     }
 
 
