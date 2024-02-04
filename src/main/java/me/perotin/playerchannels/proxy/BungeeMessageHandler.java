@@ -1,6 +1,8 @@
 package me.perotin.playerchannels.proxy;
 
+import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.ChatRole;
@@ -12,10 +14,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -61,12 +62,26 @@ public class BungeeMessageHandler {
         if (subchannel.equalsIgnoreCase("PromoteModToOwner")) {
             handlePromoteToOwner(in);
         }
+        if (subchannel.equalsIgnoreCase("Delete")) {
+            handleDeleteChannel(in);
+        }
 
         if (subchannel.equalsIgnoreCase("BroadcastMessageToAll_")) {
             handleBroadcastMessage(in);
         }
         if (subchannel.equalsIgnoreCase("Ban")) {
             handleBanMember(in);
+        }
+        if (subchannel.equalsIgnoreCase("SetNickname")) {
+            handleSetNickname(in);
+        }
+        if (subchannel.equalsIgnoreCase("GlobalSearchOnRestart")){
+            handleServerRestart(in);
+
+        }
+
+        if (subchannel.equals("ToggleNicknames")) {
+            handleNicknameToggle(in);
         }
 
         if (channelNames.contains(subchannel.toLowerCase())) {
@@ -75,8 +90,131 @@ public class BungeeMessageHandler {
 
         }
 
+        if (subchannel.equalsIgnoreCase("GlobalChannelsReceived")) {
+            handleReceiveGlobalChannels(in);
+        }
 
 
+
+    }
+
+    private void handleSetNickname(ByteArrayDataInput in) {
+        short len = in.readShort();
+        byte[] msgbytes = new byte[len];
+        in.readFully(msgbytes);
+
+        DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+        try {
+            String channelName = msgin.readUTF();
+            UUID toSet = UUID.fromString(msgin.readUTF());
+            String nick = msgin.readUTF();
+            Chatroom channel = plugin.getChatroom(channelName);
+            channel.getNickNames().put(toSet, nick);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void handleNicknameToggle(ByteArrayDataInput in) {
+        short len = in.readShort();
+        byte[] msgbytes = new byte[len];
+        in.readFully(msgbytes);
+
+        DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+        try {
+            String channelName = msgin.readUTF();
+            boolean value = msgin.readBoolean();
+            Chatroom channel = plugin.getChatroom(channelName);
+            channel.setNicknamesEnabled(value);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void handleReceiveGlobalChannels(ByteArrayDataInput in) {
+        short len = in.readShort();
+        byte[] msgbytes = new byte[len];
+        in.readFully(msgbytes);
+
+        DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+        try {
+            while (msgin.available() > 0) { // Check if there's more data to read
+                String channelName = msgin.readUTF();
+                String description = msgin.readUTF();
+                String ownerUUIDString = msgin.readUTF();
+                UUID ownerUUID = ownerUUIDString.equals("0") ? null : UUID.fromString(ownerUUIDString);
+                boolean isPublic = msgin.readBoolean();
+                boolean isSaved = msgin.readBoolean();
+                boolean isServerOwned = msgin.readBoolean();
+
+
+
+                // Assuming there's a constructor or method to create/add a channel like this
+                GlobalChatroom globalChatroom = new GlobalChatroom(ownerUUID, channelName, description, isPublic, isSaved, isServerOwned);
+
+                if (ownerUUID != null) {
+                    PlayerChannelUser.getPlayer(ownerUUID).addChatroom(globalChatroom);
+
+                }
+                // Reading moderators
+                String uuidString;
+                while (!(uuidString = msgin.readUTF()).equals("~")) { // Line 118 is here
+                    UUID modUUID = UUID.fromString(uuidString);
+                    globalChatroom.addMember(new Pair<>(modUUID, ChatRole.MODERATOR), "");
+                    PlayerChannelUser.getPlayer(modUUID).addChatroom(globalChatroom);
+                }
+
+                // Reading members, assuming another delimiter if necessary, or end of stream if not
+                String memberId;
+                while (!(memberId = msgin.readUTF()).equalsIgnoreCase("~~")) {
+                    UUID memberUUID = UUID.fromString(memberId);
+                    globalChatroom.addMember(new Pair<>(memberUUID, ChatRole.MEMBER), ""); // Assuming a method like this exists
+                    PlayerChannelUser.getPlayer(memberUUID).addChatroom(globalChatroom);
+
+                }
+
+                // Check if the channel already exists before adding
+                if (!plugin.getChatrooms().contains(globalChatroom)) {
+                    plugin.getChatrooms().add(globalChatroom);
+                    Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Added global channel: " + channelName);
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
+    private void handleServerRestart(ByteArrayDataInput in) {
+        short len = in.readShort();
+        byte[] msgbytes = new byte[len];
+        in.readFully(msgbytes);
+
+        DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+        sendGlobalChannels();
+    }
+
+    private void handleDeleteChannel(ByteArrayDataInput in) {
+        short len = in.readShort();
+        byte[] msgbytes = new byte[len];
+        in.readFully(msgbytes);
+
+        DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+        try {
+            String channelName = msgin.readUTF();
+            Chatroom channel = plugin.getChatroom(channelName);
+            Bukkit.broadcastMessage("Attempting to delete channel");
+            if (channel != null) {
+                channel.delete();
+                Bukkit.broadcastMessage("Deleted channel");
+
+            } else {
+                Bukkit.broadcastMessage("Could not delete");
+
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void handleBroadcastMessage(ByteArrayDataInput in) {
@@ -127,9 +265,8 @@ public class BungeeMessageHandler {
             String channelName = msgin.readUTF();
             UUID member = UUID.fromString(msgin.readUTF());
             Chatroom channel = plugin.getChatroom(channelName);
-            if (channel.isInChatroom(member) ) {
+            if (!channel.isBanned(member) ) {
                 channel.ban(member);
-            } else {
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -150,11 +287,6 @@ public class BungeeMessageHandler {
             Chatroom channel = plugin.getChatroom(channelName);
             if (channel.isInChatroom(toOwner) && channel.isInChatroom(toMod) && channel.getMemberMap().get(toOwner) == ChatRole.MODERATOR) {
                 channel.promoteModeratorToOwner(toOwner, toMod);
-                Bukkit.broadcastMessage("Promoted to owner in " + channelName);
-            } else {
-                Bukkit.broadcastMessage("Tried to promote to owner in " + channelName);
-
-
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -174,7 +306,6 @@ public class BungeeMessageHandler {
             Bukkit.broadcastMessage(channel.toString());
             if (channel.isInChatroom(key) && channel.getMemberMap().get(key) == ChatRole.MODERATOR) {
                 channel.demoteModeratorToMember(key);
-            } else {
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -195,7 +326,6 @@ public class BungeeMessageHandler {
             if (channel.isInChatroom(key) && channel.getMemberMap().get(key) == ChatRole.MEMBER) {
                 channel.promoteMemberToModerator(key);
 
-            } else {
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -219,11 +349,6 @@ public class BungeeMessageHandler {
             if (channel.isInChatroom(key)) {
                 channel.removeMember(key);
                PlayerChannelUser.getPlayer(key).leaveChatroom(channel);
-
-
-
-            } else {
-
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -263,7 +388,6 @@ public class BungeeMessageHandler {
                     user.addChatroom(channel);
                 }
 
-            } else{
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -329,5 +453,51 @@ public class BungeeMessageHandler {
                 ex.printStackTrace();
             }
 
+    }
+
+    private void sendGlobalChannels() {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("Forward");
+        out.writeUTF("ALL");
+        out.writeUTF("GlobalChannelsReceived");
+
+        ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
+        DataOutputStream msgout = new DataOutputStream(msgbytes);
+        try {
+
+
+            for (Chatroom c : plugin.getChatrooms()) {
+                if (c instanceof GlobalChatroom) {
+                    GlobalChatroom globalChatroom = (GlobalChatroom) c;
+                    msgout.writeUTF(globalChatroom.getName());
+                    msgout.writeUTF(globalChatroom.getDescription());
+                    if (globalChatroom.getOwner() == null) {
+                        msgout.writeUTF("0");
+                    } else {
+                        msgout.writeUTF(globalChatroom.getOwner().toString());
+                    }
+                    msgout.writeBoolean(globalChatroom.isPublic());
+                    msgout.writeBoolean(globalChatroom.isSaved());
+                    msgout.writeBoolean(globalChatroom.isServerOwned());
+//                    msgout.writeUTF(Objects.requireNonNull(Bukkit.getPlayer(globalChatroom.getOwner())).getName());
+                    for (UUID uuid : globalChatroom.getModerators()) {
+                        msgout.writeUTF(uuid.toString());
+                    }
+                    msgout.writeUTF("~");
+
+                    for (UUID uuid : globalChatroom.getMembersOnly()) {
+                        msgout.writeUTF(uuid.toString());
+                    }
+                    msgout.writeUTF("~~");
+
+                }
+            }
+
+            out.writeShort(msgbytes.toByteArray().length);
+            out.write(msgbytes.toByteArray());
+            Iterables.getFirst(Bukkit.getOnlinePlayers(), null).sendPluginMessage(PlayerChannels.getInstance(), "BungeeCord", out.toByteArray());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }

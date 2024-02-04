@@ -11,10 +11,7 @@ import me.perotin.playerchannels.commands.PlayerChannelsCommand;
 import me.perotin.playerchannels.commands.tabs_completer.PlayerChannelsTabCompleter;
 import me.perotin.playerchannels.events.chat_events.*;
 import me.perotin.playerchannels.events.join.PlayerChannelUserJoinEvent;
-import me.perotin.playerchannels.objects.Chatroom;
-import me.perotin.playerchannels.objects.InventoryHelper;
-import me.perotin.playerchannels.objects.PreChatroom;
-import me.perotin.playerchannels.objects.PlayerChannelUser;
+import me.perotin.playerchannels.objects.*;
 import me.perotin.playerchannels.proxy.BungeeMessageHandler;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
@@ -136,6 +133,9 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
            this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
            Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Bungeecord channels registered.");
 
+           Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Loading in pre-existing Global Channels");
+
+           GlobalChatroom.sendGlobalSearch();
 
        }
 
@@ -176,7 +176,10 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
             Bukkit.getLogger().info("Saving " + playerChannelUser.getName());
             playerChannelUser.savePlayer();
         }
+
+
         this.players.clear();
+
         this.chatrooms.clear();
         this.helper = null;
         instance = null;

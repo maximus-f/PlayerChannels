@@ -452,6 +452,19 @@ public class Chatroom {
     }
 
     /**
+     * Returns only members, no moderators or owner
+     */
+    public List<UUID> getMembersOnly() {
+        List<UUID> members = new ArrayList<>();
+        for (UUID key : getMemberMap().keySet()) {
+            if (!members.contains(key) && getMemberMap().get(key) == ChatRole.MEMBER) {
+                members.add(key);
+            }
+        }
+        return members;
+    }
+
+    /**
      * @param uuid of player to mute within the chatrrom
      */
     public void unmute(UUID uuid) {
@@ -461,7 +474,9 @@ public class Chatroom {
      * @param uuid to ban
      */
     public void ban(UUID uuid) {
-        bannedMembers.add(uuid);
+        if (!bannedMembers.contains(uuid)) {
+            bannedMembers.add(uuid);
+        }
         removeMember(uuid);
     }
 
@@ -665,7 +680,7 @@ public class Chatroom {
      * TODO make this compatible with saved chatrooms
      */
     public void delete() {
-        broadcastMessage(messages.getString("chatroom-being-deleted").replace("$chatroom$", getName()));
+        getOnlinePlayers().forEach(p->p.sendMessage(messages.getString("chatroom-being-deleted").replace("$chatroom$", getName())));
         for (PlayerChannelUser player : getMembers().stream().map(PlayerChannelUser::getPlayer).collect(Collectors.toList())) {
             player.getChatrooms().remove(this);
             // Check if deleted chatroom is currently focused, will cause messages to be sent to the void if not nullified

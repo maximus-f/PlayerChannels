@@ -128,7 +128,7 @@ public class ChatroomModeratorAction {
 
             chat.ban(player.getUuid());
             player.leaveChatroom(chat);
-            ChannelUtils.sendMenuMessage("You have kicked " + player.getName() +"!", mod,
+            ChannelUtils.sendMenuMessage("You have banned " + player.getName() +"!", mod,
                     new ChatroomPager(chat, mod));
 
         };

@@ -52,6 +52,18 @@ public class GlobalChatroom extends Chatroom {
     }
 
     @Override
+    public void setNicknamesEnabled(boolean enable) {
+        super.setNicknamesEnabled(enable);
+        sendBungeeWrite("ToggleNicknames", getName(), enable);
+    }
+
+    @Override
+    public void setNickname(UUID toSet, String nick) {
+        super.setNickname(toSet, nick);
+        sendBungeeWrite("SetNickname", getName(), toSet.toString(), nick);
+    }
+
+    @Override
     public void removeMember(UUID key) {
         super.removeMember(key);
         sendBungeeWrite("Remove", getName(), key.toString());
@@ -93,6 +105,13 @@ public class GlobalChatroom extends Chatroom {
         sendBungeeWrite("Ban", getName(), uuid.toString());
     }
 
+
+    @Override
+    public void delete(){
+        super.delete();
+        sendBungeeWrite("Delete", getName());
+
+    }
 
     /**
      * Send message to all servers
@@ -169,6 +188,25 @@ public class GlobalChatroom extends Chatroom {
     }
 
 
+    public static void sendGlobalSearch() {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("Forward");
+        out.writeUTF("ALL");
+        out.writeUTF("GlobalSearchOnRestart");
+
+        ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
+        DataOutputStream msgout = new DataOutputStream(msgbytes);
+        try {
+            msgout.writeUTF("Test");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        out.writeShort(msgbytes.toByteArray().length);
+        out.write(msgbytes.toByteArray());
+        Iterables.getFirst(Bukkit.getOnlinePlayers(), null).sendPluginMessage(PlayerChannels.getInstance(), "BungeeCord", out.toByteArray());
+
+    }
 
 
 
