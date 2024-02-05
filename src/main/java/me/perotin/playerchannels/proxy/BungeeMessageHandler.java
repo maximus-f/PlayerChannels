@@ -73,6 +73,12 @@ public class BungeeMessageHandler {
         if (subchannel.equalsIgnoreCase("Ban")) {
             handleBanMember(in);
         }
+        if (subchannel.equalsIgnoreCase("Unban")) {
+            handleUnbanMember(in);
+        }
+        if (subchannel.equalsIgnoreCase("Unmute")) {
+            handleUnmuteMember(in);
+        }
         if (subchannel.equalsIgnoreCase("SetNickname")) {
             handleSetNickname(in);
         }
@@ -120,6 +126,42 @@ public class BungeeMessageHandler {
 
 
         }
+
+    private void handleUnmuteMember(ByteArrayDataInput in) {
+        short len = in.readShort();
+        byte[] msgbytes = new byte[len];
+        in.readFully(msgbytes);
+
+        DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+        try {
+            String channelName = msgin.readUTF();
+            UUID member = UUID.fromString(msgin.readUTF());
+            Chatroom channel = plugin.getChatroom(channelName);
+            if (channel.isMuted(member) ) {
+                channel.getMutedMembers().remove(member);
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void handleUnbanMember(ByteArrayDataInput in) {
+        short len = in.readShort();
+        byte[] msgbytes = new byte[len];
+        in.readFully(msgbytes);
+
+        DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+        try {
+            String channelName = msgin.readUTF();
+            UUID member = UUID.fromString(msgin.readUTF());
+            Chatroom channel = plugin.getChatroom(channelName);
+            if (channel.isBanned(member) ) {
+                channel.getBannedMembers().remove(member);
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 
     private void handleSetNickname(ByteArrayDataInput in) {
         short len = in.readShort();

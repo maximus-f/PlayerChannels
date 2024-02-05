@@ -70,6 +70,19 @@ public class GlobalChatroom extends Chatroom {
     }
 
     @Override
+    public void unmute(UUID member) {
+        super.unmute(member);
+        sendBungeeWrite("Unmute", getName(), member.toString());
+    }
+
+    @Override
+    public void unbanMember(UUID member) {
+        super.unbanMember(member);
+        sendBungeeWrite("Unban", getName(), member.toString());
+
+    }
+
+    @Override
     public void promoteMemberToModerator(UUID member) {
         super.promoteMemberToModerator(member);
         sendBungeeWrite("PromoteToMod", getName(), member.toString());

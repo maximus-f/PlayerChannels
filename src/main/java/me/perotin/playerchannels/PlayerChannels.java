@@ -60,11 +60,9 @@ TODO List
 
 
 Need to do
-- Invites
+- Unbans and unmutes
+- Invites (currently dealing with eof, current system is a bit convoluted, may push it to 3.7.1)
 
-
-Currently adding broadcastMessage support, but sends message twice on join / leave because once is the add/Leave member sending locally
-and then its happening with bungee broadcast, not sure how to fix, besides just changing the internals to not broadcast this
  */
 
 

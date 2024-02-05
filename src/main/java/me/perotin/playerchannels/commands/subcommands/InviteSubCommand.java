@@ -46,16 +46,9 @@ public class InviteSubCommand extends SubCommand{
 
                 if (!channel.isPublic() && channel.getRole(player.getUniqueId()).getValue() >= ChatRole.MODERATOR.getValue()) {
 
-                    Player toSend = Bukkit.getPlayer(args[1]);
-                    if (toSend == null && PlayerChannels.getInstance().isBungeecord() && channel.isGlobal()) {
-                        requestPlayerCheck(player, args[1], channel.getName());
-                        Bukkit.broadcastMessage("Requesting player on all servers");
+                    Player toSend;
 
-
-                    }
-
-                    PlayerChannelUser playerChannelUser = PlayerChannelUser.getPlayer(toSend.getUniqueId());
-                    if (toSend.getUniqueId() != null) {
+                    if ((toSend = Bukkit.getPlayer(args[1])) != null) {
                         if (!channel.isInChatroom(toSend.getUniqueId())) {
                             PlayerChannelUser target = PlayerChannelUser.getPlayer(toSend.getUniqueId());
                             if (!target.hasPendingInviteFrom(channel)) {
@@ -68,7 +61,7 @@ public class InviteSubCommand extends SubCommand{
                                 ChannelUtils.sendClickableCommand(toSend, msg, "/channels join " + channel.getName());
 
 
-                                playerChannelUser.addInvite(channel);
+                                target.addInvite(channel);
 
                             } else {
                                 player.sendMessage(messages.getString("pending-invite-exists"));
