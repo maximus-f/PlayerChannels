@@ -185,7 +185,7 @@ public class Chatroom {
 
             List<String> lores = new ArrayList<>();
             if (!(getDescription().trim().isEmpty() || getDescription() == null)) {
-                lores.add(messages.getString(description).replace("$description$", getDescription()));
+                lores.add(description.replace("$description$", getDescription()));
             } else {
 
             }

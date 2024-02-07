@@ -57,10 +57,10 @@ TODO List
 - Nicknames
 - Deletion
 - Punishments
+- Unbans and mutes
 
 
 Need to do
-- Unbans and unmutes
 - Invites (currently dealing with eof, current system is a bit convoluted, may push it to 3.7.1)
 
  */

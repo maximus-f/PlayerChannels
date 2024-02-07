@@ -254,6 +254,10 @@ public class PlayerChannelsCommand implements CommandExecutor {
                 return true;
             } else if (channel != null && channel.isPublic()) {
                 // if server channel and public, let them focus chat and join simultaneously
+                if (channel.isBanned(player.getUniqueId())) {
+                    messages.sendConfigMsg(player, "banned-from-chatroom");
+                    return true;
+                }
                 new FocusChannelSubCommand("").onCommand(player, playerChannelUser, args);
                 ChannelUtils.joinChatroom(playerChannelUser, channel);
                 if (playerChannelUser.hasPendingInviteFrom(channel)) {

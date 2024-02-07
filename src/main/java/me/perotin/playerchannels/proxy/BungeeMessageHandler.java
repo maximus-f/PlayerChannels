@@ -237,6 +237,15 @@ public class BungeeMessageHandler {
                     PlayerChannelUser.getPlayer(memberUUID).addChatroom(globalChatroom);
 
                 }
+                boolean nickNamesEnabled = msgin.readBoolean();
+                globalChatroom.setNicknamesEnabled(nickNamesEnabled);
+                String nickname;
+                while (!(nickname = msgin.readUTF()).equalsIgnoreCase("~~")) {
+                    UUID memberUUID = UUID.fromString(nickname.split("//..//")[0]);
+                    nickname = nickname.split("//..//")[1];
+                    globalChatroom.setNickname(memberUUID, nickname);
+
+                }
 
                 // Check if the channel already exists before adding
                 if (!plugin.getChatrooms().contains(globalChatroom)) {
@@ -268,13 +277,8 @@ public class BungeeMessageHandler {
         try {
             String channelName = msgin.readUTF();
             Chatroom channel = plugin.getChatroom(channelName);
-            Bukkit.broadcastMessage("Attempting to delete channel");
             if (channel != null) {
                 channel.delete();
-                Bukkit.broadcastMessage("Deleted channel");
-
-            } else {
-                Bukkit.broadcastMessage("Could not delete");
 
             }
         } catch (IOException ex) {
@@ -310,10 +314,6 @@ public class BungeeMessageHandler {
             Chatroom channel = plugin.getChatroom(channelName);
             if (channel.isInChatroom(member) && !channel.isMuted(member)) {
                 channel.mute(member);
-                Bukkit.broadcastMessage("Muted in " + channelName);
-            } else {
-                Bukkit.broadcastMessage("Tried to mute in " + channelName);
-
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -368,7 +368,6 @@ public class BungeeMessageHandler {
             String channelName = msgin.readUTF();
             UUID key = UUID.fromString(msgin.readUTF());
             Chatroom channel = plugin.getChatroom(channelName);
-            Bukkit.broadcastMessage(channel.toString());
             if (channel.isInChatroom(key) && channel.getMemberMap().get(key) == ChatRole.MODERATOR) {
                 channel.demoteModeratorToMember(key);
             }
@@ -387,7 +386,6 @@ public class BungeeMessageHandler {
             String channelName = msgin.readUTF();
             UUID key = UUID.fromString(msgin.readUTF());
             Chatroom channel = plugin.getChatroom(channelName); // How to ensure this is Chatroom obj and not GlobalChatroom?
-            Bukkit.broadcastMessage(channel.toString());
             if (channel.isInChatroom(key) && channel.getMemberMap().get(key) == ChatRole.MEMBER) {
                 channel.promoteMemberToModerator(key);
 
@@ -561,7 +559,6 @@ public class BungeeMessageHandler {
             // This would typically involve inviting the player to the channel, possibly by creating a new invite object
             // and notifying the player if they are currently online on this server.
             PlayerChannelUser.getPlayer(playerUUID).addInvite(chatroom);
-            Bukkit.broadcastMessage("Found player and added chatroom invite");
             sendFoundPlayerMessage(requestName);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -608,6 +605,7 @@ public class BungeeMessageHandler {
                     msgout.writeBoolean(globalChatroom.isPublic());
                     msgout.writeBoolean(globalChatroom.isSaved());
                     msgout.writeBoolean(globalChatroom.isServerOwned());
+
 //                    msgout.writeUTF(Objects.requireNonNull(Bukkit.getPlayer(globalChatroom.getOwner())).getName());
                     for (UUID uuid : globalChatroom.getModerators()) {
                         msgout.writeUTF(uuid.toString());
@@ -616,6 +614,13 @@ public class BungeeMessageHandler {
 
                     for (UUID uuid : globalChatroom.getMembersOnly()) {
                         msgout.writeUTF(uuid.toString());
+                    }
+                    msgout.writeUTF("~~");
+                    msgout.writeBoolean(globalChatroom.isNicknamesEnabled());
+                    if (!globalChatroom.getNickNames().isEmpty()) {
+                        for (UUID uuid : globalChatroom.getNickNames().keySet()) {
+                            msgout.writeUTF(uuid.toString() + "//..//" + globalChatroom.getNickNames().get(uuid));
+                        }
                     }
                     msgout.writeUTF("~~");
 
