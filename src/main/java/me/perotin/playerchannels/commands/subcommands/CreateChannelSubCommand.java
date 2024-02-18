@@ -1,7 +1,10 @@
 package me.perotin.playerchannels.commands.subcommands;
 
 import me.perotin.playerchannels.PlayerChannels;
+import me.perotin.playerchannels.events.chat_events.CreateChatroomInputEvent;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
+import me.perotin.playerchannels.objects.PreChatroom;
+import me.perotin.playerchannels.objects.inventory.actions.CreateChatroomAction;
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.storage.files.FileType;
 import org.bukkit.entity.Player;
@@ -16,6 +19,7 @@ public class CreateChannelSubCommand extends SubCommand {
     @Override
     public void onCommand(Player player, PlayerChannelUser user, String[] args) {
         ChannelFile messages = new ChannelFile(FileType.MESSAGES);
+        PlayerChannels plugin = PlayerChannels.getInstance();
         if (!player.hasPermission("playerchannels.create")) {
             messages.sendConfigMsg(player, "no-permission");
             return;
@@ -23,21 +27,52 @@ public class CreateChannelSubCommand extends SubCommand {
         if (args.length == 1) {
             // Typed just /pc create
             // Check if has permissions, "Player's channel" <- check if that is availible
-           String channelName = player.getName() + "'s Channel";
-           if (PlayerChannels.getInstance().getChatroom(channelName) != null) {
+           String channelName = player.getName() + "'s-Channel";
+           if (plugin.getChatroom(channelName) != null) {
                // Keep adding numbers until not found
                int addition = 0;
-               while (PlayerChannels.getInstance().getChatroom(channelName) != null) {
+               while (plugin.getChatroom(channelName) != null) {
                    addition++;
                    channelName += "" + addition;
                }
-           } else {
-
            }
+           PreChatroom chatroom = new PreChatroom(player.getUniqueId());
+           chatroom.setName(channelName);
+           chatroom.setDescription("");
+           CreateChatroomAction.createChatroom(chatroom, user, player);
         } else if (args.length == 2) {
             // Typed /pc create <name>
+            String channelName = args[1];
+            if (CreateChatroomInputEvent.isNameTaken(channelName)) {
+                player.sendMessage(messages.getString("taken-name"));
+                return;
+            }  else {
+                // Create it
+                PreChatroom chatroom = new PreChatroom(player.getUniqueId());
+                chatroom.setName(channelName);
+                chatroom.setDescription("");
+                CreateChatroomAction.createChatroom(chatroom, user, player);
+            }
+
+
         } else if (args.length >= 3) {
             // Typed /pc create <name> <description>
+            String channelName = args[1];
+            StringBuilder description = new StringBuilder();
+            for (int j = 2; j < args.length; j++) {
+
+                description.append(args[j] + " ");
+            }
+            if (CreateChatroomInputEvent.isNameTaken(channelName)) {
+                player.sendMessage(messages.getString("taken-name"));
+                return;
+            }  else {
+                // Create it
+                PreChatroom chatroom = new PreChatroom(player.getUniqueId());
+                chatroom.setName(channelName);
+                chatroom.setDescription(description.toString().trim());
+                CreateChatroomAction.createChatroom(chatroom, user, player);
+            }
         }
 
         return;

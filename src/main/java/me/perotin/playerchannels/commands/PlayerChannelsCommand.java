@@ -68,10 +68,10 @@ public class PlayerChannelsCommand implements CommandExecutor {
                 sendClickableCommand(player, "/channels", "help-msg-1", msgs);
                 sendClickableCommand(player, "/channels <channel-name>", "help-msg-5", msgs);
                 sendClickableCommand(player, "/channels list", "help-msg-8", msgs);
-                sendClickableCommand(player, "/channels create <name> [Optional: description]", "help-msg-2", msgs);
-                sendClickableCommand(player, "/channels invite <player-name> <channel-name>", "help-msg-6", msgs);
-                sendClickableCommand(player, "/channels join <name>", "help-msg-3", msgs);
-                sendClickableCommand(player, "/channels leave [Optional: name]", "help-msg-7", msgs);
+                sendClickableCommand(player, "/channels create", "help-msg-2", msgs);
+                sendClickableCommand(player, "/channels invite", "help-msg-6", msgs);
+                sendClickableCommand(player, "/channels join", "help-msg-3", msgs);
+                sendClickableCommand(player, "/channels leave", "help-msg-7", msgs);
                 sendClickableCommand(player, "/channels listen <add/remove/off> <name>", "help-msg-4", msgs);
 
 
@@ -115,6 +115,7 @@ public class PlayerChannelsCommand implements CommandExecutor {
             }
             if (secondArg.equalsIgnoreCase(plugin.getConfig().getString("create"))) {
                 new CreateChannelSubCommand("").onCommand(player, playerChannelUser, args );
+                return true;
             }
             if (secondArg.equalsIgnoreCase(plugin.getConfig().getString("create-gui"))){
                 if (args.length == 1) {

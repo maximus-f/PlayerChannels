@@ -38,8 +38,13 @@ public class CreateChatroomAction {
      */
     public static Consumer<InventoryClickEvent> createChatroomConsumer(){
         return clickEvent -> {
+
             clickEvent.setCancelled(true);
             Player clicker = (Player) clickEvent.getWhoClicked();
+            if (!clicker.hasPermission("playerchannels.create")) {
+                ChannelUtils.sendMenuMessage(new ChannelFile(FileType.MESSAGES).getString("no-permission"), clicker, null);
+                return;
+            }
 
             PreChatroom chatroom = new PreChatroom(clickEvent.getWhoClicked().getUniqueId());
             InventoryHelper helper = PlayerChannels.getInstance().getHelper();
@@ -200,11 +205,12 @@ public class CreateChatroomAction {
             }
 
             // create the chatroom
-            Chatroom addedChatroom = PlayerChannels.getInstance().createChatroom(chatroom);
-            playerChannelUser.addChatroom(addedChatroom);
-            clicker.playSound(clicker.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 5, 5);
+            createChatroom(chatroom, playerChannelUser, clicker);
+//            Chatroom addedChatroom = PlayerChannels.getInstance().createChatroom(chatroom);
+//            playerChannelUser.addChatroom(addedChatroom);
+//            clicker.playSound(clicker.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 5, 5);
             input.getInCreation().remove(clicker.getUniqueId());
-            new MainMenuPaging(clicker, PlayerChannels.getInstance()).show();
+//            new MainMenuPaging(clicker, PlayerChannels.getInstance()).show();
 
             if (TutorialHelper.inTutorial.contains(clicker.getUniqueId())) {
                 // end tutorial set
@@ -221,6 +227,13 @@ public class CreateChatroomAction {
             }
 
         };
+    }
+
+    public static void createChatroom(PreChatroom chatroom, PlayerChannelUser playerChannelUser, Player clicker){
+        Chatroom addedChatroom = PlayerChannels.getInstance().createChatroom(chatroom);
+        playerChannelUser.addChatroom(addedChatroom);
+        clicker.playSound(clicker.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 5, 5);
+        new MainMenuPaging(clicker, PlayerChannels.getInstance()).show();
     }
 
 
