@@ -1,10 +1,7 @@
 package me.perotin.playerchannels.commands;
 
 import me.perotin.playerchannels.PlayerChannels;
-import me.perotin.playerchannels.commands.subcommands.FocusChannelSubCommand;
-import me.perotin.playerchannels.commands.subcommands.InviteSubCommand;
-import me.perotin.playerchannels.commands.subcommands.LeaveSubCommand;
-import me.perotin.playerchannels.commands.subcommands.ListSubCommand;
+import me.perotin.playerchannels.commands.subcommands.*;
 import me.perotin.playerchannels.events.chat_events.CreateChatroomInputEvent;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.InventoryHelper;
@@ -60,20 +57,22 @@ public class PlayerChannelsCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         Player player = (Player) commandSender;
         PlayerChannelUser playerChannelUser = PlayerChannelUser.getPlayer(player.getUniqueId());
+        ChannelFile msgs = new ChannelFile(FileType.MESSAGES);
+
         if (args.length > 0) {
             // Check if arg length is greater than 0 and if second key-word is "focus" or other subcommands
             String secondArg = args[0];
             if (secondArg.equalsIgnoreCase(plugin.getConfig().getString("help"))) {
                 // Help command
                   ChannelUtils.sendMsgFromConfig(player, "help-msg");
-                sendClickableCommand(player, "/channels", "help-msg-1");
-                sendClickableCommand(player, "/channels <channel-name>", "help-msg-5");
-                sendClickableCommand(player, "/channels list", "help-msg-8");
-                sendClickableCommand(player, "/channels create <name> [Optional: description]", "help-msg-2");
-                sendClickableCommand(player, "/channels invite <player-name> <channel-name>", "help-msg-6");
-                sendClickableCommand(player, "/channels join <name>", "help-msg-3");
-                sendClickableCommand(player, "/channels leave [Optional: name]", "help-msg-7");
-                sendClickableCommand(player, "/channels listen <add/remove/off> <name>", "help-msg-4");
+                sendClickableCommand(player, "/channels", "help-msg-1", msgs);
+                sendClickableCommand(player, "/channels <channel-name>", "help-msg-5", msgs);
+                sendClickableCommand(player, "/channels list", "help-msg-8", msgs);
+                sendClickableCommand(player, "/channels create <name> [Optional: description]", "help-msg-2", msgs);
+                sendClickableCommand(player, "/channels invite <player-name> <channel-name>", "help-msg-6", msgs);
+                sendClickableCommand(player, "/channels join <name>", "help-msg-3", msgs);
+                sendClickableCommand(player, "/channels leave [Optional: name]", "help-msg-7", msgs);
+                sendClickableCommand(player, "/channels listen <add/remove/off> <name>", "help-msg-4", msgs);
 
 
                 return true;
@@ -114,7 +113,10 @@ public class PlayerChannelsCommand implements CommandExecutor {
                     }
                 }
             }
-            if (secondArg.equalsIgnoreCase(plugin.getConfig().getString("create"))){
+            if (secondArg.equalsIgnoreCase(plugin.getConfig().getString("create"))) {
+                new CreateChannelSubCommand("").onCommand(player, playerChannelUser, args );
+            }
+            if (secondArg.equalsIgnoreCase(plugin.getConfig().getString("create-gui"))){
                 if (args.length == 1) {
                     // Open creation menu with nothing set
                     PreChatroom chatroom = new PreChatroom(player.getUniqueId());
@@ -293,9 +295,8 @@ focus-channel-list: "&a-&e $chatroom$"
    }
 
 
-    private void sendClickableCommand(Player player, String command, String messageConfigPath) {
+    private void sendClickableCommand(Player player, String command, String messageConfigPath, ChannelFile msgs) {
         String message = plugin.getConfig().getString(messageConfigPath);
-        ChannelFile msgs = new ChannelFile(FileType.MESSAGES);
         if (message != null) {
             TextComponent messageComponent = new TextComponent(ChatColor.translateAlternateColorCodes('&', message));
             messageComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command));

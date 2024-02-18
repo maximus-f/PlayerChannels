@@ -217,8 +217,10 @@ public class GlobalChatroom extends Chatroom {
 
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
-        Iterables.getFirst(Bukkit.getOnlinePlayers(), null).sendPluginMessage(PlayerChannels.getInstance(), "BungeeCord", out.toByteArray());
-
+        Player toSend = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
+        if (toSend != null) {
+            toSend.sendPluginMessage(PlayerChannels.getInstance(), "BungeeCord", out.toByteArray());
+        }
     }
 
 

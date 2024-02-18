@@ -27,6 +27,9 @@ listen: "listen"
 # e.g. /playerchannels create <name> <optional: description>
 create: "create"
 
+# Subcommand name for creating a chatroom that will fill in your paramaterized options into the creation GUI
+create-gui: "createc"
+
 #Subcommand for joining a chatroom through a command
 # e.g. /playerchannels join <name>
 join: "join"

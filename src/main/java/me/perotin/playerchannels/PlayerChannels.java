@@ -46,18 +46,8 @@ import java.util.*;
  */
 
 /*
-TODO List
-3.7
-
-- Did creation -- added puser sync
-- Did chat
-- Did join -- maybe refactor to use offline player name
-- Leave -- added psuser sync
-- Promotions/Demotions
-- Nicknames
-- Deletion
-- Punishments
-- Unbans and mutes
+3.7.1
+- Fixed NPE Error for Global Chatrooms on load
 
 
 Need to do
