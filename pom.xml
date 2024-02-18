@@ -143,7 +143,7 @@
                         <configuration>
                             <target>
                                 <echo message="Copying built JAR to target directories..."/>
-                                <copy file="/Users/maxfuligni/Desktop/network/bungee_server2/plugins/PlayerChannels-3.7.jar"
+                                <copy file="/Users/maxfuligni/Desktop/network/bungee_server2/plugins/PlayerChannels-3.7.1.jar"
                                       todir="/Users/maxfuligni/Desktop/network/bungee_server1/plugins"/>
 
 

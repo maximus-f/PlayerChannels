@@ -26,17 +26,20 @@ public class CreateChannelSubCommand extends SubCommand {
         }
         if (args.length == 1) {
             // Typed just /pc create
-            // Check if has permissions, "Player's channel" <- check if that is availible
-           String channelName = player.getName() + "'s-Channel";
-           if (plugin.getChatroom(channelName) != null) {
-               // Keep adding numbers until not found
-               int addition = 0;
-               while (plugin.getChatroom(channelName) != null) {
-                   addition++;
-                   channelName += "" + addition;
-               }
-           }
-           PreChatroom chatroom = new PreChatroom(player.getUniqueId());
+            // Check if has permissions, "Player's channel" <- check if that is available
+            String baseChannelName = player.getName() + "'s-Channel";
+            String channelName = baseChannelName;
+            if (plugin.getChatroom(channelName) != null) {
+                // Keep adding numbers until not found
+                int addition = 1; // Start from 1
+                while (plugin.getChatroom(channelName) != null) {
+                    // Append the number to the base channel name, not the already modified channel name
+                    channelName = baseChannelName + addition;
+                    addition++;
+                }
+            }
+
+            PreChatroom chatroom = new PreChatroom(player.getUniqueId());
            chatroom.setName(channelName);
            chatroom.setDescription("");
            CreateChatroomAction.createChatroom(chatroom, user, player);
