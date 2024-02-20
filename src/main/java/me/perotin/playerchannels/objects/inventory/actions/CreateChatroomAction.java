@@ -233,6 +233,8 @@ public class CreateChatroomAction {
         Chatroom addedChatroom = PlayerChannels.getInstance().createChatroom(chatroom);
         playerChannelUser.addChatroom(addedChatroom);
         clicker.playSound(clicker.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 5, 5);
+        clicker.sendMessage(new ChannelFile(FileType.MESSAGES)
+                .getString("creation-invite-other"));
         new MainMenuPaging(clicker, PlayerChannels.getInstance()).show();
     }
 

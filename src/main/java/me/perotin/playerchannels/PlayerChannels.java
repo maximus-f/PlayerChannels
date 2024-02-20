@@ -48,6 +48,8 @@ import java.util.*;
 /*
 3.7.1
 - Fixed NPE Error for Global Chatrooms on load
+- Added create subcommand and auto-create channel
+- Added creation-invite-other for msg to invite others 
 
 
 Need to do
