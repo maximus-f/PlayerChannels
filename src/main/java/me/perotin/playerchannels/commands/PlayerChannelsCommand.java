@@ -59,6 +59,10 @@ public class PlayerChannelsCommand implements CommandExecutor {
         PlayerChannelUser playerChannelUser = PlayerChannelUser.getPlayer(player.getUniqueId());
         ChannelFile msgs = new ChannelFile(FileType.MESSAGES);
 
+        if (plugin.isUsePermissionEnabled() && !player.hasPermission("playerchannels.use")) {
+            msgs.sendConfigMsg(player, "no-permission");
+            return true;
+        }
         if (args.length > 0) {
             // Check if arg length is greater than 0 and if second key-word is "focus" or other subcommands
             String secondArg = args[0];

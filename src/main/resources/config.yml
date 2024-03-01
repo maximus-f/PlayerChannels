@@ -18,7 +18,8 @@ chat-colors: true
 
 # Make sure to use your commands.yml to set custom aliases! https://bukkit.fandom.com/wiki/Commands.yml
 
-
+# Should PlayerChannels check for permission "playerchannels.use" to use /playerchannels command?
+use-permission: false
 # Subcommand name for disabling messages from global / other chatrooms
 # e.g. /playerchannels listen add <chatroom>
 listen: "listen"
@@ -53,7 +54,7 @@ list: "list"
 # Help dialogue messages
 help-msg: "&a-------------------------------"
 help-msg-1: "&e/channels - &7Opens the channel menu"
-help-msg-5: "&e/channels <&aname&e> - &7Choose a channel to chat in, auto-joins if channel is public and currently not a member"
+help-msg-5: "&e/channels <optional: &aname&e> - &7Choose a channel to chat in, auto-joins if channel is public and currently not a member"
 help-msg-8: "&e/channels &6list&e - &7List all channels and information"
 help-msg-2: "&e/channels &6create &e<optional: &aname&e> <optional: &adescription&e> - &7Creates a channel"
 help-msg-6: "&e/channels &6invite &e<&aplayer-name&e> <optional: &achannel-name&e> - &7Invite specified player to channel, must specify channel if in more than one channel. "

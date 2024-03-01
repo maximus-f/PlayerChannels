@@ -80,7 +80,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
     private AdvancementMain main;
 
-    private boolean bungeecord;
+    private boolean bungeecord, usePermission;
 
 
 
@@ -118,6 +118,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
 
        this.bungeecord = getConfig().getBoolean("bungeecord");
+       this.usePermission = getConfig().contains("use-permission") && getConfig().getBoolean("use-permission");
        // Enable bungeecord support
        if (isBungeecord()) {
            Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Loading Bungeecord hook.");
@@ -242,6 +243,13 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
     public Chatroom createChatroom(PreChatroom chatroom){
         chatrooms.add(chatroom.toChatroom());
         return chatrooms.get(chatrooms.size() - 1);
+    }
+
+    /**
+     * Returns whether playerchannels.use will be used
+     */
+    public boolean isUsePermissionEnabled() {
+        return usePermission;
     }
 
 

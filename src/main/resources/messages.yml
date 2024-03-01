@@ -57,7 +57,7 @@ owner-leave-chatroom: "&7[&c&lAttention&7] &cLeaving $chatroom$ &cwill delete it
 owner-leave-chatroom2: "&cOr type anything else to cancel."
 chatroom-being-deleted: "&7[$chatroom$&7] &eThis chatroom is being deleted! Goodbye!"
 received-invite: "&aYou have received an invite to $chatroom$&a. Accept in /chatrooms in the top right. "
-creation-invite-other: "&7To invite players, do '&e/channels invite <name>&7' or specify the channel if in multiple channels."
+creation-invite-other: "&7&oTo invite players, do '&e&o/channels invite <name>&7&o' or specify the channel if in multiple channels."
 
 # Menu titles
 main-menu-title: "Main Menu: "
