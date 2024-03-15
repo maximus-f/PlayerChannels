@@ -15,6 +15,7 @@ import me.perotin.playerchannels.objects.inventory.paging_objects.MainMenuPaging
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.utils.ChannelUtils;
+import me.perotin.playerchannels.utils.PermissionsHandler;
 import me.perotin.playerchannels.utils.TutorialHelper;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
@@ -39,11 +40,28 @@ public class CreateChatroomAction {
     public static Consumer<InventoryClickEvent> createChatroomConsumer(){
         return clickEvent -> {
 
+
             clickEvent.setCancelled(true);
             Player clicker = (Player) clickEvent.getWhoClicked();
-            if (!clicker.hasPermission("playerchannels.create")) {
-                ChannelUtils.sendMenuMessage(new ChannelFile(FileType.MESSAGES).getString("no-permission"), clicker, null);
-                return;
+            PlayerChannelUser user = PlayerChannelUser.getPlayer(clicker.getUniqueId());
+            ChannelFile messages = new ChannelFile(FileType.MESSAGES);
+            if (PlayerChannels.getInstance().isCreatePermission()) {
+                if (!clicker.hasPermission("playerchannels.create")){
+                    ChannelUtils.sendMenuMessage(new ChannelFile(FileType.MESSAGES).getString("no-permission"), clicker, null);
+                    return;
+                 }
+                if (PlayerChannels.getInstance().checkForLimit()) {
+                    int limit = new PermissionsHandler().getMaxChannels(clicker);
+
+                    int currentCount = user.getOwnedChannelsSize();
+                    if (currentCount >= limit) {
+                        // At the limit
+                        clicker.sendMessage(messages.getString("channel-creation-limit")
+                                .replace("$count$", ""+limit));
+                        return;
+                    }
+
+                }
             }
 
             PreChatroom chatroom = new PreChatroom(clickEvent.getWhoClicked().getUniqueId());
@@ -54,7 +72,6 @@ public class CreateChatroomAction {
             helper.setNavigationBar(helper.getCreationMenu(chatroom), (OfflinePlayer) clickEvent.getWhoClicked()).getFirst().show(clickEvent.getWhoClicked());
             if (TutorialHelper.inTutorial.contains(clicker.getUniqueId())) {
                 // send them the message 3
-                ChannelFile messages = new ChannelFile(FileType.MESSAGES);
                 ChannelUtils.sendMenuMessage(messages.getString("help-msg-4"), clicker, creationMenuObj);
             }
 

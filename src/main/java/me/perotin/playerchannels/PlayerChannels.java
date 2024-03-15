@@ -46,11 +46,9 @@ import java.util.*;
  */
 
 /*
-3.7.1
-- Fixed NPE Error for Global Chatrooms on load
-- Added create subcommand and auto-create channel
-- Added creation-invite-other for msg to invite others 
-
+3.7.3
+- Added check-limit option
+- Added default-channel-limit option
 
 Need to do
 - Invites (currently dealing with eof, current system is a bit convoluted, may push it to 3.7.1)
@@ -80,7 +78,9 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
     private AdvancementMain main;
 
-    private boolean bungeecord, usePermission;
+    private boolean bungeecord, usePermission, createPermission, checkLimit;
+
+    private int defaultChannelLimit;
 
 
 
@@ -119,7 +119,12 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
        this.bungeecord = getConfig().getBoolean("bungeecord");
        this.usePermission = getConfig().contains("use-permission") && getConfig().getBoolean("use-permission");
-       // Enable bungeecord support
+       this.createPermission = getConfig().contains("create-permission") && getConfig().getBoolean("create-permission");
+       this.checkLimit = getConfig().contains("check-limit") && getConfig().getBoolean("check-limit");
+       this.defaultChannelLimit = getConfig().contains("default-channel-limit") ? getConfig().getInt("default-channel-limit") : 3;
+
+
+        // Enable bungeecord support
        if (isBungeecord()) {
            Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Loading Bungeecord hook.");
            this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -153,6 +158,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         BungeeMessageHandler handler = new BungeeMessageHandler(this);
         handler.handlePluginMessage(channel, player, message);
     }
+
 
 
 
@@ -252,6 +258,13 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         return usePermission;
     }
 
+    /**
+     * Returns whether playerchannels.use will be used
+     */
+    public boolean isCreatePermission() {
+        return createPermission;
+    }
+
 
     /**
 
@@ -314,6 +327,21 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
             getLogger().severe(fileName + " does not exist and cannot be reloaded!");
         }
     }
+
+    /**
+     * Return whether to check for a max limit
+     */
+    public boolean checkForLimit() {
+        return this.checkLimit;
+    }
+
+    /**
+     * Returns the default max channels if none is specified
+     */
+    public int getDefaultChannelLimit() {
+        return this.defaultChannelLimit;
+    }
+
 
 
 

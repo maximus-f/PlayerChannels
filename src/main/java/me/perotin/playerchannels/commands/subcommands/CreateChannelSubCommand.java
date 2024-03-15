@@ -7,6 +7,8 @@ import me.perotin.playerchannels.objects.PreChatroom;
 import me.perotin.playerchannels.objects.inventory.actions.CreateChatroomAction;
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.storage.files.FileType;
+import me.perotin.playerchannels.utils.PermissionsHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class CreateChannelSubCommand extends SubCommand {
@@ -20,9 +22,23 @@ public class CreateChannelSubCommand extends SubCommand {
     public void onCommand(Player player, PlayerChannelUser user, String[] args) {
         ChannelFile messages = new ChannelFile(FileType.MESSAGES);
         PlayerChannels plugin = PlayerChannels.getInstance();
-        if (!player.hasPermission("playerchannels.create")) {
-            messages.sendConfigMsg(player, "no-permission");
-            return;
+        if (PlayerChannels.getInstance().isCreatePermission()) {
+             if (!player.hasPermission("playerchannels.create")) {
+                messages.sendConfigMsg(player, "no-permission");
+                return;
+            }
+             if (PlayerChannels.getInstance().checkForLimit()) {
+                int limit = new PermissionsHandler().getMaxChannels(player);
+                int currentCount = user.getOwnedChannelsSize();
+
+                 if (currentCount >= limit) {
+                    // At the limit
+                    player.sendMessage(messages.getString("channel-creation-limit")
+                            .replace("$count$", ""+limit));
+                    return;
+                }
+
+             }
         }
         if (args.length == 1) {
             // Typed just /pc create

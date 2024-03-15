@@ -13,6 +13,7 @@ bungeecord: false
 
 
 
+
 # Should chat colors be allowed throughout the plugin? (chatroom names, player statuses, etc.)
 chat-colors: true
 
@@ -20,6 +21,16 @@ chat-colors: true
 
 # Should PlayerChannels check for permission "playerchannels.use" to use /playerchannels command?
 use-permission: false
+
+# Should PlayerChannels check for permission "playerchannels.create" to use /playerchannels command?
+create-permission: false
+
+# Should PlayerChannels check for limits on how many channels a player can create?
+check-limit: false
+
+# How many channels should a player be able to create if no limit is specified
+default-channel-limit: 3
+
 # Subcommand name for disabling messages from global / other chatrooms
 # e.g. /playerchannels listen add <chatroom>
 listen: "listen"

@@ -301,6 +301,9 @@ public class PlayerChannelUser {
     }
 
 
+    public int getOwnedChannelsSize() {
+        return getChatrooms().stream().filter(c -> c.getOwner() != null && c.getOwner().equals(getUuid())).collect(Collectors.toList()).size();
+    }
     public void setStatus(String status) {
         this.status = status;
     }
