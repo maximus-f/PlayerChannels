@@ -27,7 +27,7 @@ public class CreateChannelSubCommand extends SubCommand {
                 messages.sendConfigMsg(player, "no-permission");
                 return;
             }
-             if (PlayerChannels.getInstance().checkForLimit()) {
+            if (PlayerChannels.getInstance().checkForLimit() && !(player.hasPermission("playerchannels.create.*") || player.hasPermission("playerchannels.create.bypass"))) {
                 int limit = new PermissionsHandler().getMaxChannels(player);
                 int currentCount = user.getOwnedChannelsSize();
 

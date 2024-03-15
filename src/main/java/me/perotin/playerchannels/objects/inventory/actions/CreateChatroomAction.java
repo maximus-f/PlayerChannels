@@ -50,7 +50,7 @@ public class CreateChatroomAction {
                     ChannelUtils.sendMenuMessage(new ChannelFile(FileType.MESSAGES).getString("no-permission"), clicker, null);
                     return;
                  }
-                if (PlayerChannels.getInstance().checkForLimit()) {
+                if (PlayerChannels.getInstance().checkForLimit() && !(clicker.hasPermission("playerchannels.create.*") || clicker.hasPermission("playerchannels.create.bypass"))) {
                     int limit = new PermissionsHandler().getMaxChannels(clicker);
 
                     int currentCount = user.getOwnedChannelsSize();
