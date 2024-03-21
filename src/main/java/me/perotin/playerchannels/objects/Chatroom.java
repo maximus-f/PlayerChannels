@@ -6,10 +6,7 @@ import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.storage.Pair;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -394,6 +391,17 @@ public class Chatroom {
                 .replace("$name$", sender))
                         .replace("$nickname$", nickname);
 
+        // Check for ping message
+        String ping = "";
+        if (chatroomFormat.contains("@")) {
+            String[] words = chatroomFormat.split(" ");
+            for (String s : words) {
+                if (s.contains("@")) {
+                    ping = s.substring(s.indexOf("@"));
+                }
+            }
+
+        }
 
         for (UUID spy : getSpyers()) {
             if (Bukkit.getPlayer(spy) != null) {
@@ -405,7 +413,13 @@ public class Chatroom {
         for (Player member : members) {
             // Send if not listening or is listening explicity to this one
             if (!PlayerChannels.getInstance().getListeningPlayers().contains(member.getUniqueId()) || PlayerChannelUser.getPlayer(member.getUniqueId()).getListeningChatrooms().contains(this)){
-                member.sendMessage(chatroomFormat);
+               if (ping != "" && member.getName().equalsIgnoreCase(ping)) {
+                   ping = "@" + ping;
+                   member.sendMessage(chatroomFormat.replace(ping, ChatColor.GOLD + ping));
+                   member.playSound(member.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
+               } else {
+                   member.sendMessage(chatroomFormat);
+               }
             }
         }
         return chatroomFormat;
