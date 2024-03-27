@@ -394,10 +394,14 @@ public class Chatroom {
         // Check for ping message
         String ping = "";
         if (chatroomFormat.contains("@")) {
+            Bukkit.broadcastMessage("Contains @");
+
             String[] words = chatroomFormat.split(" ");
             for (String s : words) {
                 if (s.contains("@")) {
-                    ping = s.substring(s.indexOf("@"));
+                    Bukkit.broadcastMessage("Found ping");
+
+                    ping = s.substring(1);
                 }
             }
 
@@ -413,9 +417,11 @@ public class Chatroom {
         for (Player member : members) {
             // Send if not listening or is listening explicity to this one
             if (!PlayerChannels.getInstance().getListeningPlayers().contains(member.getUniqueId()) || PlayerChannelUser.getPlayer(member.getUniqueId()).getListeningChatrooms().contains(this)){
-               if (ping != "" && member.getName().equalsIgnoreCase(ping)) {
+
+               if (!ping.isEmpty() && member.getName().equalsIgnoreCase(ping)) {
                    ping = "@" + ping;
-                   member.sendMessage(chatroomFormat.replace(ping, ChatColor.GOLD + ping));
+                   Bukkit.broadcastMessage("Replace");
+                   member.sendMessage(chatroomFormat.replace(ping, ChatColor.GOLD + ping + ChatColor.YELLOW));
                    member.playSound(member.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
                } else {
                    member.sendMessage(chatroomFormat);
