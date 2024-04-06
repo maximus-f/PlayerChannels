@@ -3,6 +3,8 @@ package me.perotin.playerchannels.events.chat_events;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.InventoryHelper;
 import me.perotin.playerchannels.objects.PreChatroom;
+import me.perotin.playerchannels.storage.files.ChannelFile;
+import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.utils.ChannelUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -35,6 +37,7 @@ public class CreateChatroomInputEvent implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         Player chatter = event.getPlayer();
+        ChannelFile messages = new ChannelFile(FileType.MESSAGES);
 
         if (inCreation.containsKey(chatter.getUniqueId())) {
             PreChatroom preChatroom = inCreation.get(chatter.getUniqueId());
@@ -44,12 +47,12 @@ public class CreateChatroomInputEvent implements Listener {
                 // check if name is more than 1 word
                 if (name.split(" ").length > 1) {
                     //too many words TODO come up with way to show messages, maybe big text on screen y'know what I mean
-                    chatter.sendTitle(ChatColor.RED + "Use only 1 word", "", 0, 20 * 3, 20);
+                    chatter.sendTitle(messages.getString("only-one-word"), "", 0, 20 * 3, 20);
                     return;
                 }
                 if (isNameTaken(name)) {
                     // send message saying name is taken, tell them to say it again
-                    chatter.sendTitle(ChatColor.RED + "That name is taken", "", 0, 20 * 3, 20);
+                    chatter.sendTitle(messages.getString("taken-name"), "", 0, 20 * 3, 20);
                     return;
                 }
                 // success condition, set name in PreChatroom

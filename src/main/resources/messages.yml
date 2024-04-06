@@ -43,6 +43,7 @@ description-missing: "&cYou must set a description!"
 no-permission: "&cNo permission to do that!"
 taken-name: "&cThat name is taken!"
 click-to-copy: "Click to copy"
+only-one-word: "&cUse only one word"
 channel-creation-limit: "&cMax channels. You can only create up to $count$ channels. "
 
 # Messages related to chatrooms
