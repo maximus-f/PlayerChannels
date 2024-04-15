@@ -329,7 +329,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
     }
 
     /**
-     * Return whether to check for a max limit
+     * Return whether to check for a max limit when players create a channel
      */
     public boolean checkForLimit() {
         return this.checkLimit;
