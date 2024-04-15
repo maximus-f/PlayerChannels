@@ -35,7 +35,10 @@ public class Chatroom {
     // true if chatroom is public, false if private
     private boolean isPublic;
     // true if saved, false if not
-    private boolean isSaved, nicknamesEnabled, isServerOwned, isGlobal;
+    /**
+     * @hidden - does channel appear in list and channels command, need playerchannels.hidden to view
+     */
+    private boolean isSaved, nicknamesEnabled, isServerOwned, isGlobal, hidden;
     private List<UUID> bannedMembers;
 
     private List<UUID> mutedMembers;
@@ -57,7 +60,7 @@ public class Chatroom {
     /**
      * Initial chatroom constructor
      */
-    public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned, boolean isGlobal) {
+    public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned, boolean isGlobal, boolean hidden) {
         this.members = new HashMap<>();
         this.members.put(owner, ChatRole.OWNER);
         this.owner = owner;
@@ -66,6 +69,7 @@ public class Chatroom {
         this.isPublic = isPublic;
         this.nicknamesEnabled = true;
         this.isGlobal = isGlobal;
+        this.hidden = false;
         this.messages = new ChannelFile(MESSAGES);
         this.isSaved = isSaved;
         this.display = generateItem();
@@ -81,7 +85,7 @@ public class Chatroom {
      * @return chatroom
      */
     public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned, boolean isGlobal, Map<UUID, ChatRole> members, List<UUID> bannedMembers, List<UUID> mutedMembers, Map<UUID, String> nicknames, boolean nicknamesenabled ) {
-        this(owner, name, description, isPublic, isSaved, isServerOwned, isGlobal);
+        this(owner, name, description, isPublic, isSaved, isServerOwned, isGlobal, false);
         this.messages = new ChannelFile(MESSAGES);
         this.members = members;
         this.bannedMembers = bannedMembers;
@@ -213,6 +217,18 @@ public class Chatroom {
 
 
         return item;
+    }
+
+
+    /**
+     * @return boolean if shown in channel/list command or not
+     */
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 
     /**

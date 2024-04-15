@@ -228,9 +228,12 @@ public class InventoryHelper {
 
             creationMenu.addItem(new GuiItem(global.getFirst(), CreateChatroomAction.toggleGlobalStatus()), global.getSecond(), 1);
         }
-        if (Bukkit.getPlayer(chatroom.getOwner()).hasPermission("playerchannels.admin")) {
+        if (creator.hasPermission("playerchannels.admin")) {
             creationMenu.addItem(new GuiItem(serverChannel.getFirst(), CreateChatroomAction.toggleIsServerChannel()), serverChannel.getSecond(), 2);
 
+        }
+        if (creator.hasPermission("playerchannels.hidden")) {
+            // add hidden item toggle
         }
     }
 
