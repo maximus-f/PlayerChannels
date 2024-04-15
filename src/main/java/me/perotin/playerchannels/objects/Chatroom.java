@@ -392,20 +392,17 @@ public class Chatroom {
                         .replace("$nickname$", nickname);
 
         // Check for ping message
-        String ping = "";
+        // Check for ping message
+        Set<String> pings = new HashSet<>();
         if (chatroomFormat.contains("@")) {
-
             String[] words = chatroomFormat.split(" ");
-            for (String s : words) {
-                if (s.contains("@")) {
-
-                    Bukkit.broadcastMessage("Word: " + s);
-                    ping = ChatColor.stripColor(s.substring(s.indexOf('@') + 1));
-                    Bukkit.broadcastMessage("Ping2: " + ping);
-
+            for (String word : words) {
+                if (word.startsWith("@")) {
+                    // Strip colors and extract the pinged username
+                    String pingedPlayer = ChatColor.stripColor(word.substring(1));
+                    pings.add(pingedPlayer.toLowerCase()); // Use lower case for case-insensitive comparison
                 }
             }
-
         }
 
         for (UUID spy : getSpyers()) {
@@ -420,11 +417,16 @@ public class Chatroom {
             if (!PlayerChannels.getInstance().getListeningPlayers().contains(member.getUniqueId()) || PlayerChannelUser.getPlayer(member.getUniqueId()).getListeningChatrooms().contains(this)){
 
                // Bukkit.broadcastMessage("Ping: " + ping);
-               if (!ping.isEmpty() && member.getName().equalsIgnoreCase(ping)) {
-                   ping = "@" + ping;
-                   Bukkit.broadcastMessage("Ping made");
-                   member.sendMessage(chatroomFormat.replace(ping, ChatColor.GOLD + ping + ChatColor.YELLOW));
-                   member.playSound(member.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
+               if (!pings.isEmpty() && pings.contains(member.getName().toLowerCase())) {
+                   String highlightedMessage = chatroomFormat;
+                   for (String ping : pings) {
+                       if (member.getName().equalsIgnoreCase(ping)) {
+                           String pingText = "@" + ping;
+                           highlightedMessage = highlightedMessage.replaceAll("(?i)" + pingText, ChatColor.GOLD + pingText + ChatColor.YELLOW);
+                           member.playSound(member.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
+                       }
+                   }
+                   member.sendMessage(highlightedMessage);
                } else {
                    member.sendMessage(chatroomFormat);
                }
