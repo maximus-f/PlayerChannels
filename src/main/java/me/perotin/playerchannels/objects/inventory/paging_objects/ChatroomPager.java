@@ -472,9 +472,7 @@ public class ChatroomPager extends PagingMenu {
         GuiItem nickNameItem = new GuiItem(nicknames.getFirst(), viewNicknameMenu());
         GuiItem listenItem = new GuiItem(listenIn, toggleListenItem());
 
-        GuiItem hideItem = new GuiItem(hide, (c) -> {});
-
-
+        GuiItem hideItem = new GuiItem(hide, toggleHiddenStatus(getChatroom()));
 
 
         if (chatroom.isNicknamesEnabled()) {
@@ -494,6 +492,13 @@ public class ChatroomPager extends PagingMenu {
         getViewer().hasPermission("playerchannels.hide"))
             bottomRow.addItem(hideItem, hideChannel.getSecond(), 0);
 
+    }
+
+    private Consumer<InventoryClickEvent> toggleHiddenStatus(Chatroom channel) {
+        return (InventoryClickEvent c) -> {
+            c.setCancelled(true);
+            channel.setHidden(!channel.isHidden());
+        };
     }
 
 }
