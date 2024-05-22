@@ -57,10 +57,6 @@ public class MainMenuPaging extends PagingMenu {
         toDisplay = toDisplay.stream().sorted(MainMenuPaging::compare).collect(Collectors.toList());
         List<GuiItem> guiItems = toDisplay.stream().map(item -> new GuiItem(item, ChatroomItemStackAction.clickOnChatroom())).collect(Collectors.toList());
 
-//        List<GuiItem> test = new ArrayList<>();
-//        for (int i = 0; i < 150; i++) {
-//            test.add(new GuiItem(new ItemStack(Material.APPLE)));
-//        }
         return guiItems;
     }
 

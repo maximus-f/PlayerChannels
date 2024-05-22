@@ -208,6 +208,12 @@ chatroom-bottom-bar:
       display: "&e&lBans"
       material: "ENDER_CHEST"
       slot: 2
+   hide-channel:
+      display: "&e&lHide channel: $status$"
+      material: "ENDER_EYE"
+      slot: 3
+      lore:
+         - "&7&oClick to hide channel from being seen"
 
 
 # Chatroom Moderator actions

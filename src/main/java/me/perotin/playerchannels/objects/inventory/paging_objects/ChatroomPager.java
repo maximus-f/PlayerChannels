@@ -458,13 +458,24 @@ public class ChatroomPager extends PagingMenu {
         Pair<ItemStack, Integer> listen = InventoryHelper.getItem("chatroom-bottom-bar.listen", null);
 
         Pair<ItemStack, Integer> banMenu = InventoryHelper.getItem("chatroom-bottom-bar.ban-menu", null);
+        Pair<ItemStack, Integer> hideChannel = InventoryHelper.getItem("chatroom-bottom-bar.hide-channel", null);
 
 
         String status = PlayerChannelUser.getPlayer(getViewer().getUniqueId()).isListeningTo(getChatroom()) ? messages.getString("on-status") : messages.getString("off-status");
+        String hiddenStatus = getChatroom().isHidden() ? messages.getString("true") : messages.getString("false");
         ItemStack listenIn = ChannelUtils.replacePlaceHolderInDisplayName(ChannelUtils.replacePlaceHolderInDisplayName(listen.getFirst(), "$channel$", getChatroom().getName()), "$status$", status);
+
+
+        ItemStack hide = ChannelUtils.replacePlaceHolderInDisplayName(hideChannel.getFirst(), "$status$", hiddenStatus);
+
         GuiItem banItem = new GuiItem(banMenu.getFirst(), viewBanMenu());
         GuiItem nickNameItem = new GuiItem(nicknames.getFirst(), viewNicknameMenu());
         GuiItem listenItem = new GuiItem(listenIn, toggleListenItem());
+
+        GuiItem hideItem = new GuiItem(hide, (c) -> {});
+
+
+
 
         if (chatroom.isNicknamesEnabled()) {
             bottomRow.addItem(nickNameItem, nicknames.getSecond(), 0);
@@ -478,6 +489,10 @@ public class ChatroomPager extends PagingMenu {
         if (chatroom.isInChatroom(getViewer().getUniqueId())) {
             bottomRow.addItem(listenItem, listen.getSecond(), 0);
         }
+
+        if (getChatroom().hasModeratorPermissions(getViewer().getUniqueId()) &&
+        getViewer().hasPermission("playerchannels.hide"))
+            bottomRow.addItem(hideItem, hideChannel.getSecond(), 0);
 
     }
 

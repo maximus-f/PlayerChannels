@@ -79,8 +79,7 @@ public class CreateChannelSubCommand extends SubCommand {
             String channelName = args[1];
             StringBuilder description = new StringBuilder();
             for (int j = 2; j < args.length; j++) {
-
-                description.append(args[j] + " ");
+                description.append(args[j]).append(" ");
             }
             if (CreateChatroomInputEvent.isNameTaken(channelName)) {
                 player.sendMessage(messages.getString("taken-name"));
@@ -94,6 +93,5 @@ public class CreateChannelSubCommand extends SubCommand {
             }
         }
 
-        return;
     }
 }

@@ -37,7 +37,6 @@ public class FocusChannelSubCommand extends SubCommand{
                 // Currently focused on this chatroom, so set it to null
                 user.setFocusedChatroom(null);
                 player.sendMessage(msg.getString("focus-channel-unset"));
-                return;
             }
 
 
