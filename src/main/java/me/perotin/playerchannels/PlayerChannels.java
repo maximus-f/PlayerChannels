@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /* Created by Perotin on 8/13/19 */
 
@@ -234,6 +235,10 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
      */
     public List<Chatroom> getChatrooms() {
         return chatrooms;
+    }
+
+    public List<Chatroom> getHiddenChatrooms() {
+        return getChatrooms().stream().filter(c -> c.isHidden()).collect(Collectors.toList());
     }
 
     /**

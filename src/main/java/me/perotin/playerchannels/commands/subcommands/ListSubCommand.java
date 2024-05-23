@@ -9,10 +9,12 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ListSubCommand extends SubCommand{
 
@@ -25,11 +27,30 @@ public class ListSubCommand extends SubCommand{
     public void onCommand(Player player, PlayerChannelUser user, String[] args) {
         // For loop through channels and send name and status
         ChannelFile messages = new ChannelFile(FileType.MESSAGES);
+
         List<Chatroom> channels = PlayerChannels.getInstance().getChatrooms();
+
+        if (!player.hasPermission("playerchannels.admin")) {
+            channels = channels.stream().filter(c -> !c.isHidden()).collect(Collectors.toList());
+
+            for (Chatroom hidden : PlayerChannels.getInstance().getHiddenChatrooms()) {
+                if (hidden.isInChatroom(user.getUuid()) && !channels.contains(hidden)) {
+                    channels.add(hidden);
+                }
+            }
+        }
+
+
+
+
+
+
         messages.sendConfigMsg(player, "list-message-1");
         for (Chatroom channel : channels) {
             String status = channel.isPublic() ? messages.getString("public") : messages.getString("private");
+            String hidden = channel.isHidden() ? messages.getString("list-message-4") : "";
             String finalMessage = messages.getString("list-message-2")
+                    .replace("$hidden$", hidden)
                     .replace("$chatroom$", channel.getName())
                     .replace("$status$", status)
                     .replace("$count$", channel.getMembers().size()+"");

@@ -141,6 +141,8 @@ public class Chatroom {
      */
     private ItemStack generateItem(){
         ChannelFile messages = new ChannelFile(FileType.MENUS);
+        ChannelFile msgs = new ChannelFile(MESSAGES);
+
         ItemStack item;
         if (isServerOwned()){
             String serverString = PlayerChannels.getInstance().getConfig().getString("server-channel-material");
@@ -182,7 +184,9 @@ public class Chatroom {
             String owner = isGlobal() ? messages.getString("global-chatroom.owner") : messages.getString("chatroom-items.owner");
             String members = isGlobal() ? messages.getString("global-chatroom.members") : messages.getString("chatroom-items.members");
 
-            itemMeta.setDisplayName(displayName.replace("$name$", getName()));
+            displayName = displayName.replace("$name$", getName());
+            displayName = isHidden() ?  displayName.replace("$hidden$", msgs.getString("list-message-4")) : displayName.replace("$hidden$", "");
+            itemMeta.setDisplayName(displayName);
 
             List<String> lores = new ArrayList<>();
             if (!(getDescription().trim().isEmpty() || getDescription() == null)) {

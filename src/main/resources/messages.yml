@@ -139,8 +139,8 @@ leave-command-usage: "&cUsage: &e/channels &6leave &e<optional: &aname&e>"
 
 # Messages related to list
 list-message-1: "&aActive channels (click to join):"
-list-message-2: "&a- &e$chatroom$ &e: &fMembers(&e$count$&f) >> $status$"
+list-message-2: "&a- $hidden$ &e$chatroom$ &e: &fMembers(&e$count$&f) >> $status$"
 list-message-3: "&7&o*(in)"
-
+list-message-4: "&7&o(Hidden)"
 # Punishment broadcasts
 chatroom-kicked: "&7[&e$chatroom$&7] &e$player$ &chas been kicked."

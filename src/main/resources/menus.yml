@@ -143,13 +143,13 @@ chatroom-items:
    members: "&e&lMembers &e(&f$member_count$&e)"
 
 server-chatroom-items:
-   name: "&c&lChannel:&f $name$"
+   name: "&c&lChannel:&f $name$ $hidden$"
    description: "&7&o$description$"
    status: "&7Status: $status$"
    members: "&7Members &7(&f$member_count$&7)"
 
 global-chatroom:
-   name: "&b&lName:&f $name$ &7&o(Global)"
+   name: "&b&lName:&f $name$ &7&o(Global) $hidden$"
    description: "&b&lDescription:&f $description$"
    status: "&b&lStatus: $status$"
    owner: "&b&lOwner:&f $owner$"
