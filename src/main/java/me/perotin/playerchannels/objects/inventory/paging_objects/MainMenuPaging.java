@@ -53,7 +53,16 @@ public class MainMenuPaging extends PagingMenu {
 
     @Override
     protected List<GuiItem> generatePages() {
-        List<ItemStack> toDisplay = plugin.getChatrooms().stream().filter(c -> !c.isHidden()).map(Chatroom::getItem).collect(Collectors.toList());
+        List<ItemStack> toDisplay = plugin.getChatrooms().stream().map(Chatroom::getItem).collect(Collectors.toList());
+        if (!getViewer().hasPermission("playerchannels.admin")) {
+            toDisplay = plugin.getChatrooms().stream().filter(c -> !c.isHidden()).map(Chatroom::getItem).collect(Collectors.toList());
+
+            for (Chatroom hidden : PlayerChannels.getInstance().getHiddenChatrooms()) {
+                if (hidden.isInChatroom(getViewer().getUniqueId()) && !toDisplay.contains(hidden.getItem())) {
+                    toDisplay.add(hidden.getItem());
+                }
+            }
+        }
         toDisplay = toDisplay.stream().sorted(MainMenuPaging::compare).collect(Collectors.toList());
         List<GuiItem> guiItems = toDisplay.stream().map(item -> new GuiItem(item, ChatroomItemStackAction.clickOnChatroom())).collect(Collectors.toList());
 
