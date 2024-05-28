@@ -40,11 +40,6 @@ public class ListSubCommand extends SubCommand{
             }
         }
 
-
-
-
-
-
         messages.sendConfigMsg(player, "list-message-1");
         for (Chatroom channel : channels) {
             String status = channel.isPublic() ? messages.getString("public") : messages.getString("private");

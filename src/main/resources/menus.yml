@@ -136,7 +136,7 @@ creation-menu:
 # Chatroom ItemStacks
 # Essentially, the messages that appear when you hover over the representations of Chatrooms in the form of items.
 chatroom-items:
-   name: "&e&lName:&f $name$"
+   name: "&e&lName:&f $name$ $hidden$"
    description: "&e&lDescription:&f $description$"
    status: "&e&lStatus: $status$"
    owner: "&e&lOwner:&f $owner$"

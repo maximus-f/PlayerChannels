@@ -60,7 +60,7 @@ public class ChatroomPager extends PagingMenu {
          this.messages = new ChannelFile(FileType.MESSAGES);
          this.chatroomBar = new StaticPane(2, 1, 5, 1);
          chatroomBar.setPriority(Pane.Priority.HIGH);
-        this.bottomRow = new StaticPane(3, 5, 3, 1);
+        this.bottomRow = new StaticPane(3, 5, 4, 1);
         this.bottomRow.setPriority(Pane.Priority.HIGHEST);
         PlayerChannels.getInstance().getHelper().setSideDecorationSlots(getMenu());
         PlayerChannels.getInstance().getHelper().setNavigationBar(getMenu(), getViewer());
@@ -489,15 +489,21 @@ public class ChatroomPager extends PagingMenu {
         }
 
         if (getChatroom().hasModeratorPermissions(getViewer().getUniqueId()) &&
-        getViewer().hasPermission("playerchannels.hide"))
+        getViewer().hasPermission("playerchannels.hide")) {
             bottomRow.addItem(hideItem, hideChannel.getSecond(), 0);
+        }
+
 
     }
 
     private Consumer<InventoryClickEvent> toggleHiddenStatus(Chatroom channel) {
         return (InventoryClickEvent c) -> {
             c.setCancelled(true);
+            Player clicker = (Player) c.getWhoClicked();
+
             channel.setHidden(!channel.isHidden());
+            new ChatroomPager(chatroom, clicker).show();
+
         };
     }
 

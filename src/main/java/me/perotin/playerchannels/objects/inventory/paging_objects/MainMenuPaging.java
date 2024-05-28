@@ -15,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,16 +54,35 @@ public class MainMenuPaging extends PagingMenu {
 
     @Override
     protected List<GuiItem> generatePages() {
-        List<ItemStack> toDisplay = plugin.getChatrooms().stream().map(Chatroom::getItem).collect(Collectors.toList());
-        if (!getViewer().hasPermission("playerchannels.admin")) {
-            toDisplay = plugin.getChatrooms().stream().filter(c -> !c.isHidden()).map(Chatroom::getItem).collect(Collectors.toList());
+       // List<ItemStack> toDisplay = plugin.getChatrooms().stream().map(Chatroom::getItem).collect(Collectors.toList());
 
-            for (Chatroom hidden : PlayerChannels.getInstance().getHiddenChatrooms()) {
-                if (hidden.isInChatroom(getViewer().getUniqueId()) && !toDisplay.contains(hidden.getItem())) {
-                    toDisplay.add(hidden.getItem());
+        List<ItemStack> toDisplay = new ArrayList<>();
+
+        for (Chatroom c : plugin.getChatrooms()) {
+            ItemStack channel;
+            if (getViewer().hasPermission("playerchannels.admin")) {
+                // is an admin viewing, so just go through and replace all hidden
+                String hidden = plugin.getHiddenChatrooms().contains(c) ? messages.getString("list-message-4") : "";
+                 channel = ChannelUtils.replacePlaceHolderInDisplayName(c.getItem(), "$hidden$", hidden);
+                toDisplay.add(channel);
+
+            } else {
+
+                if (c.isHidden() && c.isInChatroom(getViewer().getUniqueId())) {
+                     channel = ChannelUtils.replacePlaceHolderInDisplayName(c.getItem(), "$hidden$", messages.getString("list-message-4"));
+                    toDisplay.add(channel);
+
+                } else {
+                    if (!c.isHidden()) {
+                        channel = ChannelUtils.replacePlaceHolderInDisplayName(c.getItem(), "$hidden$", "");
+                        toDisplay.add(channel);
+
+                    }
                 }
+
             }
         }
+
         toDisplay = toDisplay.stream().sorted(MainMenuPaging::compare).collect(Collectors.toList());
         List<GuiItem> guiItems = toDisplay.stream().map(item -> new GuiItem(item, ChatroomItemStackAction.clickOnChatroom())).collect(Collectors.toList());
 
