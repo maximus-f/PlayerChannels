@@ -489,7 +489,7 @@ public class ChatroomPager extends PagingMenu {
         }
 
         if (getChatroom().hasModeratorPermissions(getViewer().getUniqueId()) &&
-        getViewer().hasPermission("playerchannels.hide")) {
+        getViewer().hasPermission("playerchannels.hide") && !getChatroom().isGlobal()) {
             bottomRow.addItem(hideItem, hideChannel.getSecond(), 0);
         }
 

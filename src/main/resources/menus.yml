@@ -149,7 +149,7 @@ server-chatroom-items:
    members: "&7Members &7(&f$member_count$&7)"
 
 global-chatroom:
-   name: "&b&lName:&f $name$ &7&o(Global) $hidden$"
+   name: "&b&lName:&f $name$ &7&o(Global)"
    description: "&b&lDescription:&f $description$"
    status: "&b&lStatus: $status$"
    owner: "&b&lOwner:&f $owner$"
