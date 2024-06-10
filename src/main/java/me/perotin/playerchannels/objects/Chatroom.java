@@ -199,7 +199,10 @@ public class Chatroom {
             lores.add(members.replace("$member_count$", getMembers().size() + ""));
             itemMeta.setLore(lores);
         } else {
-            itemMeta.setDisplayName(messages.getString("server-chatroom-items.name").replace("$name$", getName()));
+            String displayName = messages.getString("server-chatroom-items.name").replace("$name$", getName());
+            displayName = isHidden() ?  displayName.replace("$hidden$", msgs.getString("list-message-4")) : displayName.replace("$hidden$", "");
+
+            itemMeta.setDisplayName(displayName);
 
             List<String> lores = new ArrayList<>();
             if (!(getDescription().trim().isEmpty() || getDescription() == null)) {

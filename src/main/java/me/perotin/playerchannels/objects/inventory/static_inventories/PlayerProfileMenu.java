@@ -74,11 +74,20 @@ public class PlayerProfileMenu extends PagingMenu {
 
         if (!player.getChatrooms().isEmpty()) {
 
+            // Allow only themselves or admin to view all channels including hidden
+            if (getViewer().getUniqueId().equals(player.getUuid()) || getViewer().hasPermission("playerchannels.admin")) {
 
-            List<ItemStack> toDisplay = player.getChatrooms().stream().map(Chatroom::getItem).collect(Collectors.toList());
-            toDisplay = toDisplay.stream().sorted(this::compare).collect(Collectors.toList());
-            return toDisplay.stream().map(item -> new GuiItem(item, ChatroomItemStackAction.clickOnChatroom())).collect(Collectors.toList());
+                List<ItemStack> toDisplay = player.getChatrooms().stream().map(Chatroom::getItem).collect(Collectors.toList());
+                toDisplay = toDisplay.stream().sorted(this::compare).collect(Collectors.toList());
+                return toDisplay.stream().map(item -> new GuiItem(item, ChatroomItemStackAction.clickOnChatroom())).collect(Collectors.toList());
 
+            } else {
+                // Only show non-hidden
+                List<ItemStack> toDisplay = player.getChatrooms().stream().filter(c -> !c.isHidden()).map(Chatroom::getItem).collect(Collectors.toList());
+                toDisplay = toDisplay.stream().sorted(this::compare).collect(Collectors.toList());
+                return toDisplay.stream().map(item -> new GuiItem(item, ChatroomItemStackAction.clickOnChatroom())).collect(Collectors.toList());
+
+            }
         }
         return new ArrayList<>();
 
