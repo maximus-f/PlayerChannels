@@ -106,5 +106,10 @@ chatroom-message-format: "&7[&e$chatroom$&7] &e$role$ $nickname$ &7➤ &e$messag
 
 chatroom-message-format-global: "&7[&e$chatroom$&7: &o($server$)&7] &e$role$ $nickname$ &7➤ &e$message$"
 
+# True to set channel messages to have hover and click events
+use-json: true
+
+# Text for when hovering if above is true
+hover-text: "&eWorld: &f$world$"
 
 

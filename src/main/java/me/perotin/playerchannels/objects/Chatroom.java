@@ -6,6 +6,9 @@ import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.storage.Pair;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -415,7 +418,6 @@ public class Chatroom {
                         .replace("$nickname$", nickname);
 
         // Check for ping message
-        // Check for ping message
         Set<String> pings = new HashSet<>();
         if (chatroomFormat.contains("@")) {
             String[] words = chatroomFormat.split(" ");
@@ -435,6 +437,15 @@ public class Chatroom {
             }
         }
 
+        FileConfiguration config = PlayerChannels.getInstance().getConfig();
+        TextComponent jsonMessage = new TextComponent(TextComponent.fromLegacyText(chatroomFormat));
+
+        // Potential make this cleaner later
+        jsonMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.translateAlternateColorCodes('&',
+                config.getString("hover-text")
+                        .replace("$world$", Bukkit.getPlayer(id).getWorld().getName())))));
+
+        boolean useJson = config.getBoolean("use-json");
         for (Player member : members) {
             // Send if not listening or is listening explicity to this one
             if (!PlayerChannels.getInstance().getListeningPlayers().contains(member.getUniqueId()) || PlayerChannelUser.getPlayer(member.getUniqueId()).getListeningChatrooms().contains(this)){
@@ -451,7 +462,11 @@ public class Chatroom {
                    }
                    member.sendMessage(highlightedMessage);
                } else {
-                   member.sendMessage(chatroomFormat);
+
+                   if (useJson) { member.spigot().sendMessage(jsonMessage);
+                   } else {
+                       member.sendMessage(chatroomFormat);
+                   }
                }
             }
         }
