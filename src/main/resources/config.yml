@@ -11,6 +11,17 @@
 # Would you wish to enable bungeecord support? (Channels that are global on all servers)
 bungeecord: false
 
+# MySQL setup
+# Note that it is not necessary to use MySQL to achieve bungeecord support. Synchronization can occur without a shared database,
+# but it is less reliable than also having a shared database (e.g. restarting all servers at same time).
+
+mysql-enabled: false
+host: localhost
+port: 3306
+database: "playerchannels"
+username: "root"
+password: "password"
+
 
 
 

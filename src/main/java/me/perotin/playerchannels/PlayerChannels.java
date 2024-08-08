@@ -79,7 +79,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
     private AdvancementMain main;
 
-    private boolean bungeecord, usePermission, createPermission, checkLimit;
+    private boolean bungeecord, usePermission, createPermission, checkLimit, mySQL;
 
     private int defaultChannelLimit;
 
@@ -123,7 +123,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
        this.createPermission = getConfig().contains("create-permission") && getConfig().getBoolean("create-permission");
        this.checkLimit = getConfig().contains("check-limit") && getConfig().getBoolean("check-limit");
        this.defaultChannelLimit = getConfig().contains("default-channel-limit") ? getConfig().getInt("default-channel-limit") : 3;
-
+       this.mySQL = getConfig().contains("mysql-enabled") && getConfig().getBoolean("mysql-enabled");
 
         // Enable bungeecord support
        if (isBungeecord()) {
