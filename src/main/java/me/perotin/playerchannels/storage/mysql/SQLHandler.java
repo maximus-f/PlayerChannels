@@ -2,10 +2,10 @@ package me.perotin.playerchannels.storage.mysql;
 
 import me.perotin.playerchannels.objects.Chatroom;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /* Created by Perotin on 8/14/19 */
 public class SQLHandler  {
@@ -113,6 +113,30 @@ public class SQLHandler  {
         if (this.connection != null && !this.connection.isClosed()) {
             this.connection.close();
         }
+    }
+
+    public List<Chatroom> getAllChatrooms() throws SQLException {
+        List<Chatroom> chatrooms = new ArrayList<>();
+        String query = "SELECT * FROM chatrooms";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String owner = rs.getString("owner");
+                String name = rs.getString("name");
+                String description = rs.getString("description");
+                boolean isPublic = rs.getBoolean("isPublic");
+                boolean nicknamesEnabled = rs.getBoolean("nicknamesEnabled");
+                boolean isServerOwned = rs.getBoolean("isServerOwned");
+                boolean hidden = rs.getBoolean("hidden");
+
+                Chatroom chatroom = new Chatroom(UUID.fromString(owner), name, description, isPublic, true,
+                        isServerOwned, true, hidden);
+                chatrooms.add(chatroom);
+            }
+        }
+        return chatrooms;
     }
 
 
