@@ -10,7 +10,7 @@ import java.sql.SQLException;
 /* Created by Perotin on 8/14/19 */
 public class SQLHandler  {
 
-
+    private Connection connection;
     private String host, database, username, password;
     private int port;
 
@@ -20,6 +20,16 @@ public class SQLHandler  {
         this.username = username;
         this.password = password;
         this.port = port;
+
+        String url = String.format("jdbc:mysql://%s:%d/%s", host, port, database);
+        try {
+            this.connection = DriverManager.getConnection(url, username, password);
+            if (this.connection != null && !this.connection.isClosed()) {
+                System.out.println("Database connection successful.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Database connection failed: " + e.getMessage());
+        }
     }
 
 
@@ -42,6 +52,10 @@ public class SQLHandler  {
 
     public int getPort() {
         return port;
+    }
+
+    public Connection getConnection() {
+        return connection;
     }
 
 
@@ -93,6 +107,12 @@ public class SQLHandler  {
 
     private String getDatabaseUrl() {
         return "jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&serverTimezone=UTC";
+    }
+
+    public void closeConnection() throws SQLException {
+        if (this.connection != null && !this.connection.isClosed()) {
+            this.connection.close();
+        }
     }
 
 

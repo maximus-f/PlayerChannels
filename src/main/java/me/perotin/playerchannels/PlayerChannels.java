@@ -15,6 +15,7 @@ import me.perotin.playerchannels.objects.*;
 import me.perotin.playerchannels.proxy.BungeeMessageHandler;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
+import me.perotin.playerchannels.storage.mysql.SQLHandler;
 import me.perotin.playerchannels.utils.ChannelUtils;
 import me.perotin.playerchannels.utils.Metrics;
 import me.perotin.playerchannels.utils.TutorialHelper;
@@ -33,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -47,17 +49,9 @@ import java.util.stream.Collectors;
  */
 
 /*
-3.7.3
-- Added check-limit option
-- Added default-channel-limit option
+3.7.7
+- Add MySQL for global saved channels
 
-Need to do
-- Invites (currently dealing with eof, current system is a bit convoluted, may push it to 3.7.1)
-
- */
-
-
-/*
  */
 public class PlayerChannels extends JavaPlugin implements PluginMessageListener {
 
@@ -82,6 +76,8 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
     private boolean bungeecord, usePermission, createPermission, checkLimit, mySQL;
 
     private int defaultChannelLimit;
+
+    private SQLHandler sqlHandler;
 
 
 
@@ -125,6 +121,22 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
        this.defaultChannelLimit = getConfig().contains("default-channel-limit") ? getConfig().getInt("default-channel-limit") : 3;
        this.mySQL = getConfig().contains("mysql-enabled") && getConfig().getBoolean("mysql-enabled");
 
+       if (mySQL) {
+           sqlHandler = new SQLHandler(getConfig().getString("host"),
+                   getConfig().getString("database"),
+                   getConfig().getString("username"),
+                   getConfig().getString("password"),
+                   getConfig().getInt("port"));
+           try {
+               if (!sqlHandler.getConnection().isValid(2)){
+                   mySQL = false;
+                   Bukkit.getConsoleSender().sendMessage("[PlayerChannels] MySQL failed to register. Global saved channels will not be saved.");
+
+               }
+           } catch (SQLException e) {
+               throw new RuntimeException(e);
+           }
+       }
         // Enable bungeecord support
        if (isBungeecord()) {
            Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Loading Bungeecord hook.");
@@ -170,6 +182,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
         //main.disable();
         chatrooms.stream().filter(c -> c.isSaved() && !c.isGlobal()).forEach(Chatroom::saveToFile);
+        chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeChatroom);
 
         // Save each player to file
         for (PlayerChannelUser playerChannelUser : players) {
