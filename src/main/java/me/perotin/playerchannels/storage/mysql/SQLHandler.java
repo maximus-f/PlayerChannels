@@ -51,7 +51,20 @@ public class SQLHandler  {
         try {
             connection = DriverManager.getConnection(getDatabaseUrl(), username, password);
 
-            String query = "REPLACE INTO chatrooms (ownerUuid, name, description, isPublic, isSaved, nicknamesEnabled, isServerOwned, isGlobal, hidden) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String createTableSQL = "CREATE TABLE IF NOT EXISTS chatrooms (" +
+                    "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                    "owner VARCHAR(36) NOT NULL, " +
+                    "name VARCHAR(255) UNIQUE NOT NULL, " +
+                    "description TEXT, " +
+                    "isPublic BOOLEAN NOT NULL, " +
+                    "nicknamesEnabled BOOLEAN NOT NULL, " +
+                    "isServerOwned BOOLEAN NOT NULL, " +
+                    "hidden BOOLEAN NOT NULL)";
+            statement = connection.prepareStatement(createTableSQL);
+            statement.executeUpdate();
+            statement.close();
+
+            String query = "REPLACE INTO chatrooms (owner, name, description, isPublic, nicknamesEnabled, isServerOwned, hidden) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             statement = connection.prepareStatement(query);
 
@@ -59,11 +72,9 @@ public class SQLHandler  {
             statement.setString(2, chatroom.getName());
             statement.setString(3, chatroom.getDescription());
             statement.setBoolean(4, chatroom.isPublic());
-            statement.setBoolean(5, chatroom.isSaved());
-            statement.setBoolean(6, chatroom.isNicknamesEnabled());
-            statement.setBoolean(7, chatroom.isServerOwned());
-            statement.setBoolean(8, chatroom.isGlobal());
-            statement.setBoolean(9, chatroom.isHidden());
+            statement.setBoolean(5, chatroom.isNicknamesEnabled());
+            statement.setBoolean(6, chatroom.isServerOwned());
+            statement.setBoolean(7, chatroom.isHidden());
 
             statement.executeUpdate();
 
