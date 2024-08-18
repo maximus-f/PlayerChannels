@@ -1,6 +1,7 @@
 package me.perotin.playerchannels.storage.mysql;
 
 import me.perotin.playerchannels.objects.Chatroom;
+import org.bukkit.Bukkit;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -66,7 +67,6 @@ public class SQLHandler  {
             connection = DriverManager.getConnection(getDatabaseUrl(), username, password);
 
             String createTableSQL = "CREATE TABLE IF NOT EXISTS chatrooms (" +
-                    "id INT AUTO_INCREMENT PRIMARY KEY, " +
                     "owner VARCHAR(36) NOT NULL, " +
                     "name VARCHAR(255) UNIQUE NOT NULL, " +
                     "description TEXT, " +
@@ -103,6 +103,7 @@ public class SQLHandler  {
                 try { connection.close(); } catch (SQLException e) { /* Ignored */ }
             }
         }
+        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Stored chatroom: " + chatroom + " in database: " + database);
     }
 
     private String getDatabaseUrl() {
@@ -122,7 +123,6 @@ public class SQLHandler  {
              ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
-                int id = rs.getInt("id");
                 String owner = rs.getString("owner");
                 String name = rs.getString("name");
                 String description = rs.getString("description");
@@ -134,6 +134,10 @@ public class SQLHandler  {
                 Chatroom chatroom = new Chatroom(UUID.fromString(owner), name, description, isPublic, true,
                         isServerOwned, true, hidden);
                 chatrooms.add(chatroom);
+            }
+        } catch (SQLException e) {
+            if (!e.getSQLState().equals("42S02")) {
+                e.printStackTrace();
             }
         }
         return chatrooms;

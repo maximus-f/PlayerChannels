@@ -52,6 +52,9 @@ import java.util.stream.Collectors;
 3.7.7
 - Add MySQL for global saved channels
 
+TODO
+- Test, theoretically is done
+
  */
 public class PlayerChannels extends JavaPlugin implements PluginMessageListener {
 
@@ -132,6 +135,9 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
                    mySQL = false;
                    Bukkit.getConsoleSender().sendMessage("[PlayerChannels] MySQL failed to register. Global saved channels will not be saved.");
 
+               } else {
+                   Bukkit.getConsoleSender().sendMessage("[PlayerChannels] MySQL successfully connected.. Global saved channels will be saved.");
+
                }
            } catch (SQLException e) {
                throw new RuntimeException(e);
@@ -200,7 +206,9 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
         //main.disable();
         chatrooms.stream().filter(c -> c.isSaved() && !c.isGlobal()).forEach(Chatroom::saveToFile);
-        chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeChatroom);
+        if (isBungeecord() && mySQL) {
+            chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeChatroom);
+        }
 
         // Save each player to file
         for (PlayerChannelUser playerChannelUser : players) {

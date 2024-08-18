@@ -12,7 +12,7 @@
 
     <groupId>me.perotin.playerchannels</groupId>
     <artifactId>PlayerChannels</artifactId>
-    <version>3.7.6</version>
+    <version>3.7.7</version>
 
     <repositories>
         <repository>
@@ -143,8 +143,9 @@
                         <configuration>
                             <target>
                                 <echo message="Copying built JAR to target directories..."/>
-                                <copy file="/Users/maxfuligni/Desktop/network/bungee_server2/plugins/PlayerChannels-3.7.6.jar"
+                                <copy file="/Users/maxfuligni/Desktop/network/bungee_server2/plugins/PlayerChannels-3.7.7.jar"
                                       todir="/Users/maxfuligni/Desktop/network/bungee_server1/plugins"/>
+                                
 
 
                             </target>
