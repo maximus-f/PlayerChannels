@@ -208,6 +208,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         chatrooms.stream().filter(c -> c.isSaved() && !c.isGlobal()).forEach(Chatroom::saveToFile);
         if (isBungeecord() && mySQL) {
             chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeChatroom);
+            chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeMembers);
         }
 
         // Save each player to file

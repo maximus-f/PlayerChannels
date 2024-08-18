@@ -1,11 +1,14 @@
 package me.perotin.playerchannels.storage.mysql;
 
+import me.perotin.playerchannels.objects.ChatRole;
 import me.perotin.playerchannels.objects.Chatroom;
+import me.perotin.playerchannels.objects.PlayerChannelUser;
 import org.bukkit.Bukkit;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /* Created by Perotin on 8/14/19 */
@@ -58,6 +61,7 @@ public class SQLHandler  {
     public Connection getConnection() {
         return connection;
     }
+
 
 
     public void storeChatroom(Chatroom chatroom) {
@@ -142,6 +146,53 @@ public class SQLHandler  {
         }
         return chatrooms;
     }
+
+    public void storeMembers(Chatroom chatroom) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Storing members of: " + chatroom + " in database: " + database);
+        try {
+            connection = DriverManager.getConnection(getDatabaseUrl(), username, password);
+
+            // Create the members table if it does not exist
+            String createTableSQL = "CREATE TABLE IF NOT EXISTS members (" +
+                    "chatroomName VARCHAR(255) NOT NULL, " +
+                    "memberUUID VARCHAR(36) NOT NULL, " +
+                    "rank INT NOT NULL CHECK (rank BETWEEN 1 AND 3), " +
+                    "UNIQUE (chatroomName, memberUUID), " +
+                    "FOREIGN KEY (chatroomName) REFERENCES chatrooms(name))";
+            statement = connection.prepareStatement(createTableSQL);
+            statement.executeUpdate();
+            statement.close();
+
+            // Insert or update members
+            String query = "REPLACE INTO members (chatroomName, memberUUID, rank) VALUES (?, ?, ?)";
+            statement = connection.prepareStatement(query);
+
+            for (UUID member : chatroom.getMemberMap().keySet()) {
+                statement.setString(1, chatroom.getName());
+                statement.setString(2, member.toString());
+                statement.setInt(3, chatroom.getMemberMap().get(member).getValue());
+
+                statement.addBatch();
+            }
+
+            // Execute the batch update
+            statement.executeBatch();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (statement != null) {
+                try { statement.close(); } catch (SQLException e) { /* Ignored */ }
+            }
+            if (connection != null) {
+                try { connection.close(); } catch (SQLException e) { /* Ignored */ }
+            }
+        }
+        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Stored members for chatroom: " + chatroom.getName() + " in database: " + database);
+    }
+
 
 
 }
