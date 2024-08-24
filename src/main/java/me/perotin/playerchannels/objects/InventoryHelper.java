@@ -91,8 +91,13 @@ public class InventoryHelper {
 
         Player player = Bukkit.getPlayer(owner.getUniqueId()); // should work since the player is online
 
-        if (player.hasPermission("playerchannels.admin")) {
-            navBar.addItem(new GuiItem(adminMenu.getFirst(), clickAdminMenu()), adminMenu.getSecond(), 0);
+
+        GuiItem adminItem = new GuiItem(adminMenu.getFirst(), clickAdminMenu());
+
+        if (player.hasPermission("playerchannels.admin") || player.isOp()) {
+            navBar.addItem(adminItem, adminMenu.getSecond(), 0);
+        } else {
+            navBar.addItem(DECO_ITEM(), adminMenu.getSecond(), 0);
         }
 
 
@@ -425,7 +430,9 @@ public class InventoryHelper {
         return event -> {
             Player admin = (Player) event.getWhoClicked();
           event.setCancelled(true);
-          new AdminMenu(admin, "Admin Menu").show(admin);
+          if (admin.hasPermission("playerchannels.admin") || admin.isOp()) {
+              new AdminMenu(admin, "Admin Menu").show(admin);
+          }
 
         };
     }

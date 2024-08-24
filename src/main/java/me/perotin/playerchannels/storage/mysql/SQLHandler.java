@@ -158,14 +158,14 @@ public class SQLHandler  {
             String createTableSQL = "CREATE TABLE IF NOT EXISTS members (" +
                     "chatroomName VARCHAR(255) NOT NULL, " +
                     "memberUUID VARCHAR(36) NOT NULL, " +
-                    "rank INT NOT NULL CHECK (rank BETWEEN 1 AND 3), " +
+                    "`rank` INT NOT NULL, " +
                     "UNIQUE (chatroomName, memberUUID), " +
                     "FOREIGN KEY (chatroomName) REFERENCES chatrooms(name))";
             statement = connection.prepareStatement(createTableSQL);
             statement.executeUpdate();
             statement.close();
 
-            // Insert or update members
+            // Insert into query
             String query = "REPLACE INTO members (chatroomName, memberUUID, rank) VALUES (?, ?, ?)";
             statement = connection.prepareStatement(query);
 
@@ -177,7 +177,6 @@ public class SQLHandler  {
                 statement.addBatch();
             }
 
-            // Execute the batch update
             statement.executeBatch();
 
         } catch (SQLException e) {
