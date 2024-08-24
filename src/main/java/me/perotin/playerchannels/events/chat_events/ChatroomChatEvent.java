@@ -91,7 +91,6 @@ public class ChatroomChatEvent implements Listener {
        }
 
        // Player is using their index keys to "fast chat" in multiple chatrooms
-        // TODO
       else  if (message.matches("^[1-9][0-9]?:.*$")) {
             event.setCancelled(true);
 
@@ -131,7 +130,6 @@ public class ChatroomChatEvent implements Listener {
 
             }
             fastChatroom.chat(chatter.getName(), parts[1].trim(), chatter.getUniqueId());
-            return;
         }
 
 

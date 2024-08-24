@@ -124,7 +124,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
        this.defaultChannelLimit = getConfig().contains("default-channel-limit") ? getConfig().getInt("default-channel-limit") : 3;
        this.mySQL = getConfig().contains("mysql-enabled") && getConfig().getBoolean("mysql-enabled");
 
-       if (false) { // should be mySQL but not using for this bug fix
+       if (mySQL) {
            sqlHandler = new SQLHandler(getConfig().getString("host"),
                    getConfig().getString("database"),
                    getConfig().getString("username"),
@@ -156,7 +156,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
            GlobalChatroom.sendGlobalSearch();
 
            // Loading in global channels from mysql that were not added from the global search if possible
-           if (false) { // should be mySql
+           if (mySQL) {
                try {
                    Set<String> addedNames = new HashSet<>();
                    addedNames.addAll(chatrooms.stream().map(Chatroom::getName).collect(Collectors.toList()));
@@ -206,10 +206,10 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
         //main.disable();
         chatrooms.stream().filter(c -> c.isSaved() && !c.isGlobal()).forEach(Chatroom::saveToFile);
-//        if (isBungeecord() && mySQL) {
-//            chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeChatroom);
-//            chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeMembers);
-//        }
+        if (isBungeecord() && mySQL) {
+            chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeChatroom);
+            chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeMembers);
+        }
 
         // Save each player to file
         for (PlayerChannelUser playerChannelUser : players) {

@@ -12,7 +12,7 @@
 
     <groupId>me.perotin.playerchannels</groupId>
     <artifactId>PlayerChannels</artifactId>
-    <version>3.7.7</version>
+    <version>3.8</version>
 
     <repositories>
         <repository>

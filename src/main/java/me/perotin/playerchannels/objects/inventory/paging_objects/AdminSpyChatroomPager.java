@@ -1,6 +1,5 @@
 package me.perotin.playerchannels.objects.inventory.paging_objects;
 
-// import statements...
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;

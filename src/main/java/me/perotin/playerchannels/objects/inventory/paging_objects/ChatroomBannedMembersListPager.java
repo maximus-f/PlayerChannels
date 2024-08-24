@@ -59,11 +59,6 @@ public class ChatroomBannedMembersListPager extends PagingMenu {
         return items;
     }
 
-//    // This is probably not needed I think
-//    @Override
-//    protected void setPaginatedPane(){
-//        pane = new PaginatedPane(1, 2, 7, 3);
-//        getMenu().addPane(pane);
-//    }
+
 
 }
