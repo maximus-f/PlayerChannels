@@ -3,4 +3,4 @@ This is a complete rewrite of my plugin PrivateTalkPremium. The rewritten versio
 
 
 ## How to contribute?
-I will be focusing on adding all of the features of PrivateTalkPremium. Create a fork with one of the features you wish to help with and I will check it out, all commits are appreciated :)
+I will be focusing on adding all of the features of PrivateTalkPremium. Create a fork with one of the features you wish to help with and I will check it out, all commits are appreciated.

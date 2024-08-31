@@ -63,7 +63,6 @@ public class SQLHandler  {
     }
 
 
-
     public void storeChatroom(Chatroom chatroom) {
         Connection connection = null;
         PreparedStatement statement = null;
@@ -166,7 +165,7 @@ public class SQLHandler  {
             statement.close();
 
             // Insert into query
-            String query = "REPLACE INTO members (chatroomName, memberUUID, rank) VALUES (?, ?, ?)";
+            String query = "REPLACE INTO members (chatroomName, memberUUID, `rank`) VALUES (?, ?, ?)";
             statement = connection.prepareStatement(query);
 
             for (UUID member : chatroom.getMemberMap().keySet()) {

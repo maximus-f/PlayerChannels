@@ -107,9 +107,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         new UpdateChecker(this).checkForUpdate();
 
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            players.add(PlayerChannelUser.getPlayer(player.getUniqueId()));
-        }
+
 
 //        main.load();
 
@@ -136,7 +134,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
                    Bukkit.getConsoleSender().sendMessage("[PlayerChannels] MySQL failed to register. Global saved channels will not be saved.");
 
                } else {
-                   Bukkit.getConsoleSender().sendMessage("[PlayerChannels] MySQL successfully connected.. Global saved channels will be saved.");
+                   Bukkit.getConsoleSender().sendMessage("[PlayerChannels] MySQL successfully connected. Global saved channels will be saved.");
 
                }
            } catch (SQLException e) {
@@ -178,7 +176,10 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
        }
 
 
-
+       // Load in player data after channel data
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            players.add(PlayerChannelUser.getPlayer(player.getUniqueId()));
+        }
 
     }
 
