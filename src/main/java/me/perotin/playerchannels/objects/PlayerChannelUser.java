@@ -41,6 +41,11 @@ public class PlayerChannelUser {
 
     private String status;
 
+    /**
+     *  New PlayerChannelUser constructor for first-time creation
+     * @param uuid
+     * @param name
+     */
     public PlayerChannelUser(UUID uuid, String name) {
         this.uuid = uuid;
         this.name = name;
@@ -101,6 +106,8 @@ public class PlayerChannelUser {
        tellListeningChannels();
    }
 
+
+   // Helper method to inform player of which channels they are currently listening to
    private void tellListeningChannels() {
        Player player = Bukkit.getPlayer(getUuid());
        ChannelFile messages = new ChannelFile(FileType.MESSAGES);
@@ -224,6 +231,10 @@ public class PlayerChannelUser {
         playerFile.save();
 
     }
+
+    /**
+     * @return only persistent channels
+     */
     private List<Chatroom> getSavedChatrooms() {
         return getChatrooms().stream().filter(Chatroom::isSaved).collect(Collectors.toList());
     }
@@ -280,7 +291,7 @@ public class PlayerChannelUser {
     }
     /**
      *
-     * @param sets the playeres current focused chatroom
+     * @param focusedChatroom sets the playeres current focused chatroom
      */
     public void setFocusedChatroom(Chatroom focusedChatroom) {
 
@@ -301,9 +312,13 @@ public class PlayerChannelUser {
     }
 
 
+    /**
+     * @return size of channels that player is owner of
+     */
     public int getOwnedChannelsSize() {
         return getChatrooms().stream().filter(c -> c.getOwner() != null && c.getOwner().equals(getUuid())).collect(Collectors.toList()).size();
     }
+
     public void setStatus(String status) {
         this.status = status;
     }

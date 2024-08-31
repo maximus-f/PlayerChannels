@@ -374,6 +374,10 @@ public class Chatroom {
     public boolean isBanned(UUID uuid){
         return bannedMembers.contains(uuid);
     }
+
+    /**
+     * @return if channel can be joined by anyone
+     */
     public boolean isPublic() {
         return isPublic;
     }
@@ -386,6 +390,9 @@ public class Chatroom {
         return bannedMembers;
     }
 
+    /**
+     * @return if server owned, i.e. no player owner
+     */
     public boolean isServerOwned() {
         return isServerOwned;
     }
@@ -398,7 +405,6 @@ public class Chatroom {
      * Main method for sending a chatroom message to all participents of the chatroom
      * that are currently listening to messages
      *
-     * In the future, members may be able to mute a chatroom so will have to account for this.
      * @param message
      */
     public String chat(String sender, String message, UUID id){
@@ -552,13 +558,26 @@ public class Chatroom {
         getNickNames().put(uuid, nickname);
     }
 
+    /**
+     * @param member to promote to channel moderator
+     */
     public void promoteMemberToModerator(UUID member) {
         updateRoleFor(member, ChatRole.MODERATOR);
     }
+
+    /**
+     * @param member to demote from moderator to member
+     */
     public void demoteModeratorToMember(UUID member) {
         updateRoleFor(member, ChatRole.MEMBER);
     }
 
+    /**
+     * @param member
+     * @param oldOwner
+     *
+     * Promote moderator to owner and demote owner to moderator
+     */
     public void promoteModeratorToOwner(UUID member, UUID oldOwner) {
         updateRoleFor(member, ChatRole.OWNER);
         updateRoleFor(oldOwner, ChatRole.MODERATOR);

@@ -276,6 +276,9 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         return chatrooms;
     }
 
+    /**
+     * @return only hidden channels
+     */
     public List<Chatroom> getHiddenChatrooms() {
         return getChatrooms().stream().filter(c -> c.isHidden()).collect(Collectors.toList());
     }
@@ -344,6 +347,11 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         }
     }
 
+
+    /**
+     * @param name
+     * @return name of specific channel, null if not exist
+     */
     public Chatroom getChatroom(String name){
         for (Chatroom chat : chatrooms) {
             if (ChatColor.stripColor(chat.getName()).equalsIgnoreCase(ChatColor.stripColor(name)))
@@ -352,11 +360,15 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         return null;
     }
 
+    /**
+     * @return Set of players who are not listening to global chat.
+     */
     public Set<UUID> getListeningPlayers() {
         return disableGlobalChat;
     }
 
 
+    // Reload yaml file
     public void reloadConfig(String fileName) {
         File configFile = new File(getDataFolder(), fileName);
         if (configFile.exists()) {
