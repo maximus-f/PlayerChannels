@@ -1,5 +1,6 @@
 package me.perotin.playerchannels.objects.inventory.actions;
 
+import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
 import me.perotin.playerchannels.objects.inventory.paging_objects.ChatroomPager;
@@ -29,10 +30,14 @@ public class ChatroomModeratorAction {
             Player mod = (Player) event.getWhoClicked();
 
             // tell person they've been promoted and show new mod menu
-            ChannelUtils.sendMenuMessage("You have promoted " + player.getName() +" to mod!", mod,
-                    new ChatroomPager(chatroom, mod));
+            String promotionMessage = PlayerChannels.getInstance().getConfig().getString("chatroom-moderator-promotion-message")
+                    .replace("$player$", player.getName());
 
+            // Send the message
+            ChannelUtils.sendMenuMessage(promotionMessage, mod,
+                    new ChatroomPager(chatroom, mod));
         };
+
     }
 
     /**
@@ -47,8 +52,11 @@ public class ChatroomModeratorAction {
             chatroom.demoteModeratorToMember(player.getUuid());
             Player mod = (Player) event.getWhoClicked();
 
-            // tell person they've been promoted and show new mod menu
-            ChannelUtils.sendMenuMessage("You have demoted " + player.getName() +" from mod!", mod,
+            // tell person they've been demoted and show new mod menu
+            String demotionMessage = PlayerChannels.getInstance().getConfig().getString("chatroom-moderator-demotion-message")
+                    .replace("$player$", player.getName());
+
+            ChannelUtils.sendMenuMessage(demotionMessage, mod,
                     new ChatroomPager(chatroom, mod));
 
         };

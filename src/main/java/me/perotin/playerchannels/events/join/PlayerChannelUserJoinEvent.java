@@ -7,6 +7,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+/**
+ * Listener class to check if player is registered with PlayerChannels.
+ * Registers if not.
+ */
+
 public class PlayerChannelUserJoinEvent implements Listener {
 
     private PlayerChannels plugin;
