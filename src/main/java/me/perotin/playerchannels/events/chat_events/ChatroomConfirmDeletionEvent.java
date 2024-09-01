@@ -2,10 +2,12 @@ package me.perotin.playerchannels.events.chat_events;
 
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.Chatroom;
+import me.perotin.playerchannels.objects.GlobalChatroom;
 import me.perotin.playerchannels.objects.inventory.paging_objects.ChatroomPager;
 import me.perotin.playerchannels.objects.inventory.paging_objects.MainMenuPaging;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

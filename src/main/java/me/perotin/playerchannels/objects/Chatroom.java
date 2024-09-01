@@ -771,7 +771,7 @@ public class Chatroom {
 
         }
         PlayerChannels.getInstance().getChatrooms().remove(this);
-        if (isSaved()) {
+        if (isSaved() && !isGlobal()) {
             // have to delete from chatrooms.yml
             // players.yml should be fine because it should get overwritten
             ChannelFile chatrooms = new ChannelFile(CHATROOM);

@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -119,9 +120,19 @@ public class GlobalChatroom extends Chatroom {
     }
 
 
+    /**
+     * Deletes a global channel and sends message to delete channel on other servers.
+     *  Deletes in MySQL.
+     */
     @Override
-    public void delete(){
+    public void delete() {
+
+        PlayerChannels instance = PlayerChannels.getInstance();
+        if (instance.isMySQL()) {
+            instance.getSqlHandler().deleteChannel(this);
+        }
         super.delete();
+
         sendBungeeWrite("Delete", getName());
 
     }

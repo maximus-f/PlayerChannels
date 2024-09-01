@@ -2,6 +2,7 @@ package me.perotin.playerchannels.storage.mysql;
 
 import me.perotin.playerchannels.objects.ChatRole;
 import me.perotin.playerchannels.objects.Chatroom;
+import me.perotin.playerchannels.objects.GlobalChatroom;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
 import org.bukkit.Bukkit;
 
@@ -134,8 +135,8 @@ public class SQLHandler  {
                 boolean isServerOwned = rs.getBoolean("isServerOwned");
                 boolean hidden = rs.getBoolean("hidden");
 
-                Chatroom chatroom = new Chatroom(UUID.fromString(owner), name, description, isPublic, true,
-                        isServerOwned, true, hidden);
+                GlobalChatroom chatroom = new GlobalChatroom(UUID.fromString(owner), name, description, isPublic, true,
+                        isServerOwned);
                 chatrooms.add(chatroom);
             }
         } catch (SQLException e) {
@@ -144,6 +145,27 @@ public class SQLHandler  {
             }
         }
         return chatrooms;
+    }
+
+    public void deleteChannel(Chatroom chatroom)  {
+        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Deleting chatroom from database: " + chatroom.getName());
+        String memberDeleteQuery = "DELETE FROM members WHERE chatroomName = ?"; // delete all instances chatroomName = this
+        String query = "DELETE FROM chatrooms WHERE name = ?";
+        try (PreparedStatement memberStmt = connection.prepareStatement(memberDeleteQuery);
+             PreparedStatement chatroomStmt = connection.prepareStatement(query)) {
+
+            // Set the chatroom name in the delete statement for members
+            memberStmt.setString(1, chatroom.getName());
+             memberStmt.executeUpdate();
+
+            // Set the chatroom name in the delete statement for chatrooms
+            chatroomStmt.setString(1, chatroom.getName());
+            int chatroomsDeleted = chatroomStmt.executeUpdate();
+            Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Deleted chatroom: " + chatroom.getName() + " (" + chatroomsDeleted + " rows affected)");
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void storeMembers(Chatroom chatroom) {

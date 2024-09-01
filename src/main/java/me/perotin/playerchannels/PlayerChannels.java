@@ -277,12 +277,20 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
     }
 
     /**
+     * @return MySQL utility class
+     */
+    public SQLHandler getSqlHandler() {
+        return sqlHandler;
+    }
+
+    /**
 
      * @return if bungeecord is enabled
      */
     public boolean isBungeecord() {
         return bungeecord;
     }
+
 
     /**
      * @param player to add to private talk's memory
