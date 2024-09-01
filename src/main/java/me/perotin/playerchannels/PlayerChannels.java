@@ -49,11 +49,19 @@ import java.util.stream.Collectors;
  */
 
 /*
-3.7.7
-- Add MySQL for global saved channels
+3.8 TO-DO
+- Need a way to delete MySQL channel
+  Lots of testing
+
+  Test 1: MySQL & Bungeecord
+    Server 1
+    Server 2
+
+
 
 TODO
-- Test, theoretically is done
+- Test, theoretically is done now for real
+-
 
  */
 public class PlayerChannels extends JavaPlugin implements PluginMessageListener {
@@ -93,7 +101,6 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         saveDefaultConfig();
         ChannelFile.loadFiles();
 
-
         this.chatrooms = new ArrayList<>();
         this.players = new ArrayList<>();
         this.helper = new InventoryHelper();
@@ -103,85 +110,34 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         loadChatrooms();
         int pluginId = 19355;
         Metrics metrics = new Metrics(this, pluginId);
-
         new UpdateChecker(this).checkForUpdate();
-
-
-
 
 //        main.load();
 
         main.enableInMemory();
         api = UltimateAdvancementAPI.getInstance(this);
 
-
        this.bungeecord = getConfig().getBoolean("bungeecord");
        this.usePermission = getConfig().contains("use-permission") && getConfig().getBoolean("use-permission");
        this.createPermission = getConfig().contains("create-permission") && getConfig().getBoolean("create-permission");
        this.checkLimit = getConfig().contains("check-limit") && getConfig().getBoolean("check-limit");
        this.defaultChannelLimit = getConfig().contains("default-channel-limit") ? getConfig().getInt("default-channel-limit") : 3;
-       this.mySQL = getConfig().contains("mysql-enabled") && getConfig().getBoolean("mysql-enabled");
 
-       if (mySQL) {
-           sqlHandler = new SQLHandler(getConfig().getString("host"),
-                   getConfig().getString("database"),
-                   getConfig().getString("username"),
-                   getConfig().getString("password"),
-                   getConfig().getInt("port"));
-           try {
-               if (!sqlHandler.getConnection().isValid(2)){
-                   mySQL = false;
-                   Bukkit.getConsoleSender().sendMessage("[PlayerChannels] MySQL failed to register. Global saved channels will not be saved.");
+       // Setup MySQL is true
+        setupMySQL();
 
-               } else {
-                   Bukkit.getConsoleSender().sendMessage("[PlayerChannels] MySQL successfully connected. Global saved channels will be saved.");
-
-               }
-           } catch (SQLException e) {
-               throw new RuntimeException(e);
-           }
-       }
         // Enable bungeecord support
-       if (isBungeecord()) {
-           Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Loading Bungeecord hook.");
-           this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-           this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
-           Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Bungeecord channels registered.");
-
-           Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Loading in pre-existing Global Channels");
+        setupBungeecordSupport();
 
 
-           GlobalChatroom.sendGlobalSearch();
-
-           // Loading in global channels from mysql that were not added from the global search if possible
-           if (mySQL) {
-               try {
-                   Set<String> addedNames = new HashSet<>();
-                   addedNames.addAll(chatrooms.stream().map(Chatroom::getName).collect(Collectors.toList()));
-
-                   List<Chatroom> allBCordChannels = sqlHandler.getAllChatrooms();
-
-                   for (Chatroom chatroom : allBCordChannels) {
-                       if (!addedNames.contains(chatroom.getName())) {
-                           chatrooms.add(chatroom);
-                           addedNames.add(chatroom.getName());
-                           Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Added in " + chatroom.getName() + " from " + sqlHandler.getDatabase()+" database!");
-
-                       }
-                   }
-               } catch (SQLException e) {
-                   throw new RuntimeException(e);
-               }
-           }
-       }
-
-
-       // Load in player data after channel data
+        // Load in player data after channel data
         for (Player player : Bukkit.getOnlinePlayers()) {
             players.add(PlayerChannelUser.getPlayer(player.getUniqueId()));
         }
 
     }
+
+
 
     @Override
     public void onLoad() {
@@ -313,6 +269,12 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         return createPermission;
     }
 
+    /**
+     * @return whether MySQL db is enabled
+     */
+    public boolean isMySQL() {
+        return mySQL;
+    }
 
     /**
 
@@ -385,6 +347,41 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         }
     }
 
+
+
+    // Set up MySQL configuration if Bungeecord is true and test connection
+    private void setupMySQL() {
+        this.mySQL = getConfig().contains("mysql-enabled") && getConfig().getBoolean("mysql-enabled") && bungeecord;
+
+        // Using MySQL unnecessarily
+        if (getConfig().contains("mysql-enabled") && getConfig().getBoolean("mysql-enabled") && !bungeecord) {
+            Bukkit.getConsoleSender().sendMessage("[PlayerChannels] MySQL is enabled but Bungeecord is not. Flat-storage is preferable in this scenario.");
+            Bukkit.getConsoleSender().sendMessage("[PlayerChannels] MySQL will not be used for this session.");
+            return;
+        }
+
+        if (mySQL) {
+            sqlHandler = new SQLHandler(
+                    getConfig().getString("host"),
+                    getConfig().getString("database"),
+                    getConfig().getString("username"),
+                    getConfig().getString("password"),
+                    getConfig().getInt("port")
+            );
+
+            try {
+                if (!sqlHandler.getConnection().isValid(2)) {
+                    mySQL = false;
+                    Bukkit.getConsoleSender().sendMessage("[PlayerChannels] MySQL failed to register. Global saved channels will not be saved.");
+                } else {
+                    Bukkit.getConsoleSender().sendMessage("[PlayerChannels] MySQL successfully connected. Global saved channels will be saved.");
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     /**
      * Return whether to check for a max limit when players create a channel
      */
@@ -397,6 +394,42 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
      */
     public int getDefaultChannelLimit() {
         return this.defaultChannelLimit;
+    }
+
+    // Add Bungeecord hook
+    private void setupBungeecordSupport() {
+        if (isBungeecord()) {
+            Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Loading Bungeecord hook.");
+            this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+            this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
+            Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Bungeecord channels registered.");
+
+            Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Loading in pre-existing Global Channels");
+
+
+            GlobalChatroom.sendGlobalSearch();
+
+            // Loading in global channels from mysql that were not added from the global search if possible
+            if (isMySQL()) {
+                try {
+                    Set<String> addedNames = new HashSet<>();
+                    addedNames.addAll(chatrooms.stream().map(Chatroom::getName).collect(Collectors.toList()));
+
+                    List<Chatroom> allBCordChannels = sqlHandler.getAllChatrooms();
+
+                    for (Chatroom chatroom : allBCordChannels) {
+                        if (!addedNames.contains(chatroom.getName())) {
+                            chatrooms.add(chatroom);
+                            addedNames.add(chatroom.getName());
+                            Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Added in " + chatroom.getName() + " from " + sqlHandler.getDatabase()+" database!");
+
+                        }
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
 
