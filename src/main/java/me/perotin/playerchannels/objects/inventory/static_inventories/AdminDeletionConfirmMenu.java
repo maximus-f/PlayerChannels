@@ -41,12 +41,11 @@ public class AdminDeletionConfirmMenu extends StaticMenu {
     private Consumer<InventoryClickEvent> confirmDeletion(String channelName) {
         return inventoryClickEvent -> {
             inventoryClickEvent.setCancelled(true);
-            String chatName = channelName.substring(0, channelName.length() - 1);
-            if (PlayerChannels.getInstance().getChatroom(chatName) != null) {
+            if (PlayerChannels.getInstance().getChatroom(channelName) != null) {
 
-                getViewer().sendMessage(ChatColor.GREEN + "Deleting chatroom: " + chatName);
+                getViewer().sendMessage(ChatColor.GREEN + "Deleting chatroom: " + channelName);
                 getViewer().closeInventory();
-                PlayerChannels.getInstance().getChatroom(chatName).delete();
+                PlayerChannels.getInstance().getChatroom(channelName).delete();
             }
         };
     }

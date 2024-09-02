@@ -76,7 +76,6 @@ public class AdminDeleteChatroomPager extends PagingMenu {
                     channelName = parts[1]; // Get everything after the first space
                 }
 
-                // Rest of your code...
                 new AdminDeletionConfirmMenu(getViewer(), "Delete " + channelName + "?").show(getViewer());
             }
         };
