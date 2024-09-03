@@ -10,6 +10,7 @@ public class ChannelChange {
     private final ChangeType changeType;
     private final String channelName;
     private final String memberUUID; // Nullable, only relevant for member changes
+    private int rank = -1;
 
     public ChannelChange(ChangeType changeType, String channelName, String memberUUID) {
         this.changeType = changeType;
@@ -27,5 +28,9 @@ public class ChannelChange {
 
     public String getMemberUUID() {
         return memberUUID;
+    }
+
+    public int getRank() {
+        return rank;
     }
 }

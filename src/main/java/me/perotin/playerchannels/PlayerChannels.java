@@ -13,6 +13,7 @@ import me.perotin.playerchannels.events.chat_events.*;
 import me.perotin.playerchannels.events.join.PlayerChannelUserJoinEvent;
 import me.perotin.playerchannels.objects.*;
 import me.perotin.playerchannels.proxy.BungeeMessageHandler;
+import me.perotin.playerchannels.storage.changelog.ChannelManager;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.storage.mysql.SQLHandler;
@@ -91,6 +92,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
     private SQLHandler sqlHandler;
 
+    private ChannelManager channelManager;
 
 
 
@@ -113,6 +115,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         Metrics metrics = new Metrics(this, pluginId);
         new UpdateChecker(this).checkForUpdate();
 
+
 //        main.load();
 
         main.enableInMemory();
@@ -129,6 +132,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
         // Enable bungeecord support
         setupBungeecordSupport();
+
 
 
         // Load in player data after channel data
@@ -164,10 +168,14 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
         //main.disable();
         chatrooms.stream().filter(c -> c.isSaved() && !c.isGlobal()).forEach(Chatroom::saveToFile);
+
+        //TODO refactor below
         if (isBungeecord() && mySQL) {
-            chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeChatroom);
-            chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeMembers);
+//            chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeChatroom);
+//            chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeMembers);
+            channelManager.onDisable();
         }
+        //
 
         // Save each player to file
         for (PlayerChannelUser playerChannelUser : players) {
@@ -278,6 +286,13 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
     }
 
     /**
+     * @return channel manager object to log changes
+     */
+    public ChannelManager getChannelManager() {
+        return channelManager;
+    }
+
+    /**
      * @return MySQL utility class
      */
     public SQLHandler getSqlHandler() {
@@ -377,6 +392,9 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
                     getConfig().getString("password"),
                     getConfig().getInt("port")
             );
+
+            this.channelManager = new ChannelManager(sqlHandler);
+
 
             try {
                 if (!sqlHandler.getConnection().isValid(2)) {

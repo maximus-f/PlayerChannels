@@ -5,6 +5,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.storage.Pair;
+import me.perotin.playerchannels.storage.changelog.ChannelManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -22,6 +23,8 @@ import java.util.UUID;
  * Class to represent a channel that is cross-network
  */
 public class GlobalChatroom extends Chatroom {
+    private final ChannelManager manager = PlayerChannels.getInstance().getChannelManager();
+
     public GlobalChatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned) {
         super(owner, name, description, isPublic, isSaved, isServerOwned, true, false);
     }
@@ -46,7 +49,7 @@ public class GlobalChatroom extends Chatroom {
             }
         }
 
-
+        manager.addMemberToChannel(getName(), value.getFirst().toString());
         super.addMember(value, name);
         sendBungeeWrite("AddMember", getName(), value.getFirst().toString(), value.getSecond().getValue(), name);
 
@@ -67,6 +70,7 @@ public class GlobalChatroom extends Chatroom {
     @Override
     public void removeMember(UUID key) {
         super.removeMember(key);
+        manager.removeMemberFromChannel(getName(), key.toString());
         sendBungeeWrite("Remove", getName(), key.toString());
     }
 

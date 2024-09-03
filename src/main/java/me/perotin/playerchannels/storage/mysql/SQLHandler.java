@@ -213,6 +213,63 @@ public class SQLHandler  {
         Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Stored members for chatroom: " + chatroom.getName() + " in database: " + database);
     }
 
+    public void updateMemberInDatabase(String chatroom, String memberUUID, int rank, OperationType operationType) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] " + operationType + " member: " + memberUUID + " in chatroom: " + chatroom + " in database: " + database);
+
+        try {
+            connection = DriverManager.getConnection(getDatabaseUrl(), username, password);
+
+            // Create the members table if it does not exist
+            String createTableSQL = "CREATE TABLE IF NOT EXISTS members (" +
+                    "chatroomName VARCHAR(255) NOT NULL, " +
+                    "memberUUID VARCHAR(36) NOT NULL, " +
+                    "`rank` INT NOT NULL, " +
+                    "UNIQUE (chatroomName, memberUUID), " +
+                    "FOREIGN KEY (chatroomName) REFERENCES chatrooms(name))";
+            statement = connection.prepareStatement(createTableSQL);
+            statement.executeUpdate();
+            statement.close();
+
+            if (operationType == OperationType.ADD) {
+                // Add the member
+                String query = "REPLACE INTO members (chatroomName, memberUUID, `rank`) VALUES (?, ?, ?)";
+                statement = connection.prepareStatement(query);
+                statement.setString(1, chatroom);
+                statement.setString(2, memberUUID);
+                statement.setInt(3, rank);
+
+            } else if (operationType == OperationType.REMOVE) {
+                // Remove the member
+                String query = "DELETE FROM members WHERE chatroomName = ? AND memberUUID = ?";
+                statement = connection.prepareStatement(query);
+                statement.setString(1, chatroom);
+                statement.setString(2, memberUUID);
+            }
+
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (statement != null) {
+                try { statement.close(); } catch (SQLException e) { /* Ignored */ }
+            }
+            if (connection != null) {
+                try { connection.close(); } catch (SQLException e) { /* Ignored */ }
+            }
+        }
+
+        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] " + operationType + " member: " + memberUUID + " in chatroom: " + chatroom + " in database: " + database);
+    }
+
+    public enum OperationType {
+        ADD,
+        REMOVE
+    }
+
+
 
 
 }

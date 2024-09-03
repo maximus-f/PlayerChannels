@@ -1,5 +1,8 @@
 package me.perotin.playerchannels.storage.changelog;
 
+import me.perotin.playerchannels.storage.mysql.SQLHandler;
+import org.bukkit.Bukkit;
+
 import java.util.List;
 
 /**
@@ -9,6 +12,10 @@ public class ChannelManager {
 
 
     private final ChangeLog changeLog = new ChangeLog();
+    private final SQLHandler sqlHandler;
+    public ChannelManager(SQLHandler handler) {
+        this.sqlHandler = handler;
+    }
 
     public void addChannel(String channelName) {
 
@@ -42,6 +49,7 @@ public class ChannelManager {
      */
     private void persistChangesToDatabase(List<ChannelChange> changes) {
         for (ChannelChange change : changes) {
+            Bukkit.getConsoleSender().sendMessage("[PlayerChannels] " + change.getChannelName() + " -> " + change.getMemberUUID() + " for action " + change.getChangeType().toString());
             switch (change.getChangeType()) {
                 case ADD_CHANNEL:
 
@@ -50,10 +58,10 @@ public class ChannelManager {
 
                     break;
                 case ADD_MEMBER:
-
+                    sqlHandler.updateMemberInDatabase(change.getChannelName(), change.getMemberUUID(), 1, SQLHandler.OperationType.ADD);
                     break;
                 case REMOVE_MEMBER:
-
+                    sqlHandler.updateMemberInDatabase(change.getChannelName(), change.getMemberUUID(), 1, SQLHandler.OperationType.REMOVE);
                     break;
             }
         }
