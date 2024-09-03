@@ -446,6 +446,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
                     for (Chatroom chatroom : allBCordChannels) {
                         if (!addedNames.contains(chatroom.getName())) {
+                            chatroom.setMembers(sqlHandler.getChatroomMembers(chatroom.getName()));
                             chatrooms.add(chatroom);
                             addedNames.add(chatroom.getName());
                             Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Added in " + chatroom.getName() + " from " + sqlHandler.getDatabase()+" database!");

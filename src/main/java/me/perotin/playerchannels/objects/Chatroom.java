@@ -325,6 +325,13 @@ public class Chatroom {
     }
 
     /**
+     * @param members, used for setting member map from members db table
+     */
+    public void setMembers(Map<UUID, ChatRole> members) {
+        this.members = members;
+    }
+
+    /**
      * Chatroom method for removing a member or when a member leaves
      *
      * @param key to remove

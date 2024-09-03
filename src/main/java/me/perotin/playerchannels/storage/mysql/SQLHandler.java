@@ -7,10 +7,7 @@ import me.perotin.playerchannels.objects.PlayerChannelUser;
 import org.bukkit.Bukkit;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /* Created by Perotin on 8/14/19 */
 public class SQLHandler  {
@@ -119,6 +116,26 @@ public class SQLHandler  {
             this.connection.close();
         }
     }
+
+    public Map<UUID, ChatRole> getChatroomMembers(String chatroomName) throws SQLException {
+        Map<UUID, ChatRole> members = new HashMap<>();
+        String query = "SELECT memberUUID, `rank` FROM members WHERE chatroomName = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, chatroomName);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    UUID memberUUID = UUID.fromString(rs.getString("memberUUID"));
+                    int rankValue = rs.getInt("rank");
+                    ChatRole role = ChatRole.getRole(rankValue);
+                    members.put(memberUUID, role);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return members;
+    }
+
 
     public List<Chatroom> getAllChatrooms() throws SQLException {
         List<Chatroom> chatrooms = new ArrayList<>();
