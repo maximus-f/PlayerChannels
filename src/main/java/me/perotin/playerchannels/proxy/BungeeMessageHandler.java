@@ -190,7 +190,9 @@ public class BungeeMessageHandler {
             String channelName = msgin.readUTF();
             boolean value = msgin.readBoolean();
             Chatroom channel = plugin.getChatroom(channelName);
-            channel.setNicknamesEnabled(value);
+            if (channel != null) {
+                channel.setNicknamesEnabled(value);
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -248,7 +250,7 @@ public class BungeeMessageHandler {
                 }
 
                 // Check if the channel already exists before adding
-                if (!plugin.getChatrooms().contains(globalChatroom)) {
+                if (!plugin.getChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList()).contains(globalChatroom.getName())) {
                     plugin.getChatrooms().add(globalChatroom);
                     Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Added global channel: " + channelName);
                 }

@@ -107,7 +107,7 @@ public class SQLHandler  {
                 try { connection.close(); } catch (SQLException e) { /* Ignored */ }
             }
         }
-        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Stored chatroom: " + chatroom + " in database: " + database);
+        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Stored chatroom: " + chatroom.getName() + " in database: " + database);
     }
 
     private String getDatabaseUrl() {

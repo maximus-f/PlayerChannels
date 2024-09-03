@@ -48,13 +48,6 @@
             <version>0.10.9</version>
             <scope>compile</scope>
         </dependency>
-        <!-- HikariCP -->
-<!--        <dependency>-->
-<!--            <groupId>com.zaxxer</groupId>-->
-<!--            <artifactId>HikariCP</artifactId>-->
-<!--            <version>2.7.8</version>-->
-<!--            <scope>compile</scope>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
@@ -143,10 +136,8 @@
                         <configuration>
                             <target>
                                 <echo message="Copying built JAR to target directories..."/>
-                                <copy file="/Users/maxfuligni/Desktop/network/bungee_server2/plugins/PlayerChannels-3.7.7.jar"
+                                <copy file="/Users/maxfuligni/Desktop/network/bungee_server2/plugins/PlayerChannels-3.8.jar"
                                       todir="/Users/maxfuligni/Desktop/network/bungee_server1/plugins"/>
-                                
-
 
                             </target>
                         </configuration>

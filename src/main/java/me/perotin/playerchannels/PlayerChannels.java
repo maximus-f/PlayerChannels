@@ -54,8 +54,9 @@ import java.util.stream.Collectors;
   Lots of testing
 
   Test 1: MySQL & Bungeecord
-    Server 1
-    Server 2
+
+    Look into foreign key violation for storeChatroom, line 97. Think trying to update every single time causes problems
+    for the foreign key in members table..
 
 
 
