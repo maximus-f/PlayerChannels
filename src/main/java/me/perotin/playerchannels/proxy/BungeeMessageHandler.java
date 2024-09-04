@@ -86,6 +86,10 @@ public class BungeeMessageHandler {
             handleServerRestart(in);
 
         }
+        if (subchannel.equalsIgnoreCase("ClearChannelManager")) {
+            PlayerChannels.getInstance().getChannelManager().clear();
+            Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Another server wrote to DB. Clearing changelog memory.");
+        }
 
         if (subchannel.equals("ToggleNicknames")) {
             handleNicknameToggle(in);
@@ -287,6 +291,8 @@ public class BungeeMessageHandler {
             ex.printStackTrace();
         }
     }
+
+
 
     private void handleBroadcastMessage(ByteArrayDataInput in) {
         short len = in.readShort();

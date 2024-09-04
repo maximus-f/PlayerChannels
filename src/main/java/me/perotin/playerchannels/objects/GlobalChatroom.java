@@ -238,6 +238,28 @@ public class GlobalChatroom extends Chatroom {
         }
     }
 
+    public static void sendChannelManagerClear() {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("Forward");
+        out.writeUTF("ALL");
+        out.writeUTF("ClearChannelManager");
+
+        ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
+        DataOutputStream msgout = new DataOutputStream(msgbytes);
+        try {
+            msgout.writeUTF("Test");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        out.writeShort(msgbytes.toByteArray().length);
+        out.write(msgbytes.toByteArray());
+        Player toSend = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
+        if (toSend != null) {
+            toSend.sendPluginMessage(PlayerChannels.getInstance(), "BungeeCord", out.toByteArray());
+        }
+    }
+
 
 
 }

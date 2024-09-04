@@ -2,6 +2,7 @@ package me.perotin.playerchannels.storage.changelog;
 
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.Chatroom;
+import me.perotin.playerchannels.objects.GlobalChatroom;
 import me.perotin.playerchannels.storage.mysql.SQLHandler;
 import org.bukkit.Bukkit;
 
@@ -21,20 +22,25 @@ public class ChannelManager {
 
     public void addChannel(String channelName) {
 
+        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] [ChangeLog] Add channel " + channelName);
+
         changeLog.logChange(ChangeType.ADD_CHANNEL, channelName, null);
     }
 
     public void removeChannel(String channelName) {
+        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] [ChangeLog] Remove channel " + channelName);
 
         changeLog.logChange(ChangeType.REMOVE_CHANNEL, channelName, null);
     }
 
     public void addMemberToChannel(String channelName, String memberUUID) {
 
+        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] [ChangeLog] Add " + memberUUID + " to channel " + channelName);
         changeLog.logChange(ChangeType.ADD_MEMBER, channelName, memberUUID);
     }
 
     public void removeMemberFromChannel(String channelName, String memberUUID) {
+        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] [ChangeLog] Remove " + memberUUID + " to channel " + channelName);
 
         changeLog.logChange(ChangeType.REMOVE_MEMBER, channelName, memberUUID);
     }
@@ -43,6 +49,15 @@ public class ChannelManager {
         persistChangesToDatabase(changeLog.getChanges());
 
         changeLog.clear();
+        GlobalChatroom.sendChannelManagerClear(); // clear channel managers on other servers
+    }
+
+    public void clear() {
+        changeLog.clear();
+    }
+
+    public boolean isEmpty() {
+        return changeLog.getChanges().isEmpty();
     }
 
     /**
@@ -68,7 +83,6 @@ public class ChannelManager {
                 case RANK_CHANGE:
                     sqlHandler.updateMemberInDatabase(change.getChannelName(), change.getMemberUUID(), change.getRank(), SQLHandler.OperationType.RANK_CHANGE);
                     break;
-
             }
         }
     }
