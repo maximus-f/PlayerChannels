@@ -46,10 +46,10 @@ public class ChannelManager {
     }
 
     public void onDisable() {
+        GlobalChatroom.sendChannelManagerClear();
         persistChangesToDatabase(changeLog.getChanges());
 
         changeLog.clear();
-        GlobalChatroom.sendChannelManagerClear(); // clear channel managers on other servers
     }
 
     public void clear() {

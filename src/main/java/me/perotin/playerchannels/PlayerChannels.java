@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -164,18 +165,15 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
     // Clean up collections
     @Override
     public void onDisable(){
+
+        clearChannelCache(); // clear other servers change cache with reflection
+
         // Save each to save chatroom to file, will worry about global chatrooms at another time
 
         //main.disable();
         chatrooms.stream().filter(c -> c.isSaved() && !c.isGlobal()).forEach(Chatroom::saveToFile);
 
-        //TODO refactor below
-        if (isBungeecord() && mySQL && channelManager != null && !channelManager.isEmpty()) {
-//            chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeChatroom);
-//            chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeMembers);
-            channelManager.onDisable();
-        }
-        //
+
 
         // Save each player to file
         for (PlayerChannelUser playerChannelUser : players) {
@@ -218,6 +216,25 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
         ChannelUtils.registerCommand(new CancelTutorialCommand(getConfig().getString("cancel-tutorial"), getConfig().getStringList("cancel-tutorial-aliases"), this));
         getCommand("pcadmin").setExecutor(new AdminCommand());
+    }
+
+
+
+
+    // Use reflection to set status to enabled briefly in order to send plugin messages to synchronize caches
+    private void clearChannelCache() {
+        try {
+            Field field = this.getClass().getField("isEnabled"); // hasn't changed since 1.8
+            field.setAccessible(true);
+            field.set(this, true);
+
+            if (isBungeecord() && mySQL && channelManager != null && !channelManager.isEmpty()) {
+//            chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeChatroom);
+//            chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeMembers);
+                channelManager.onDisable();
+            }
+            field.set(this, false);
+        } catch (Exception ex) { }
     }
 
     /**

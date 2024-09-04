@@ -417,7 +417,7 @@ public class BungeeMessageHandler {
             String channelName = msgin.readUTF();
             UUID key = UUID.fromString(msgin.readUTF());
             Chatroom channel = plugin.getChatroom(channelName);
-            if (channel.isInChatroom(key)) {
+            if (channel != null && channel.isInChatroom(key)) {
                 channel.removeMember(key);
                PlayerChannelUser.getPlayer(key).leaveChatroom(channel);
             }
