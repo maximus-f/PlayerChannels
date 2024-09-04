@@ -263,6 +263,12 @@ public class SQLHandler  {
                 statement = connection.prepareStatement(query);
                 statement.setString(1, chatroom);
                 statement.setString(2, memberUUID);
+            } else if (operationType == OperationType.RANK_CHANGE) {
+                String query = "UPDATE members SET `rank` = (?) WHERE memberUUID = ? AND chatroomName = ? ";
+                statement = connection.prepareStatement(query);
+                statement.setInt(1, rank);
+                statement.setString(2, memberUUID);
+                statement.setString(3, chatroom);
             }
 
             statement.executeUpdate();
@@ -283,7 +289,8 @@ public class SQLHandler  {
 
     public enum OperationType {
         ADD,
-        REMOVE
+        REMOVE,
+        RANK_CHANGE
     }
 
 

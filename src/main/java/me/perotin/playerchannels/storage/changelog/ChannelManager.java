@@ -1,5 +1,7 @@
 package me.perotin.playerchannels.storage.changelog;
 
+import me.perotin.playerchannels.PlayerChannels;
+import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.storage.mysql.SQLHandler;
 import org.bukkit.Bukkit;
 
@@ -52,10 +54,10 @@ public class ChannelManager {
             Bukkit.getConsoleSender().sendMessage("[PlayerChannels] " + change.getChannelName() + " -> " + change.getMemberUUID() + " for action " + change.getChangeType().toString());
             switch (change.getChangeType()) {
                 case ADD_CHANNEL:
-
+                    sqlHandler.storeChatroom(PlayerChannels.getInstance().getChatroom(change.getChannelName()));
                     break;
                 case REMOVE_CHANNEL:
-
+                    sqlHandler.deleteChannel(PlayerChannels.getInstance().getChatroom(change.getChannelName())); // potentially hacky
                     break;
                 case ADD_MEMBER:
                     sqlHandler.updateMemberInDatabase(change.getChannelName(), change.getMemberUUID(), 1, SQLHandler.OperationType.ADD);
@@ -63,6 +65,10 @@ public class ChannelManager {
                 case REMOVE_MEMBER:
                     sqlHandler.updateMemberInDatabase(change.getChannelName(), change.getMemberUUID(), 1, SQLHandler.OperationType.REMOVE);
                     break;
+                case RANK_CHANGE:
+                    sqlHandler.updateMemberInDatabase(change.getChannelName(), change.getMemberUUID(), change.getRank(), SQLHandler.OperationType.RANK_CHANGE);
+                    break;
+
             }
         }
     }
