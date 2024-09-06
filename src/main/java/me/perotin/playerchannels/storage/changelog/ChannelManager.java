@@ -20,7 +20,7 @@ public class ChannelManager {
         this.sqlHandler = handler;
     }
 
-    public void addChannel(String channelName) {
+    public void addChannel(String channelName, String owner) {
 
         Bukkit.getConsoleSender().sendMessage("[PlayerChannels] [ChangeLog] Add channel " + channelName);
 
@@ -46,10 +46,12 @@ public class ChannelManager {
     }
 
     public void onDisable() {
+
         GlobalChatroom.sendChannelManagerClear();
         persistChangesToDatabase(changeLog.getChanges());
 
         changeLog.clear();
+
     }
 
     public void clear() {

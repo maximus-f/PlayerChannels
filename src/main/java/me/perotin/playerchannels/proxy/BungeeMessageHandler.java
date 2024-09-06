@@ -221,7 +221,7 @@ public class BungeeMessageHandler {
 
 
                 // Assuming there's a constructor or method to create/add a channel like this
-                GlobalChatroom globalChatroom = new GlobalChatroom(ownerUUID, channelName, description, isPublic, isSaved, isServerOwned);
+                GlobalChatroom globalChatroom = new GlobalChatroom(ownerUUID, channelName, description, isPublic, isSaved, isServerOwned, false);
 
                 if (ownerUUID != null) {
                     PlayerChannelUser.getPlayer(ownerUUID).addChatroom(globalChatroom);
@@ -507,7 +507,7 @@ public class BungeeMessageHandler {
                 boolean isSaved = msgin.readBoolean();
                 boolean serverChatroom = msgin.readBoolean();
                 String ownerName = msgin.readUTF();
-                GlobalChatroom newChatroom = new GlobalChatroom(owner, name, description, isPrivate, isSaved,  serverChatroom);
+                GlobalChatroom newChatroom = new GlobalChatroom(owner, name, description, isPrivate, isSaved,  serverChatroom, false);
                 PlayerChannelUser user = PlayerChannelUser.getPlayer(owner);
                 if (user.getName().equalsIgnoreCase("-1")) {
                     user.setName(ownerName);

@@ -25,8 +25,11 @@ import java.util.UUID;
 public class GlobalChatroom extends Chatroom {
     private final ChannelManager manager = PlayerChannels.getInstance().getChannelManager();
 
-    public GlobalChatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned) {
+    public GlobalChatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned, boolean log) {
         super(owner, name, description, isPublic, isSaved, isServerOwned, true, false);
+        if (isSaved && log) {
+            manager.addChannel(name, owner.toString());
+        }
     }
 
 
@@ -252,12 +255,14 @@ public class GlobalChatroom extends Chatroom {
             throw new RuntimeException(e);
         }
 
+
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
         Player toSend = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
         if (toSend != null) {
             toSend.sendPluginMessage(PlayerChannels.getInstance(), "BungeeCord", out.toByteArray());
         }
+
     }
 
 

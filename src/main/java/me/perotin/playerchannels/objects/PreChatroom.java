@@ -94,7 +94,7 @@ public class PreChatroom {
     public Chatroom toChatroom(){
 
         if (isGlobal()){
-            GlobalChatroom c = new GlobalChatroom(owner, name, description, isPublic, isSaved, isServerOwned);
+            GlobalChatroom c = new GlobalChatroom(owner, name, description, isPublic, isSaved, isServerOwned, true);
             c.writeToAllServers();
             return c;
         } else {

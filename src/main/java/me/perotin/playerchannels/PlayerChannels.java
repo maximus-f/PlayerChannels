@@ -55,11 +55,10 @@ import java.util.stream.Collectors;
 - Need a way to delete MySQL channel
   Lots of testing
 
-  Test 1: MySQL & Bungeecord
 
-    Look into foreign key violation for storeChatroom, line 97. Think trying to update every single time causes problems
-    for the foreign key in members table..
-
+    Last time, was running out of memory just due to having lots of tabs, 2 minecrafts up, 2 servers etc.
+    Left off trying to use reflection to change status of isEnabled to be able to send a plugin message there.
+    Should work theoretically, test then proceed with other tests.
 
 
 TODO
@@ -224,18 +223,43 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
     // Use reflection to set status to enabled briefly in order to send plugin messages to synchronize caches
     private void clearChannelCache() {
         try {
-            Field field = this.getClass().getField("isEnabled"); // hasn't changed since 1.8
+
+            Field field = getField(JavaPlugin.class, "isEnabled");
             field.setAccessible(true);
+
+
             field.set(this, true);
 
+
             if (isBungeecord() && mySQL && channelManager != null && !channelManager.isEmpty()) {
-//            chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeChatroom);
-//            chatrooms.stream().filter(c -> c.isSaved() && c.isGlobal()).forEach(sqlHandler::storeMembers);
+
                 channelManager.onDisable();
             }
+
             field.set(this, false);
-        } catch (Exception ex) { }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
+
+    /**
+     * Reflection method to get private field in heirarchy
+     * @param clazz
+     * @param name
+     * @return
+     */
+    public static Field getField(Class<?> clazz, String name) {
+        Field field = null;
+        while (clazz != null && field == null) {
+            try {
+                field = clazz.getDeclaredField(name);
+            } catch (Exception e) {
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return field;
+    }
+
 
     /**
      * @return instance of main class

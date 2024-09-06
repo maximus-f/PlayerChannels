@@ -105,6 +105,7 @@ public class SQLHandler  {
             }
         }
         Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Stored chatroom: " + chatroom.getName() + " in database: " + database);
+        storeMembers(chatroom);
     }
 
     private String getDatabaseUrl() {
@@ -153,7 +154,7 @@ public class SQLHandler  {
                 boolean hidden = rs.getBoolean("hidden");
 
                 GlobalChatroom chatroom = new GlobalChatroom(UUID.fromString(owner), name, description, isPublic, true,
-                        isServerOwned);
+                        isServerOwned, false);
                 chatrooms.add(chatroom);
             }
         } catch (SQLException e) {
