@@ -256,7 +256,7 @@ public class BungeeMessageHandler {
                 // Check if the channel already exists before adding
                 if (!plugin.getChatrooms().stream().map(Chatroom::getName).collect(Collectors.toList()).contains(globalChatroom.getName())) {
                     plugin.getChatrooms().add(globalChatroom);
-                    Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Added global channel: " + channelName);
+                    Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Added global channel from bungeecord message channel: " + channelName);
                 }
             }
         } catch (IOException ex) {

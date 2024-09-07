@@ -467,7 +467,6 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
     // Add Bungeecord hook
     private void setupBungeecordSupport() {
         if (isBungeecord()) {
-            Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Loading Bungeecord hook.");
             this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
             this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
             Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Bungeecord channels registered.");
