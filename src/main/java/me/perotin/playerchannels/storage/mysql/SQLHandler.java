@@ -231,6 +231,13 @@ public class SQLHandler  {
         Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Stored members for chatroom: " + chatroom.getName() + " in database: " + database);
     }
 
+    public void updateChannelFields(Chatroom chatroom) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] " + operationType + " member: " + memberUUID + " in chatroom: " + chatroom + " in database: " + database);
+
+    }
+
     public void updateMemberInDatabase(String chatroom, String memberUUID, int rank, OperationType operationType) {
         Connection connection = null;
         PreparedStatement statement = null;

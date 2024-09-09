@@ -167,9 +167,9 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
         clearChannelCache(); // clear other servers change cache with reflection
 
-        // Save each to save chatroom to file, will worry about global chatrooms at another time
-
         //main.disable();
+
+        // Save each to save chatroom to file, will worry about global chatrooms at another time
         chatrooms.stream().filter(c -> c.isSaved() && !c.isGlobal()).forEach(Chatroom::saveToFile);
 
 
@@ -479,8 +479,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
             // Loading in global channels from mysql that were not added from the global search if possible
             if (isMySQL()) {
                 try {
-                    Set<String> addedNames = new HashSet<>();
-                    addedNames.addAll(chatrooms.stream().map(Chatroom::getName).collect(Collectors.toList()));
+                    Set<String> addedNames = chatrooms.stream().map(Chatroom::getName).collect(Collectors.toSet());
 
                     List<Chatroom> allBCordChannels = sqlHandler.getAllChatrooms();
 

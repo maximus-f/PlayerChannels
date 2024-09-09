@@ -9,14 +9,16 @@ public enum ChangeType {
 
     ADD_CHANNEL,
     REMOVE_CHANNEL,
-    CHANGE_DESCRIPTION,
-    CHANGE_STATUS,
     CHANGE_OWNER,
     ADD_MEMBER,
     REMOVE_MEMBER,
-    RANK_CHANGE,
-    STATUS_CHANGE,
-    OWNER_CHANGE,
-    DESCRIPTION_CHANGE,
+    RANK_CHANGE;
+
+    public enum ChannelStatusType {
+        CHANGE_DESCRIPTION,
+        STATUS_CHANGE,
+        OWNER_CHANGE;
+    }
+
 
 }

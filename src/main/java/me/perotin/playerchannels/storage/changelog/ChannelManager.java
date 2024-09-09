@@ -85,6 +85,8 @@ public class ChannelManager {
                 case RANK_CHANGE:
                     sqlHandler.updateMemberInDatabase(change.getChannelName(), change.getMemberUUID(), change.getRank(), SQLHandler.OperationType.RANK_CHANGE);
                     break;
+//                case CHANGE_DESCRIPTION:
+//                    sqlHandler.updateChannelFields(PlayerChannels.getInstance().getChatroom(change.getChannelName()));
             }
         }
     }
