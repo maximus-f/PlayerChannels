@@ -239,13 +239,15 @@ public class SQLHandler  {
             connection = DriverManager.getConnection(getDatabaseUrl(), username, password);
 
             String updateFields = "UPDATE `chatrooms`" +
-                    "SET description = ?, owner = ?, isPublic = ?" +
-                    "WHERE name = ?";
+                    "SET description = ?, owner = ?, isPublic = ?, hidden = ?, nicknamesEnabled = ?" +
+                    " WHERE name = ?";
             statement = connection.prepareStatement(updateFields);
             statement.setString(1, chatroom.getDescription());
             statement.setString(2, chatroom.getOwner().toString());
             statement.setBoolean(3, chatroom.isPublic());
-            statement.setString(4, chatroom.getName());
+            statement.setBoolean(4, chatroom.isHidden());
+            statement.setBoolean(5, chatroom.isNicknamesEnabled());
+            statement.setString(6, chatroom.getName());
             statement.executeUpdate();
             statement.close();
 

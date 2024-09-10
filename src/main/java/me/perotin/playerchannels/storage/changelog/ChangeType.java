@@ -15,10 +15,13 @@ public enum ChangeType {
     RANK_CHANGE,
     CHANGE_DESCRIPTION,
     STATUS_CHANGE,
+    HIDDEN_CHANGE,
+    NICKNAMES_CHANGE,
     OWNER_CHANGE;
 
     public boolean isChannelStatusType() {
-        return this == CHANGE_DESCRIPTION || this == STATUS_CHANGE || this == OWNER_CHANGE;
+        return this == CHANGE_DESCRIPTION || this == STATUS_CHANGE || this == OWNER_CHANGE
+                || this == HIDDEN_CHANGE || this == NICKNAMES_CHANGE;
     }
 
 }

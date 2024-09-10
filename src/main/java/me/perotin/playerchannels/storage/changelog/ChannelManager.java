@@ -95,6 +95,8 @@ public class ChannelManager {
                     break;
                 case CHANGE_DESCRIPTION:
                 case STATUS_CHANGE:
+                case HIDDEN_CHANGE:
+                case NICKNAMES_CHANGE:
                 case CHANGE_OWNER:
                     sqlHandler.updateChannelFields(PlayerChannels.getInstance().getChatroom(change.getChannelName()));
                     batchedStatusChanges.add(change.getChannelName());
