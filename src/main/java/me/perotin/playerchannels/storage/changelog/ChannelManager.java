@@ -6,7 +6,9 @@ import me.perotin.playerchannels.objects.GlobalChatroom;
 import me.perotin.playerchannels.storage.mysql.SQLHandler;
 import org.bukkit.Bukkit;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *  Helper class to facilitate change log for persistent channels on store.
@@ -67,8 +69,14 @@ public class ChannelManager {
      * TODO make this cancel out corresponding actions, e.g. (leave/join same person)
      */
     private void persistChangesToDatabase(List<ChannelChange> changes) {
+        Set<String> batchedStatusChanges = new HashSet<>();
         for (ChannelChange change : changes) {
             Bukkit.getConsoleSender().sendMessage("[PlayerChannels] " + change.getChannelName() + " -> " + change.getMemberUUID() + " for action " + change.getChangeType().toString());
+
+            ChangeType type = change.getChangeType();
+            // Skip already processed status changes, i.e. one status change will update correctly for all potential types
+            if (type.isChannelStatusType() && batchedStatusChanges.contains(change.getChannelName())) continue;
+
             switch (change.getChangeType()) {
                 case ADD_CHANNEL:
                     sqlHandler.storeChatroom(PlayerChannels.getInstance().getChatroom(change.getChannelName()));
@@ -85,8 +93,12 @@ public class ChannelManager {
                 case RANK_CHANGE:
                     sqlHandler.updateMemberInDatabase(change.getChannelName(), change.getMemberUUID(), change.getRank(), SQLHandler.OperationType.RANK_CHANGE);
                     break;
-//                case CHANGE_DESCRIPTION:
-//                    sqlHandler.updateChannelFields(PlayerChannels.getInstance().getChatroom(change.getChannelName()));
+                case CHANGE_DESCRIPTION:
+                case STATUS_CHANGE:
+                case CHANGE_OWNER:
+                    sqlHandler.updateChannelFields(PlayerChannels.getInstance().getChatroom(change.getChannelName()));
+                    batchedStatusChanges.add(change.getChannelName());
+                    break;
             }
         }
     }

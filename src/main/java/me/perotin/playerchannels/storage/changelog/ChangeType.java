@@ -12,13 +12,13 @@ public enum ChangeType {
     CHANGE_OWNER,
     ADD_MEMBER,
     REMOVE_MEMBER,
-    RANK_CHANGE;
+    RANK_CHANGE,
+    CHANGE_DESCRIPTION,
+    STATUS_CHANGE,
+    OWNER_CHANGE;
 
-    public enum ChannelStatusType {
-        CHANGE_DESCRIPTION,
-        STATUS_CHANGE,
-        OWNER_CHANGE;
+    public boolean isChannelStatusType() {
+        return this == CHANGE_DESCRIPTION || this == STATUS_CHANGE || this == OWNER_CHANGE;
     }
-
 
 }

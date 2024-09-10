@@ -233,9 +233,31 @@ public class SQLHandler  {
 
     public void updateChannelFields(Chatroom chatroom) {
         Connection connection = null;
-        PreparedStatement statement = null;
-        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] " + operationType + " member: " + memberUUID + " in chatroom: " + chatroom + " in database: " + database);
+        PreparedStatement statement;
 
+        try {
+            connection = DriverManager.getConnection(getDatabaseUrl(), username, password);
+
+            String updateFields = "UPDATE `chatrooms`" +
+                    "SET description = ?, owner = ?, isPublic = ?" +
+                    "WHERE name = ?";
+            statement = connection.prepareStatement(updateFields);
+            statement.setString(1, chatroom.getDescription());
+            statement.setString(2, chatroom.getOwner().toString());
+            statement.setBoolean(3, chatroom.isPublic());
+            statement.setString(4, chatroom.getName());
+            statement.executeUpdate();
+            statement.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void updateMemberInDatabase(String chatroom, String memberUUID, int rank, OperationType operationType) {
