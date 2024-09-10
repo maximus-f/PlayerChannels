@@ -82,6 +82,12 @@ public class BungeeMessageHandler {
         if (subchannel.equalsIgnoreCase("SetNickname")) {
             handleSetNickname(in);
         }
+        if (subchannel.equalsIgnoreCase("SetDescription")) {
+            handleSetDescription(in);
+        }
+        if (subchannel.equalsIgnoreCase("SetHidden")) {
+            handleSetHidden(in);
+        }
         if (subchannel.equalsIgnoreCase("GlobalSearchOnRestart")){
             handleServerRestart(in);
 
@@ -130,6 +136,38 @@ public class BungeeMessageHandler {
 
 
         }
+
+    private void handleSetHidden(ByteArrayDataInput in) {
+        short len = in.readShort();
+        byte[] msgbytes = new byte[len];
+        in.readFully(msgbytes);
+
+        DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+        try {
+            String channelName = msgin.readUTF();
+            boolean hidden = msgin.readBoolean();
+            Chatroom channel = plugin.getChatroom(channelName);
+            channel.setHidden(hidden);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void handleSetDescription(ByteArrayDataInput in) {
+        short len = in.readShort();
+        byte[] msgbytes = new byte[len];
+        in.readFully(msgbytes);
+
+        DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+        try {
+            String channelName = msgin.readUTF();
+            String desc = msgin.readUTF();
+            Chatroom channel = plugin.getChatroom(channelName);
+            channel.setDescription(desc);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 
     private void handleUnmuteMember(ByteArrayDataInput in) {
         short len = in.readShort();

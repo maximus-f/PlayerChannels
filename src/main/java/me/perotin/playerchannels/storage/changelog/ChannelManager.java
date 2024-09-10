@@ -47,6 +47,13 @@ public class ChannelManager {
         changeLog.logChange(ChangeType.REMOVE_MEMBER, channelName, memberUUID);
     }
 
+    public void changeFieldStatus(String channelName) {
+        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] [ChangeLog] Change field status for " + channelName);
+        changeLog.logChange(ChangeType.FIELD_CHANGE,  channelName, null);
+
+
+    }
+
     public void onDisable() {
 
         GlobalChatroom.sendChannelManagerClear();
@@ -75,7 +82,7 @@ public class ChannelManager {
 
             ChangeType type = change.getChangeType();
             // Skip already processed status changes, i.e. one status change will update correctly for all potential types
-            if (type.isChannelStatusType() && batchedStatusChanges.contains(change.getChannelName())) continue;
+            if (type == ChangeType.FIELD_CHANGE && batchedStatusChanges.contains(change.getChannelName())) continue;
 
             switch (change.getChangeType()) {
                 case ADD_CHANNEL:
@@ -93,11 +100,7 @@ public class ChannelManager {
                 case RANK_CHANGE:
                     sqlHandler.updateMemberInDatabase(change.getChannelName(), change.getMemberUUID(), change.getRank(), SQLHandler.OperationType.RANK_CHANGE);
                     break;
-                case CHANGE_DESCRIPTION:
-                case STATUS_CHANGE:
-                case HIDDEN_CHANGE:
-                case NICKNAMES_CHANGE:
-                case CHANGE_OWNER:
+                case FIELD_CHANGE:
                     sqlHandler.updateChannelFields(PlayerChannels.getInstance().getChatroom(change.getChannelName()));
                     batchedStatusChanges.add(change.getChannelName());
                     break;

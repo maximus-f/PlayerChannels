@@ -52,7 +52,7 @@ public class GlobalChatroom extends Chatroom {
             }
         }
 
-        manager.addMemberToChannel(getName(), value.getFirst().toString());
+        if (isSaved()) manager.addMemberToChannel(getName(), value.getFirst().toString());
         super.addMember(value, name);
         sendBungeeWrite("AddMember", getName(), value.getFirst().toString(), value.getSecond().getValue(), name);
 
@@ -61,12 +61,23 @@ public class GlobalChatroom extends Chatroom {
     @Override
     public void setNicknamesEnabled(boolean enable) {
         super.setNicknamesEnabled(enable);
+        if (isSaved()) manager.changeFieldStatus(getName());
+
         sendBungeeWrite("ToggleNicknames", getName(), enable);
+    }
+
+    @Override
+    public void setHidden(boolean hidden) {
+        super.setHidden(hidden);
+        if (isSaved()) manager.changeFieldStatus(getName());
+
+        sendBungeeWrite("SetHidden", getName(), hidden);
     }
 
     @Override
     public void setNickname(UUID toSet, String nick) {
         super.setNickname(toSet, nick);
+
         sendBungeeWrite("SetNickname", getName(), toSet.toString(), nick);
     }
 
@@ -100,6 +111,13 @@ public class GlobalChatroom extends Chatroom {
         super.demoteModeratorToMember(member);
         sendBungeeWrite("DemoteToMember", getName(), member.toString());
 
+    }
+
+    @Override
+    public void setDescription(String description) {
+        super.setDescription(description);
+        if (isSaved()) manager.changeFieldStatus(getName());
+        sendBungeeWrite("SetDescription", getName(), description);
     }
 
     @Override
