@@ -153,8 +153,7 @@ public class SQLHandler  {
                 boolean isServerOwned = rs.getBoolean("isServerOwned");
                 boolean hidden = rs.getBoolean("hidden");
 
-                GlobalChatroom chatroom = new GlobalChatroom(UUID.fromString(owner), name, description, isPublic, true,
-                        isServerOwned, false);
+                GlobalChatroom chatroom = new GlobalChatroom(UUID.fromString(owner), name, description, isPublic, true, isServerOwned, nicknamesEnabled, hidden, false);
                 chatrooms.add(chatroom);
             }
         } catch (SQLException e) {
@@ -241,6 +240,7 @@ public class SQLHandler  {
             String updateFields = "UPDATE `chatrooms`" +
                     "SET description = ?, owner = ?, isPublic = ?, hidden = ?, nicknamesEnabled = ?" +
                     " WHERE name = ?";
+
             statement = connection.prepareStatement(updateFields);
             statement.setString(1, chatroom.getDescription());
             statement.setString(2, chatroom.getOwner().toString());
@@ -248,6 +248,7 @@ public class SQLHandler  {
             statement.setBoolean(4, chatroom.isHidden());
             statement.setBoolean(5, chatroom.isNicknamesEnabled());
             statement.setString(6, chatroom.getName());
+            Bukkit.getConsoleSender().sendMessage("[PC] Executing statement: " + statement );
             statement.executeUpdate();
             statement.close();
 

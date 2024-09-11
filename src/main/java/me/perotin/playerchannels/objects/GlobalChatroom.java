@@ -26,13 +26,30 @@ public class GlobalChatroom extends Chatroom {
     private final ChannelManager manager = PlayerChannels.getInstance().getChannelManager();
 
     public GlobalChatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned, boolean log) {
-        super(owner, name, description, isPublic, isSaved, isServerOwned, true, false);
+        super(owner, name, description, isPublic, isSaved, isServerOwned, true);
         if (isSaved && log) {
             manager.addChannel(name, owner.toString());
         }
     }
 
+    public GlobalChatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned, boolean nicknamesEnabled, boolean hidden, boolean log) {
+        super(owner, name, description, isPublic, isSaved, isServerOwned, true);
+        setNicknamesEnabled(nicknamesEnabled);
+        setHidden(hidden);
+        if (isSaved && log) {
+            manager.addChannel(name, owner.toString());
+        }
 
+    }
+
+
+    /**
+     * More thorough test because could be saved but not have mysql enabled
+     * @return
+     */
+    public boolean isSavedInDatabase() {
+        return super.isSaved() && PlayerChannels.getInstance().isMySQL();
+    }
 
     @Override
     public void mute(UUID uuid) {
@@ -52,7 +69,7 @@ public class GlobalChatroom extends Chatroom {
             }
         }
 
-        if (isSaved()) manager.addMemberToChannel(getName(), value.getFirst().toString());
+        if (isSavedInDatabase()) manager.addMemberToChannel(getName(), value.getFirst().toString());
         super.addMember(value, name);
         sendBungeeWrite("AddMember", getName(), value.getFirst().toString(), value.getSecond().getValue(), name);
 
@@ -61,15 +78,15 @@ public class GlobalChatroom extends Chatroom {
     @Override
     public void setNicknamesEnabled(boolean enable) {
         super.setNicknamesEnabled(enable);
-        if (isSaved()) manager.changeFieldStatus(getName());
 
         sendBungeeWrite("ToggleNicknames", getName(), enable);
+        if (isSavedInDatabase()) manager.changeFieldStatus(getName());
     }
 
     @Override
     public void setHidden(boolean hidden) {
         super.setHidden(hidden);
-        if (isSaved()) manager.changeFieldStatus(getName());
+        if (isSavedInDatabase()) manager.changeFieldStatus(getName());
 
         sendBungeeWrite("SetHidden", getName(), hidden);
     }
@@ -116,7 +133,7 @@ public class GlobalChatroom extends Chatroom {
     @Override
     public void setDescription(String description) {
         super.setDescription(description);
-        if (isSaved()) manager.changeFieldStatus(getName());
+        if (isSavedInDatabase()) manager.changeFieldStatus(getName());
         sendBungeeWrite("SetDescription", getName(), description);
     }
 

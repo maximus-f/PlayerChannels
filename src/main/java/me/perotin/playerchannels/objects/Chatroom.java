@@ -63,7 +63,7 @@ public class Chatroom {
     /**
      * Initial chatroom constructor
      */
-    public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned, boolean isGlobal, boolean hidden) {
+    public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned, boolean isGlobal) {
         this.members = new HashMap<>();
         this.members.put(owner, ChatRole.OWNER);
         this.owner = owner;
@@ -81,6 +81,7 @@ public class Chatroom {
         this.nickNames = new HashMap<>();
         this.spyers = new HashSet<>();
         this.isServerOwned = isServerOwned;
+
     }
 
     /**
@@ -88,7 +89,7 @@ public class Chatroom {
      * @return chatroom
      */
     public Chatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned, boolean isGlobal, Map<UUID, ChatRole> members, List<UUID> bannedMembers, List<UUID> mutedMembers, Map<UUID, String> nicknames, boolean nicknamesenabled ) {
-        this(owner, name, description, isPublic, isSaved, isServerOwned, isGlobal, false);
+        this(owner, name, description, isPublic, isSaved, isServerOwned, isGlobal);
         this.messages = new ChannelFile(MESSAGES);
         this.members = members;
         this.bannedMembers = bannedMembers;
