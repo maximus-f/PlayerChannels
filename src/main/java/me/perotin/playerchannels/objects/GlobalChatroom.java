@@ -35,8 +35,8 @@ public class GlobalChatroom extends Chatroom {
 
     public GlobalChatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned, boolean nicknamesEnabled, boolean hidden, boolean log) {
         super(owner, name, description, isPublic, isSaved, isServerOwned, true);
-        setNicknamesEnabled(nicknamesEnabled);
-        setHidden(hidden);
+//        super.setNicknamesEnabled(nicknamesEnabled);
+        super.setHidden(hidden);
         if (isSaved && log) {
             manager.addChannel(name, owner.toString());
         }
@@ -80,6 +80,8 @@ public class GlobalChatroom extends Chatroom {
     public void setNicknamesEnabled(boolean enable) {
         super.setNicknamesEnabled(enable);
 
+        Bukkit.getConsoleSender().sendMessage("setNick");
+
         sendBungeeWrite("ToggleNicknames", getName(), enable);
         if (isSavedInDatabase()) manager.changeFieldStatus(getName());
     }
@@ -87,6 +89,8 @@ public class GlobalChatroom extends Chatroom {
     @Override
     public void setHidden(boolean hidden) {
         super.setHidden(hidden);
+        Bukkit.getConsoleSender().sendMessage("setHidden");
+
         if (isSavedInDatabase()) manager.changeFieldStatus(getName());
 
         sendBungeeWrite("SetHidden", getName(), hidden);
@@ -140,6 +144,7 @@ public class GlobalChatroom extends Chatroom {
     @Override
     public void setDescription(String description) {
         super.setDescription(description);
+        Bukkit.getConsoleSender().sendMessage("setDesc");
         if (isSavedInDatabase()) manager.changeFieldStatus(getName());
         sendBungeeWrite("SetDescription", getName(), description);
     }

@@ -474,24 +474,12 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
             Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Loading in pre-existing Global Channels");
 
 
-            GlobalChatroom.sendGlobalSearch();
-
-            // Loading in global channels from mysql that were not added from the global search if possible
-            if (isMySQL()) {
+            if (!isMySQL()) {
+                GlobalChatroom.sendGlobalSearch();
+            } else  {
                 try {
-                    Set<String> addedNames = chatrooms.stream().map(Chatroom::getName).collect(Collectors.toSet());
-
                     List<Chatroom> allBCordChannels = sqlHandler.getAllChatrooms();
-
-                    for (Chatroom chatroom : allBCordChannels) {
-                        if (!addedNames.contains(chatroom.getName())) {
-                            chatroom.setMembers(sqlHandler.getChatroomMembers(chatroom.getName()));
-                            chatrooms.add(chatroom);
-                            addedNames.add(chatroom.getName());
-                            Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Added in " + chatroom.getName() + " from " + sqlHandler.getDatabase()+" database!");
-
-                        }
-                    }
+                    chatrooms.addAll(allBCordChannels);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }

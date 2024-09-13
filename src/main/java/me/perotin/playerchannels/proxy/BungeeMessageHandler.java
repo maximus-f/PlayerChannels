@@ -231,8 +231,9 @@ public class BungeeMessageHandler {
         try {
             String channelName = msgin.readUTF();
             boolean value = msgin.readBoolean();
-            Chatroom channel = plugin.getChatroom(channelName);
+            Chatroom channel = (Chatroom) plugin.getChatroom(channelName);
             if (channel != null) {
+                Bukkit.getConsoleSender().sendMessage("Nickname Toggle setnick");
                 channel.setNicknamesEnabled(value);
             }
         } catch (IOException ex) {
@@ -282,6 +283,8 @@ public class BungeeMessageHandler {
 
                 }
                 boolean nickNamesEnabled = msgin.readBoolean();
+                Bukkit.getConsoleSender().sendMessage("Receive global Nickname Toggle setnick");
+
                 globalChatroom.setNicknamesEnabled(nickNamesEnabled);
                 String nickname;
                 while (!(nickname = msgin.readUTF()).equalsIgnoreCase("~~")) {
