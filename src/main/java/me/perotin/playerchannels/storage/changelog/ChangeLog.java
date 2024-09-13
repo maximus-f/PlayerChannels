@@ -13,6 +13,10 @@ public class ChangeLog {
         changes.add(new ChannelChange(type, channelName, memberUUID));
     }
 
+    public void logChange(ChangeType type, String channelName, String memberUUID, int rank) {
+        changes.add(new ChannelChange(type, channelName, memberUUID, rank));
+    }
+
     public List<ChannelChange> getChanges() {
         return new ArrayList<>(changes);
     }

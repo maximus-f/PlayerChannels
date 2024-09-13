@@ -51,9 +51,13 @@ public class ChannelManager {
         Bukkit.getConsoleSender().sendMessage("[PlayerChannels] [ChangeLog] Change field status for " + channelName);
         changeLog.logChange(ChangeType.FIELD_CHANGE,  channelName, null);
 
-
     }
 
+    public void rankChange(String channelName, String uuid, int newRank) {
+        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] [ChangeLog] Rank change for " + uuid + " to " + newRank);
+        changeLog.logChange(ChangeType.RANK_CHANGE, channelName, uuid, newRank);
+
+    }
     public void onDisable() {
 
         GlobalChatroom.sendChannelManagerClear();

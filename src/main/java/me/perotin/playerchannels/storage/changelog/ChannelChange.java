@@ -18,6 +18,13 @@ public class ChannelChange {
         this.memberUUID = memberUUID;
     }
 
+    public ChannelChange(ChangeType changeType, String channelName, String memberUUID, int rank) {
+        this.changeType = changeType;
+        this.channelName = channelName;
+        this.memberUUID = memberUUID;
+        this.rank = rank;
+    }
+
     public ChangeType getChangeType() {
         return changeType;
     }

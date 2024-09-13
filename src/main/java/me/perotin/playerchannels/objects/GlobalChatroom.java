@@ -120,11 +120,17 @@ public class GlobalChatroom extends Chatroom {
 
     @Override
     public void promoteMemberToModerator(UUID member) {
+        if (isSavedInDatabase()) {
+            manager.rankChange(getName(), member.toString(), 1);
+        }
         super.promoteMemberToModerator(member);
         sendBungeeWrite("PromoteToMod", getName(), member.toString());
     }
     @Override
     public void demoteModeratorToMember(UUID member) {
+        if (isSavedInDatabase()) {
+            manager.rankChange(getName(), member.toString(), 0);
+        }
         super.demoteModeratorToMember(member);
         sendBungeeWrite("DemoteToMember", getName(), member.toString());
 
@@ -144,6 +150,9 @@ public class GlobalChatroom extends Chatroom {
     }
     @Override
     public void promoteModeratorToOwner(UUID member, UUID oldOwner) {
+        if (isSavedInDatabase()) {
+            manager.rankChange(getName(), member.toString(), 2);
+        }
         super.promoteModeratorToOwner(member, oldOwner);
         sendBungeeWrite("PromoteModToOwner", getName(), member.toString(), oldOwner.toString());
     }
@@ -169,9 +178,8 @@ public class GlobalChatroom extends Chatroom {
     @Override
     public void delete() {
 
-        PlayerChannels instance = PlayerChannels.getInstance();
-        if (instance.isMySQL()) {
-            instance.getSqlHandler().deleteChannel(this);
+        if (isSavedInDatabase()) {
+            manager.removeChannel(getName());
         }
         super.delete();
 
