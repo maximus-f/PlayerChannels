@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -233,6 +234,7 @@ public class GlobalChatroom extends Chatroom {
         out.writeUTF("ALL");
         out.writeUTF(channel);
 
+
         ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
         DataOutputStream msgout = new DataOutputStream(msgbytes);
         try {
@@ -255,7 +257,9 @@ public class GlobalChatroom extends Chatroom {
 
             out.writeShort(msgbytes.toByteArray().length);
             out.write(msgbytes.toByteArray());
-            Iterables.getFirst(Bukkit.getOnlinePlayers(), null).sendPluginMessage(PlayerChannels.getInstance(), "BungeeCord", out.toByteArray());
+            Player player = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
+            // check if not null to avoid NPE
+            if (player != null) player.sendPluginMessage(PlayerChannels.getInstance(), "BungeeCord", out.toByteArray());
         } catch (IOException ex) {
             ex.printStackTrace();
         }

@@ -87,13 +87,15 @@ public class ChannelManager {
             ChangeType type = change.getChangeType();
             // Skip already processed status changes, i.e. one status change will update correctly for all potential types
             if (type == ChangeType.FIELD_CHANGE && batchedStatusChanges.contains(change.getChannelName())) continue;
+            Chatroom channel = PlayerChannels.getInstance().getChatroom(change.getChannelName());
 
+            if (channel == null) continue;
             switch (change.getChangeType()) {
                 case ADD_CHANNEL:
-                    sqlHandler.storeChatroom(PlayerChannels.getInstance().getChatroom(change.getChannelName()));
+                    sqlHandler.storeChatroom(channel);
                     break;
                 case REMOVE_CHANNEL:
-                    sqlHandler.deleteChannel(PlayerChannels.getInstance().getChatroom(change.getChannelName())); // potentially hacky
+                    sqlHandler.deleteChannel(channel);
                     break;
                 case ADD_MEMBER:
                     sqlHandler.updateMemberInDatabase(change.getChannelName(), change.getMemberUUID(), 1, SQLHandler.OperationType.ADD);
@@ -105,7 +107,7 @@ public class ChannelManager {
                     sqlHandler.updateMemberInDatabase(change.getChannelName(), change.getMemberUUID(), change.getRank(), SQLHandler.OperationType.RANK_CHANGE);
                     break;
                 case FIELD_CHANGE:
-                    sqlHandler.updateChannelFields(PlayerChannels.getInstance().getChatroom(change.getChannelName()));
+                    sqlHandler.updateChannelFields(channel);
                     batchedStatusChanges.add(change.getChannelName());
                     break;
             }

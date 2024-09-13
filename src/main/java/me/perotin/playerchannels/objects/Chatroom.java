@@ -766,7 +766,6 @@ public class Chatroom {
 
     /**
      * Deletes itself from memory. Will remove and remove its correspondence from all @PrivatePlayer objects
-     * TODO make this compatible with saved chatrooms
      */
     public void delete() {
         getOnlinePlayers().forEach(p->p.sendMessage(messages.getString("chatroom-being-deleted").replace("$chatroom$", getName())));
