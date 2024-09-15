@@ -12,8 +12,9 @@
 bungeecord: false
 
 # MySQL setup
-# Note that it is not necessary to use MySQL to achieve bungeecord support. Synchronization can occur without a shared database,
-# but it is less reliable than also having a shared database (e.g. restarting all servers at same time).
+# Note that it is not necessary to use MySQL to achieve bungeecord support. Synchronization can occur without a shared database and
+# persist so long as you do not shut down all servers simultaneously (data is shared when servers come back from pre-existing servers in this way)
+# but the better approach is to use a global database. Only MySQL is supported as of 3.8.
  # NOTE: Only global channels that are SAVED will be stored here. Local channels (one-server) are stored locally in chatrooms.yml
 mysql-enabled: false
 host: localhost

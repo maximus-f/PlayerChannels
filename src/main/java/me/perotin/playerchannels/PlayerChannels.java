@@ -8,6 +8,7 @@ import com.google.common.io.ByteStreams;
 import me.perotin.playerchannels.commands.AdminCommand;
 import me.perotin.playerchannels.commands.CancelTutorialCommand;
 import me.perotin.playerchannels.commands.PlayerChannelsCommand;
+import me.perotin.playerchannels.commands.tabs_completer.AdminCommandTabCompleter;
 import me.perotin.playerchannels.commands.tabs_completer.PlayerChannelsTabCompleter;
 import me.perotin.playerchannels.events.chat_events.*;
 import me.perotin.playerchannels.events.join.PlayerChannelUserJoinEvent;
@@ -178,10 +179,8 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         for (PlayerChannelUser playerChannelUser : players) {
             playerChannelUser.savePlayer();
         }
-
-
+        
         this.players.clear();
-
         this.chatrooms.clear();
         this.helper = null;
         instance = null;
@@ -210,7 +209,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
         getCommand("playerchannels").setExecutor(cmd);
         getCommand("playerchannels").setTabCompleter(new PlayerChannelsTabCompleter());
-
+        getCommand("pcadmin").setTabCompleter(new AdminCommandTabCompleter());
 
 
         ChannelUtils.registerCommand(new CancelTutorialCommand(getConfig().getString("cancel-tutorial"), getConfig().getStringList("cancel-tutorial-aliases"), this));
