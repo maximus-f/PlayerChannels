@@ -442,6 +442,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
                     Bukkit.getConsoleSender().sendMessage("[PlayerChannels] MySQL failed to register. Global saved channels will not be saved.");
                 } else {
                     Bukkit.getConsoleSender().sendMessage("[PlayerChannels] MySQL successfully connected. Global saved channels will be saved.");
+
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);

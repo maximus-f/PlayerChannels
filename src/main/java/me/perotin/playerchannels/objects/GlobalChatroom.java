@@ -29,7 +29,7 @@ public class GlobalChatroom extends Chatroom {
     public GlobalChatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned, boolean log) {
         super(owner, name, description, isPublic, isSaved, isServerOwned, true);
         if (isSaved && log) {
-            manager.addChannel(name, owner.toString());
+            PlayerChannels.getInstance().getSqlHandler().storeChatroom(this);
         }
     }
 
@@ -38,7 +38,7 @@ public class GlobalChatroom extends Chatroom {
 //        super.setNicknamesEnabled(nicknamesEnabled);
         super.setHidden(hidden);
         if (isSaved && log) {
-            manager.addChannel(name, owner.toString());
+            PlayerChannels.getInstance().getSqlHandler().storeChatroom(this);
         }
 
     }
@@ -144,7 +144,6 @@ public class GlobalChatroom extends Chatroom {
     @Override
     public void setDescription(String description) {
         super.setDescription(description);
-        Bukkit.getConsoleSender().sendMessage("setDesc");
         if (isSavedInDatabase()) manager.changeFieldStatus(getName());
         sendBungeeWrite("SetDescription", getName(), description);
     }
@@ -184,15 +183,10 @@ public class GlobalChatroom extends Chatroom {
     @Override
     public void delete() {
 
-        Bukkit.getConsoleSender().sendMessage("In delete: global");
         if (isSavedInDatabase()) {
-            Bukkit.getConsoleSender().sendMessage("In saved: global");
-
-            manager.removeChannel(getName());
+            PlayerChannels.getInstance().getSqlHandler().deleteChannel(getName());
         }
         super.delete();
-        Bukkit.getConsoleSender().sendMessage("after: global");
-
 
         sendBungeeWrite("Delete", getName());
 

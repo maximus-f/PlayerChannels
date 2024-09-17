@@ -10,6 +10,7 @@ import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.GlobalChatroom;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
 import me.perotin.playerchannels.storage.Pair;
+import me.perotin.playerchannels.storage.changelog.ChannelManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -23,8 +24,10 @@ import java.util.stream.Collectors;
 public class BungeeMessageHandler {
 
     private PlayerChannels plugin;
+    private ChannelManager manager;
     public BungeeMessageHandler(PlayerChannels plugin) {
         this.plugin = plugin;
+        this.manager = plugin.getChannelManager();
     }
 
     public void handlePluginMessage(String channel, Player player, byte[] message) {
@@ -146,8 +149,11 @@ public class BungeeMessageHandler {
         try {
             String channelName = msgin.readUTF();
             boolean hidden = msgin.readBoolean();
-            Chatroom channel = plugin.getChatroom(channelName);
+            GlobalChatroom channel = (GlobalChatroom) plugin.getChatroom(channelName);
             channel.setHidden(hidden);
+            if (channel.isSavedInDatabase()) {
+                manager.changeFieldStatus(channelName);
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -162,8 +168,12 @@ public class BungeeMessageHandler {
         try {
             String channelName = msgin.readUTF();
             String desc = msgin.readUTF();
-            Chatroom channel = plugin.getChatroom(channelName);
+            GlobalChatroom channel = (GlobalChatroom) plugin.getChatroom(channelName); // should be safe to cast
             channel.setDescription(desc);
+            if (channel.isSavedInDatabase()) {
+                manager.changeFieldStatus(channelName);
+            }
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -231,10 +241,12 @@ public class BungeeMessageHandler {
         try {
             String channelName = msgin.readUTF();
             boolean value = msgin.readBoolean();
-            Chatroom channel = (Chatroom) plugin.getChatroom(channelName);
+            GlobalChatroom channel = (GlobalChatroom) plugin.getChatroom(channelName);
             if (channel != null) {
-                Bukkit.getConsoleSender().sendMessage("Nickname Toggle setnick");
                 channel.setNicknamesEnabled(value);
+                if (channel.isSavedInDatabase()) {
+                    manager.changeFieldStatus(channelName);
+                }
             }
         } catch (IOException ex) {
             ex.printStackTrace();

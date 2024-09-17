@@ -7,8 +7,6 @@ package me.perotin.playerchannels.storage.changelog;
  */
 public enum ChangeType {
 
-    ADD_CHANNEL,
-    REMOVE_CHANNEL,
     ADD_MEMBER,
     REMOVE_MEMBER,
     RANK_CHANGE,

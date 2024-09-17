@@ -22,19 +22,6 @@ public class ChannelManager {
         this.sqlHandler = handler;
     }
 
-    public void addChannel(String channelName, String owner) {
-
-        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] [ChangeLog] Add channel " + channelName);
-
-        changeLog.logChange(ChangeType.ADD_CHANNEL, channelName, null);
-    }
-
-    public void removeChannel(String channelName) {
-        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] [ChangeLog] Remove channel " + channelName);
-
-        changeLog.logChange(ChangeType.REMOVE_CHANNEL, channelName, null);
-    }
-
     public void addMemberToChannel(String channelName, String memberUUID) {
 
         Bukkit.getConsoleSender().sendMessage("[PlayerChannels] [ChangeLog] Add " + memberUUID + " to channel " + channelName);
@@ -56,15 +43,12 @@ public class ChannelManager {
     public void rankChange(String channelName, String uuid, int newRank) {
         Bukkit.getConsoleSender().sendMessage("[PlayerChannels] [ChangeLog] Rank change for " + uuid + " to " + newRank);
         changeLog.logChange(ChangeType.RANK_CHANGE, channelName, uuid, newRank);
-
     }
-    public void onDisable() {
 
+    public void onDisable() {
         GlobalChatroom.sendChannelManagerClear();
         persistChangesToDatabase(changeLog.getChanges());
-
         changeLog.clear();
-
     }
 
     public void clear() {
@@ -91,12 +75,6 @@ public class ChannelManager {
 
             if (channel == null) continue;
             switch (change.getChangeType()) {
-                case ADD_CHANNEL:
-                    sqlHandler.storeChatroom(channel);
-                    break;
-                case REMOVE_CHANNEL:
-                    sqlHandler.deleteChannel(change.getChannelName());
-                    break;
                 case ADD_MEMBER:
                     sqlHandler.updateMemberInDatabase(change.getChannelName(), change.getMemberUUID(), 1, SQLHandler.OperationType.ADD);
                     break;
