@@ -184,10 +184,15 @@ public class GlobalChatroom extends Chatroom {
     @Override
     public void delete() {
 
+        Bukkit.getConsoleSender().sendMessage("In delete: global");
         if (isSavedInDatabase()) {
+            Bukkit.getConsoleSender().sendMessage("In saved: global");
+
             manager.removeChannel(getName());
         }
         super.delete();
+        Bukkit.getConsoleSender().sendMessage("after: global");
+
 
         sendBungeeWrite("Delete", getName());
 

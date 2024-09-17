@@ -27,10 +27,10 @@ public class SQLHandler  {
         try {
             this.connection = DriverManager.getConnection(url, username, password);
             if (this.connection != null && !this.connection.isClosed()) {
-                System.out.println("Database connection successful.");
+//                System.out.println("Database connection successful.");
             }
         } catch (SQLException e) {
-            System.err.println("Database connection failed: " + e.getMessage());
+//            System.err.println("Database connection failed: " + e.getMessage());
         }
     }
 
@@ -164,21 +164,21 @@ public class SQLHandler  {
         return chatrooms;
     }
 
-    public void deleteChannel(Chatroom chatroom)  {
-        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Deleting chatroom from database: " + chatroom.getName());
+    public void deleteChannel(String chatroom)  {
+        Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Deleting chatroom from database: " + chatroom);
         String memberDeleteQuery = "DELETE FROM members WHERE chatroomName = ?"; // delete all instances chatroomName = this
         String query = "DELETE FROM chatrooms WHERE name = ?";
         try (PreparedStatement memberStmt = connection.prepareStatement(memberDeleteQuery);
              PreparedStatement chatroomStmt = connection.prepareStatement(query)) {
 
             // Set the chatroom name in the delete statement for members
-            memberStmt.setString(1, chatroom.getName());
+            memberStmt.setString(1, chatroom);
              memberStmt.executeUpdate();
 
             // Set the chatroom name in the delete statement for chatrooms
-            chatroomStmt.setString(1, chatroom.getName());
+            chatroomStmt.setString(1, chatroom);
             int chatroomsDeleted = chatroomStmt.executeUpdate();
-            Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Deleted chatroom: " + chatroom.getName() + " (" + chatroomsDeleted + " rows affected)");
+            Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Deleted chatroom: " + chatroom + " (" + chatroomsDeleted + " rows affected)");
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

@@ -95,7 +95,7 @@ public class ChannelManager {
                     sqlHandler.storeChatroom(channel);
                     break;
                 case REMOVE_CHANNEL:
-                    sqlHandler.deleteChannel(channel);
+                    sqlHandler.deleteChannel(change.getChannelName());
                     break;
                 case ADD_MEMBER:
                     sqlHandler.updateMemberInDatabase(change.getChannelName(), change.getMemberUUID(), 1, SQLHandler.OperationType.ADD);
