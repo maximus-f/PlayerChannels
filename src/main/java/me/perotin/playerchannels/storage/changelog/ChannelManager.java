@@ -74,6 +74,7 @@ public class ChannelManager {
             Chatroom channel = PlayerChannels.getInstance().getChatroom(change.getChannelName());
 
             if (channel == null) continue;
+            if (!PlayerChannels.getInstance().isMySQL()) return;
             switch (change.getChangeType()) {
                 case ADD_MEMBER:
                     sqlHandler.updateMemberInDatabase(change.getChannelName(), change.getMemberUUID(), 1, SQLHandler.OperationType.ADD);

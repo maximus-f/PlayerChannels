@@ -131,14 +131,7 @@ public class BungeeMessageHandler {
             handlePlayerFoundResponse(in);
 
         }
-
-
-
-
-
-
-
-        }
+    }
 
     private void handleSetHidden(ByteArrayDataInput in) {
         short len = in.readShort();
@@ -413,6 +406,11 @@ public class BungeeMessageHandler {
             Chatroom channel = plugin.getChatroom(channelName);
             if (channel.isInChatroom(toOwner) && channel.isInChatroom(toMod) && channel.getMemberMap().get(toOwner) == ChatRole.MODERATOR) {
                 channel.promoteModeratorToOwner(toOwner, toMod);
+                if (channel.isSaved()) {
+                    manager.rankChange(channelName, toOwner.toString(), 2);
+                    manager.rankChange(channelName, toMod.toString(), 1);
+
+                }
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -431,6 +429,9 @@ public class BungeeMessageHandler {
             Chatroom channel = plugin.getChatroom(channelName);
             if (channel.isInChatroom(key) && channel.getMemberMap().get(key) == ChatRole.MODERATOR) {
                 channel.demoteModeratorToMember(key);
+                if (channel.isSaved()) {
+                    manager.rankChange(channelName, key.toString(), 0);
+                }
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -449,6 +450,9 @@ public class BungeeMessageHandler {
             Chatroom channel = plugin.getChatroom(channelName); // How to ensure this is Chatroom obj and not GlobalChatroom?
             if (channel.isInChatroom(key) && channel.getMemberMap().get(key) == ChatRole.MEMBER) {
                 channel.promoteMemberToModerator(key);
+                if (channel.isSaved()) {
+                    manager.rankChange(channelName, key.toString(), 1);
+                }
 
             }
         } catch (IOException ex) {
@@ -473,6 +477,9 @@ public class BungeeMessageHandler {
             if (channel != null && channel.isInChatroom(key)) {
                 channel.removeMember(key);
                PlayerChannelUser.getPlayer(key).leaveChatroom(channel);
+                if (channel.isSaved()) {
+                    manager.removeMemberFromChannel(channelName, key.toString());
+                }
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -510,6 +517,9 @@ public class BungeeMessageHandler {
                 }
                 if (!user.isMemberOf(channel)) {
                     user.addChatroom(channel);
+                }
+                if (channel.isSaved()) {
+                    manager.addMemberToChannel(channelName, id.toString());
                 }
 
             }

@@ -41,7 +41,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/* Created by Perotin on 8/13/19 */
+/* Created by Max on 8/13/19 */
 
 /**
  * @Author Perotin
@@ -53,18 +53,8 @@ import java.util.stream.Collectors;
 
 /*
 3.8 TO-DO
-- Need a way to delete MySQL channel
-  Lots of testing
-
-
-    Last time, was running out of memory just due to having lots of tabs, 2 minecrafts up, 2 servers etc.
-    Left off trying to use reflection to change status of isEnabled to be able to send a plugin message there.
-    Should work theoretically, test then proceed with other tests.
-
-
-TODO
-- Test, theoretically is done now for real
--
+- Synchronously update change log caches, done for FIELD status, need to do for add member, remove, and rank changes
+    9/17
 
  */
 public class PlayerChannels extends JavaPlugin implements PluginMessageListener {
