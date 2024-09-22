@@ -143,9 +143,13 @@ public class BungeeMessageHandler {
             String channelName = msgin.readUTF();
             boolean hidden = msgin.readBoolean();
             GlobalChatroom channel = (GlobalChatroom) plugin.getChatroom(channelName);
-            channel.setHidden(hidden);
-            if (channel.isSavedInDatabase()) {
+            Bukkit.getConsoleSender().sendMessage("Received setHidden msg from other server: " + channel.getClass().toString());
+            ((GlobalChatroom) channel).setHidden(hidden);
+
+            if (channel.isSaved() && PlayerChannels.getInstance().isMySQL()) {
                 manager.changeFieldStatus(channelName);
+                Bukkit.getConsoleSender().sendMessage("Add manager");
+
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -161,9 +165,9 @@ public class BungeeMessageHandler {
         try {
             String channelName = msgin.readUTF();
             String desc = msgin.readUTF();
-            GlobalChatroom channel = (GlobalChatroom) plugin.getChatroom(channelName); // should be safe to cast
+            Chatroom channel = plugin.getChatroom(channelName); // should be safe to cast
             channel.setDescription(desc);
-            if (channel.isSavedInDatabase()) {
+            if (channel.isSaved() && PlayerChannels.getInstance().isMySQL()) {
                 manager.changeFieldStatus(channelName);
             }
 
@@ -234,10 +238,10 @@ public class BungeeMessageHandler {
         try {
             String channelName = msgin.readUTF();
             boolean value = msgin.readBoolean();
-            GlobalChatroom channel = (GlobalChatroom) plugin.getChatroom(channelName);
+            Chatroom channel =  plugin.getChatroom(channelName);
             if (channel != null) {
                 channel.setNicknamesEnabled(value);
-                if (channel.isSavedInDatabase()) {
+                if (channel.isSaved() && PlayerChannels.getInstance().isMySQL()) {
                     manager.changeFieldStatus(channelName);
                 }
             }
@@ -288,7 +292,6 @@ public class BungeeMessageHandler {
 
                 }
                 boolean nickNamesEnabled = msgin.readBoolean();
-                Bukkit.getConsoleSender().sendMessage("Receive global Nickname Toggle setnick");
 
                 globalChatroom.setNicknamesEnabled(nickNamesEnabled);
                 String nickname;

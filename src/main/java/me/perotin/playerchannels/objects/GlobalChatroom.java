@@ -25,6 +25,7 @@ import java.util.UUID;
  */
 public class GlobalChatroom extends Chatroom {
     private final ChannelManager manager = PlayerChannels.getInstance().getChannelManager();
+    private boolean isRemoteCall = true;
 
     public GlobalChatroom(UUID owner, String name, String description, boolean isPublic, boolean isSaved, boolean isServerOwned, boolean log) {
         super(owner, name, description, isPublic, isSaved, isServerOwned, true);
@@ -107,6 +108,7 @@ public class GlobalChatroom extends Chatroom {
     public void removeMember(UUID key) {
         super.removeMember(key);
         manager.removeMemberFromChannel(getName(), key.toString());
+        Bukkit.getConsoleSender().sendMessage("REMOVE MEMBER");
         sendBungeeWrite("Remove", getName(), key.toString());
     }
 
@@ -199,6 +201,10 @@ public class GlobalChatroom extends Chatroom {
     private void chatToAllServers(String message) {
         sendBungeeWrite(getName(), message);
 
+    }
+
+    public void toggleRemoteFlag() {
+        this.isRemoteCall = !this.isRemoteCall;
     }
 
     /**
