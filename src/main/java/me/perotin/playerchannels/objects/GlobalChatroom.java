@@ -81,20 +81,22 @@ public class GlobalChatroom extends Chatroom {
     public void setNicknamesEnabled(boolean enable) {
         super.setNicknamesEnabled(enable);
 
-        Bukkit.getConsoleSender().sendMessage("setNick");
 
-        sendBungeeWrite("ToggleNicknames", getName(), enable);
+        if (isRemoteCall()) sendBungeeWrite("ToggleNicknames", getName(), enable);
+        else enableRemote();
+
         if (isSavedInDatabase()) manager.changeFieldStatus(getName());
+
     }
 
     @Override
     public void setHidden(boolean hidden) {
         super.setHidden(hidden);
-        Bukkit.getConsoleSender().sendMessage("setHidden");
 
         if (isSavedInDatabase()) manager.changeFieldStatus(getName());
 
-        sendBungeeWrite("SetHidden", getName(), hidden);
+       if (isRemoteCall()) sendBungeeWrite("SetHidden", getName(), hidden);
+       else enableRemote(); // enable remote if disabled but skip global message
     }
 
     @Override
@@ -108,7 +110,6 @@ public class GlobalChatroom extends Chatroom {
     public void removeMember(UUID key) {
         super.removeMember(key);
         manager.removeMemberFromChannel(getName(), key.toString());
-        Bukkit.getConsoleSender().sendMessage("REMOVE MEMBER");
         sendBungeeWrite("Remove", getName(), key.toString());
     }
 
@@ -195,6 +196,14 @@ public class GlobalChatroom extends Chatroom {
     }
 
     /**
+     * @return if next global method should send a bungee write or not to avoid
+     * infinite chain reaction
+     */
+    private boolean isRemoteCall() {
+        return isRemoteCall;
+    }
+
+    /**
      * Send message to all servers
      * @param message
      */
@@ -203,8 +212,14 @@ public class GlobalChatroom extends Chatroom {
 
     }
 
-    public void toggleRemoteFlag() {
-        this.isRemoteCall = !this.isRemoteCall;
+
+    public void turnOffRemote() {
+        this.isRemoteCall = false;
+    }
+
+    private void enableRemote(){
+        this.isRemoteCall = true;
+
     }
 
     /**

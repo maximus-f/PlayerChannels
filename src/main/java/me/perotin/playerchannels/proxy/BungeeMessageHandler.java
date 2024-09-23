@@ -142,14 +142,13 @@ public class BungeeMessageHandler {
         try {
             String channelName = msgin.readUTF();
             boolean hidden = msgin.readBoolean();
-            GlobalChatroom channel = (GlobalChatroom) plugin.getChatroom(channelName);
+            Chatroom channel = plugin.getChatroom(channelName);
             Bukkit.getConsoleSender().sendMessage("Received setHidden msg from other server: " + channel.getClass().toString());
-            ((GlobalChatroom) channel).setHidden(hidden);
+            if (channel instanceof GlobalChatroom) ((GlobalChatroom) channel).turnOffRemote();
+            channel.setHidden(hidden);
 
             if (channel.isSaved() && PlayerChannels.getInstance().isMySQL()) {
                 manager.changeFieldStatus(channelName);
-                Bukkit.getConsoleSender().sendMessage("Add manager");
-
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -165,7 +164,9 @@ public class BungeeMessageHandler {
         try {
             String channelName = msgin.readUTF();
             String desc = msgin.readUTF();
-            Chatroom channel = plugin.getChatroom(channelName); // should be safe to cast
+            Chatroom channel = plugin.getChatroom(channelName);
+            if (channel instanceof GlobalChatroom) ((GlobalChatroom) channel).turnOffRemote();
+
             channel.setDescription(desc);
             if (channel.isSaved() && PlayerChannels.getInstance().isMySQL()) {
                 manager.changeFieldStatus(channelName);
@@ -240,6 +241,7 @@ public class BungeeMessageHandler {
             boolean value = msgin.readBoolean();
             Chatroom channel =  plugin.getChatroom(channelName);
             if (channel != null) {
+                if (channel instanceof GlobalChatroom) ((GlobalChatroom) channel).turnOffRemote();
                 channel.setNicknamesEnabled(value);
                 if (channel.isSaved() && PlayerChannels.getInstance().isMySQL()) {
                     manager.changeFieldStatus(channelName);
@@ -480,7 +482,9 @@ public class BungeeMessageHandler {
             if (channel != null && channel.isInChatroom(key)) {
                 channel.removeMember(key);
                PlayerChannelUser.getPlayer(key).leaveChatroom(channel);
-                if (channel.isSaved()) {
+
+                if (channel.isSaved()) { // issue here
+
                     manager.removeMemberFromChannel(channelName, key.toString());
                 }
             }
