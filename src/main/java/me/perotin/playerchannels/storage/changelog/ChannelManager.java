@@ -18,9 +18,12 @@ public class ChannelManager {
 
     private final ChangeLog changeLog = new ChangeLog();
     private final SQLHandler sqlHandler;
-    public ChannelManager(SQLHandler handler) {
+    private final int THROTTLE_LIMIT;
+    public ChannelManager(SQLHandler handler, PlayerChannels plugin) {
         this.sqlHandler = handler;
+        this.THROTTLE_LIMIT = plugin.getConfig().getInt("throttle-in-sec");
     }
+
 
     public void addMemberToChannel(String channelName, String memberUUID) {
 
@@ -47,7 +50,7 @@ public class ChannelManager {
 
     public void onDisable() {
         GlobalChatroom.sendChannelManagerClear();
-        persistChangesToDatabase(changeLog.getChanges());
+        persistChangesToDatabase();
         changeLog.clear();
     }
 
@@ -60,12 +63,20 @@ public class ChannelManager {
     }
 
     /**
-     * @param changes
-     * TODO make this cancel out corresponding actions, e.g. (leave/join same person)
+     * @return throttle limit
      */
-    private void persistChangesToDatabase(List<ChannelChange> changes) {
+    public int THROTTLE_LIMIT() {
+        return THROTTLE_LIMIT;
+    }
+
+    /**
+     * @param changes
+     * TODO make this use batching to group similiar updates together
+     *
+     */
+    public void persistChangesToDatabase() {
         Set<String> batchedStatusChanges = new HashSet<>();
-        for (ChannelChange change : changes) {
+        for (ChannelChange change : changeLog.getChanges()) {
             Bukkit.getConsoleSender().sendMessage("[PlayerChannels] " + change.getChannelName() + " -> " + change.getMemberUUID() + " for action " + change.getChangeType().toString());
 
             ChangeType type = change.getChangeType();

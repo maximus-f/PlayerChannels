@@ -31,6 +31,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,8 +54,7 @@ import java.util.stream.Collectors;
 
 /*
 3.8 TO-DO
-- Synchronously update change log caches, done for FIELD status, need to do for add member, remove, and rank changes
-    9/17
+-
 
  */
 public class PlayerChannels extends JavaPlugin implements PluginMessageListener {
@@ -423,7 +423,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
                     getConfig().getInt("port")
             );
 
-            this.channelManager = new ChannelManager(sqlHandler);
+            this.channelManager = new ChannelManager(sqlHandler, this);
 
 
             try {
@@ -433,6 +433,9 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
                 } else {
                     Bukkit.getConsoleSender().sendMessage("[PlayerChannels] MySQL successfully connected. Global saved channels will be saved.");
 
+                    BukkitScheduler scheduler = getServer().getScheduler();
+                    // Throttle writes to occur every THROTTLE_SECONDS
+                    scheduler.scheduleSyncRepeatingTask(this, () -> channelManager.persistChangesToDatabase(), 0L, channelManager.THROTTLE_LIMIT() * 20L);
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);

@@ -143,7 +143,6 @@ public class BungeeMessageHandler {
             String channelName = msgin.readUTF();
             boolean hidden = msgin.readBoolean();
             Chatroom channel = plugin.getChatroom(channelName);
-            Bukkit.getConsoleSender().sendMessage("Received setHidden msg from other server: " + channel.getClass().toString());
             if (channel instanceof GlobalChatroom) ((GlobalChatroom) channel).turnOffRemote();
             channel.setHidden(hidden);
 
