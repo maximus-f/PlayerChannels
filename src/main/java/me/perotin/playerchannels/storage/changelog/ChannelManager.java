@@ -21,7 +21,7 @@ public class ChannelManager {
     private final int THROTTLE_LIMIT;
     public ChannelManager(SQLHandler handler, PlayerChannels plugin) {
         this.sqlHandler = handler;
-        this.THROTTLE_LIMIT = plugin.getConfig().getInt("throttle-in-sec");
+        this.THROTTLE_LIMIT = plugin.getConfig().getInt("throttle-in-sec", 60);
     }
 
 

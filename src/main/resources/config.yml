@@ -25,7 +25,7 @@ password: "password"
 
 # How often should PlayerChannels update the db in seconds?
 # Keep this number low to avoid issues with independent reloads.
-throttle-in-sec: 3
+throttle-in-sec: 60
 
 
 
