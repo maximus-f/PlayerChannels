@@ -56,15 +56,13 @@
         </dependency>
 
 
-<!--        Ultimate Advancement API for Toast messages-->
+<!-- Ultimate Advancement API for Toast messages -->
         <dependency>
             <groupId>com.frengor</groupId>
             <artifactId>ultimateadvancementapi-shadeable</artifactId>
-            <version>2.3.1</version>
+            <version>2.4.1</version>
             <scope>compile</scope>
         </dependency>
-
-
 
     </dependencies>
     <!-- Shading in IF -->

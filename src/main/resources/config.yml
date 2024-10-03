@@ -16,6 +16,7 @@ bungeecord: false
 # persist so long as you do not shut down all servers simultaneously (data is shared when servers come back from pre-existing servers in this way)
 # but the better approach is to use a global database. Only MySQL is supported as of 3.8.
  # NOTE: Only global channels that are SAVED will be stored here. Local channels (one-server) are stored locally in chatrooms.yml
+# MySQL is still experimental!
 mysql-enabled: false
 host: localhost
 port: 3306
@@ -25,7 +26,7 @@ password: "password"
 
 # How often should PlayerChannels update the db in seconds?
 # Keep this number low to avoid issues with independent reloads.
-throttle-in-sec: 60
+throttle-in-sec: 15
 
 
 
