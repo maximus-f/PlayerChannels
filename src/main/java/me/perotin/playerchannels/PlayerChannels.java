@@ -2,6 +2,7 @@ package me.perotin.playerchannels;
 
 import com.fren_gor.ultimateAdvancementAPI.AdvancementMain;
 import com.fren_gor.ultimateAdvancementAPI.UltimateAdvancementAPI;
+import com.fren_gor.ultimateAdvancementAPI.exceptions.APINotInstantiatedException;
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
@@ -107,10 +108,13 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         new UpdateChecker(this).checkForUpdate();
 
 
-//        main.load();
 
         main.enableInMemory();
-        api = UltimateAdvancementAPI.getInstance(this);
+        try {
+            api = UltimateAdvancementAPI.getInstance(this);
+        } catch (APINotInstantiatedException e) {
+            Bukkit.getLogger().info("[PlayerChannels] Failed to load Ultimate Advancement API. Using default API.");
+        }
 
        this.bungeecord = getConfig().getBoolean("bungeecord");
        this.usePermission = getConfig().contains("use-permission") && getConfig().getBoolean("use-permission");
@@ -158,9 +162,8 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
         clearChannelCache(); // clear other servers change cache with reflection
 
-        //main.disable();
 
-        // Save each to save chatroom to file, will worry about global chatrooms at another time
+        // Save each non-global channel to file
         chatrooms.stream().filter(c -> c.isSaved() && !c.isGlobal()).forEach(Chatroom::saveToFile);
 
 
@@ -207,21 +210,16 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
     }
 
 
-
-
-    // Use reflection to set status to enabled briefly in order to send plugin messages to synchronize caches
+    /**
+     * Reflection method to briefly set a server to be able to send an outgoing plugin message to
+     * call {@link ChannelManager#clear()} to delete stale updates to database.
+     */
     private void clearChannelCache() {
         try {
-
             Field field = getField(JavaPlugin.class, "isEnabled");
             field.setAccessible(true);
-
-
             field.set(this, true);
-
-
             if (isBungeecord() && mySQL && channelManager != null && !channelManager.isEmpty()) {
-
                 channelManager.onDisable();
             }
 
@@ -457,7 +455,9 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         return this.defaultChannelLimit;
     }
 
-    // Add Bungeecord hook
+    /**
+     * Add bungeecord hook and loads all global channels if using database or not.
+     */
     private void setupBungeecordSupport() {
         if (isBungeecord()) {
             this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -467,6 +467,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
             Bukkit.getConsoleSender().sendMessage("[PlayerChannels] Loading in pre-existing Global Channels");
 
 
+            // @TODO deprecate this
             if (!isMySQL()) {
                 GlobalChatroom.sendGlobalSearch();
             } else  {

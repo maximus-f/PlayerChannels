@@ -281,27 +281,29 @@ public class SQLHandler  {
             statement = connection.prepareStatement(createTableSQL);
             statement.executeUpdate();
             statement.close();
+            String query;
 
-            if (operationType == OperationType.ADD) {
-                // Add the member
-                String query = "REPLACE INTO members (chatroomName, memberUUID, `rank`) VALUES (?, ?, ?)";
-                statement = connection.prepareStatement(query);
-                statement.setString(1, chatroom);
-                statement.setString(2, memberUUID);
-                statement.setInt(3, rank);
+            switch (operationType) {
+                case ADD:
+                    // Add the member
+                    query = "REPLACE INTO members (chatroomName, memberUUID, `rank`) VALUES (?, ?, ?)";
+                    statement = connection.prepareStatement(query);
+                    statement.setString(1, chatroom);
+                    statement.setString(2, memberUUID);
+                    statement.setInt(3, rank);
 
-            } else if (operationType == OperationType.REMOVE) {
-                // Remove the member
-                String query = "DELETE FROM members WHERE chatroomName = ? AND memberUUID = ?";
-                statement = connection.prepareStatement(query);
-                statement.setString(1, chatroom);
-                statement.setString(2, memberUUID);
-            } else if (operationType == OperationType.RANK_CHANGE) {
-                String query = "UPDATE members SET `rank` = (?) WHERE memberUUID = ? AND chatroomName = ? ";
-                statement = connection.prepareStatement(query);
-                statement.setInt(1, rank);
-                statement.setString(2, memberUUID);
-                statement.setString(3, chatroom);
+                case REMOVE:
+                    // Remove the member
+                    query = "DELETE FROM members WHERE chatroomName = ? AND memberUUID = ?";
+                    statement = connection.prepareStatement(query);
+                    statement.setString(1, chatroom);
+                    statement.setString(2, memberUUID);
+                case RANK_CHANGE:
+                    query = "UPDATE members SET `rank` = (?) WHERE memberUUID = ? AND chatroomName = ? ";
+                    statement = connection.prepareStatement(query);
+                    statement.setInt(1, rank);
+                    statement.setString(2, memberUUID);
+                    statement.setString(3, chatroom);
             }
 
             statement.executeUpdate();
