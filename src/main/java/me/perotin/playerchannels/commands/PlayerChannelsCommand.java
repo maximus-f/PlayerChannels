@@ -51,7 +51,6 @@ public class PlayerChannelsCommand implements CommandExecutor {
     }
 
 
-// TODO send help message dialog
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
@@ -131,7 +130,7 @@ public class PlayerChannelsCommand implements CommandExecutor {
                     return true;
                 } else if (args.length == 2) {
                     // Open creation menu with name set
-                    String name = args[1]; // TODO Validate data (e.g. name not taken)
+                    String name = args[1];
                     if (CreateChatroomInputEvent.isNameTaken(name)) {
                         player.sendMessage(messages.getString("taken-name"));
                         return true;

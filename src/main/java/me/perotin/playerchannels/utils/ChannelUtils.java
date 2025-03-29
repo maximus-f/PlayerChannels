@@ -1,11 +1,9 @@
 package me.perotin.playerchannels.utils;
 
-import com.fren_gor.ultimateAdvancementAPI.UltimateAdvancementAPI;
-import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDisplay;
+
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
 import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import me.perotin.playerchannels.PlayerChannels;
-import me.perotin.playerchannels.commands.tabs_completer.PlayerChannelsTabCompleter;
 import me.perotin.playerchannels.events.chat_events.ChatroomConfirmDeletionEvent;
 import me.perotin.playerchannels.objects.ChatRole;
 import me.perotin.playerchannels.objects.Chatroom;
@@ -13,20 +11,17 @@ import me.perotin.playerchannels.objects.PlayerChannelUser;
 import me.perotin.playerchannels.objects.inventory.Menu;
 import me.perotin.playerchannels.objects.inventory.paging_objects.MainMenuPaging;
 import me.perotin.playerchannels.storage.Pair;
-import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
+import me.perotin.playerchannels.storage.files.FileType;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.*;
-import org.bukkit.advancement.Advancement;
-import org.bukkit.advancement.AdvancementProgress;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -121,7 +116,7 @@ public class ChannelUtils {
 
         if (canSendMessage(player, message)) {
             try {
-                sendAdvancementNotification(player, message, "", Material.WRITABLE_BOOK);
+                sendAdvancementNotification(player, message, Material.WRITABLE_BOOK);
             } catch (Exception ex) {
                 player.sendMessage(message);
             }
@@ -223,14 +218,13 @@ public class ChannelUtils {
             player.sendMessage(ChatColor.RED + "There was an error loading the message for: " + message);
         }
     }
-    private static void sendAdvancementNotification(Player player, String title, String description, Material iconMaterial) {
-
-        try {
+    private static void sendAdvancementNotification(Player player, String title, Material iconMaterial) {
+             try {
             PlayerChannels.getInstance().getToastApi().displayCustomToast(player, new ItemStack(iconMaterial), title, AdvancementFrameType.GOAL);
-
-        } catch (Exception ex) {
-            player.sendMessage(title);
-        }
+                    } catch (ExceptionInInitializerError ex) {
+                        Bukkit.getLogger().info("[PlayerChannels] Failed to display advancement notification: " + ex.getMessage());
+                        player.sendMessage(title);
+                }
 
     }
 

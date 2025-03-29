@@ -64,7 +64,6 @@ public class CreateChannelSubCommand extends SubCommand {
             String channelName = args[1];
             if (CreateChatroomInputEvent.isNameTaken(channelName)) {
                 player.sendMessage(messages.getString("taken-name"));
-                return;
             }  else {
                 // Create it
                 PreChatroom chatroom = new PreChatroom(player.getUniqueId());
@@ -83,7 +82,6 @@ public class CreateChannelSubCommand extends SubCommand {
             }
             if (CreateChatroomInputEvent.isNameTaken(channelName)) {
                 player.sendMessage(messages.getString("taken-name"));
-                return;
             }  else {
                 // Create it
                 PreChatroom chatroom = new PreChatroom(player.getUniqueId());

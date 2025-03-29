@@ -3,9 +3,7 @@ package me.perotin.playerchannels;
 import com.fren_gor.ultimateAdvancementAPI.AdvancementMain;
 import com.fren_gor.ultimateAdvancementAPI.UltimateAdvancementAPI;
 import com.fren_gor.ultimateAdvancementAPI.exceptions.APINotInstantiatedException;
-import com.google.common.base.Charsets;
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteStreams;
+
 import me.perotin.playerchannels.commands.AdminCommand;
 import me.perotin.playerchannels.commands.CancelTutorialCommand;
 import me.perotin.playerchannels.commands.PlayerChannelsCommand;
@@ -16,8 +14,8 @@ import me.perotin.playerchannels.events.join.PlayerChannelUserJoinEvent;
 import me.perotin.playerchannels.objects.*;
 import me.perotin.playerchannels.proxy.BungeeMessageHandler;
 import me.perotin.playerchannels.storage.changelog.ChannelManager;
-import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
+import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.mysql.SQLHandler;
 import me.perotin.playerchannels.utils.ChannelUtils;
 import me.perotin.playerchannels.utils.Metrics;
@@ -25,10 +23,8 @@ import me.perotin.playerchannels.utils.TutorialHelper;
 import me.perotin.playerchannels.utils.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
@@ -36,8 +32,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.*;
@@ -95,6 +89,8 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         instance = this;
         saveDefaultConfig();
         ChannelFile.loadFiles();
+       // AdvancementToast.init(this);
+
 
         this.chatrooms = new ArrayList<>();
         this.players = new ArrayList<>();
