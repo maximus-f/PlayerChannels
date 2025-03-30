@@ -42,11 +42,23 @@
             <scope>provided</scope>
         </dependency>
         <!-- Inventory Framework Dependency-->
+<!--        <dependency>-->
+<!--            <groupId>com.github.stefvanschie.inventoryframework</groupId>-->
+<!--            <artifactId>IF</artifactId>-->
+<!--            <version>0.10.9</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.github.stefvanschie.inventoryframework</groupId>
-            <artifactId>IF</artifactId>
-            <version>0.10.9</version>
+            <artifactId>IF-Lite</artifactId>
+            <version>0.10.19</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.stefvanschie.inventoryframework</groupId>
+                    <artifactId>abstraction</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
@@ -108,7 +120,6 @@
                             <pattern>com.fren_gor.ultimateAdvancementAPI</pattern>
                             <shadedPattern>me.perotin.playerchannels.libs.com.fren_gor.ultimateAdvancementAPI</shadedPattern>
                         </relocation>
-                        <!-- Relocation for InventoryFramework -->
                         <relocation>
                             <pattern>com.github.stefvanschie.inventoryframework</pattern>
                             <shadedPattern>me.perotin.playerchannels.inventoryframework</shadedPattern>
