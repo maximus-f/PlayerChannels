@@ -90,6 +90,7 @@ public class PlayerChannelUser {
    public void addChannelToListen(Chatroom chatroom) {
         getListeningChatrooms().add(chatroom);
         PlayerChannels.getInstance().getListeningPlayers().add(getUuid());
+        PlayerChannels.getInstance().refreshChatRouting(this);
         tellListeningChannels();
 
    }
@@ -103,6 +104,7 @@ public class PlayerChannelUser {
        if (getListeningChatrooms().isEmpty()) {
            PlayerChannels.getInstance().getListeningPlayers().remove(getUuid());
        }
+       PlayerChannels.getInstance().refreshChatRouting(this);
        tellListeningChannels();
    }
 
@@ -185,6 +187,7 @@ public class PlayerChannelUser {
      */
     public void addChatroom(Chatroom chatroom) {
         if(!chatrooms.contains(chatroom)) chatrooms.add(chatroom);
+        PlayerChannels.getInstance().refreshChatRouting(this);
         Player player = Bukkit.getPlayer(getUuid());
         ChannelFile msgs = new ChannelFile(FileType.MESSAGES);
         if (player != null) {
@@ -212,6 +215,7 @@ public class PlayerChannelUser {
             Bukkit.getPlayer(getUuid()).sendMessage(new ChannelFile(FileType.MESSAGES).getString("player-leave-message")
                     .replace("$chatroom$", chatroom.getName()));
         }
+        PlayerChannels.getInstance().refreshChatRouting(this);
     }
 
     /**
@@ -297,6 +301,7 @@ public class PlayerChannelUser {
 
 
         this.focusedChatroom = focusedChatroom;
+        PlayerChannels.getInstance().refreshChatRouting(this);
         if (focusedChatroom != null) {
             Bukkit.getPlayer(getUuid()).spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Focused Channel: " + ChatColor.YELLOW + focusedChatroom.getName()));
 

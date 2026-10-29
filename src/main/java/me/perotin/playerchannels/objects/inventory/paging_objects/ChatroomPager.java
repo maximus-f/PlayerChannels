@@ -310,7 +310,9 @@ public class ChatroomPager extends PagingMenu {
                 if (!getChatroom().isServerOwned() && getChatroom().getRole(player.getUuid()) == ChatRole.OWNER && (getChatroom().getMembers().size() > 1 || chatroom.isSaved())) {
                     clicker.closeInventory();
                     clicker.updateInventory();
+                    PlayerChannels.getInstance().clearPendingChatInput(clicker);
                     ChatroomConfirmDeletionEvent.confirmDeletion.put(clicker, chatroom);
+                    PlayerChannels.getInstance().refreshChatRouting(clicker);
 
                     String warningDelete = messages.getString("owner-leave-chatroom")
                             .replace("$chatroom$", chatroom.getName());
@@ -396,7 +398,9 @@ public class ChatroomPager extends PagingMenu {
             Player clicker = (Player) inventoryClickEvent.getWhoClicked();
 
             if (chatroom.hasModeratorPermissions(getViewer().getUniqueId())){
+                PlayerChannels.getInstance().clearPendingChatInput(clicker);
                 ChatroomSetDescriptionEvent.setDescription.put(clicker, chatroom);
+                PlayerChannels.getInstance().refreshChatRouting(clicker);
                 clicker.closeInventory();
                 clicker.updateInventory();
                 String setDesc = messages.getString("set-description").replace("$chatroom$", chatroom.getName())

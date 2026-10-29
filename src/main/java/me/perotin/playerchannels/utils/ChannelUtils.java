@@ -1,7 +1,6 @@
 package me.perotin.playerchannels.utils;
 
 
-import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
 import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.events.chat_events.ChatroomConfirmDeletionEvent;
@@ -110,21 +109,15 @@ public class ChannelUtils {
      * @param message of error
      */
     public static void sendMenuMessage(String message, Player player, Menu nextMenu){
-
-//        // Create the BossBar
-//        BossBar bossBar = Bukkit.createBossBar(message, BarColor.PURPLE, BarStyle.SOLID);
-
         if (canSendMessage(player, message)) {
             try {
                 sendAdvancementNotification(player, message, Material.WRITABLE_BOOK);
             } catch (Exception ex) {
                 player.sendMessage(message);
             }
-//        bossBar.addPlayer(player);
 
 
         } else {
-            // avoid spamming it, so send as a basic message
             player.sendMessage(message);
         }
         if (nextMenu != null) {
@@ -151,7 +144,9 @@ public class ChannelUtils {
         ChannelFile messages = new ChannelFile(FileType.MESSAGES);
         if (!channel.isServerOwned() && channel.getRole(user.getUuid()) == ChatRole.OWNER && (channel.getMembers().size() > 1 || channel.isSaved())) {
             Player player = Bukkit.getPlayer(user.getUuid());
+            PlayerChannels.getInstance().clearPendingChatInput(player);
             ChatroomConfirmDeletionEvent.confirmDeletion.put(player, channel);
+            PlayerChannels.getInstance().refreshChatRouting(player);
 
             String warningDelete = messages.getString("owner-leave-chatroom")
                     .replace("$chatroom$", channel.getName());
@@ -220,7 +215,8 @@ public class ChannelUtils {
     }
     private static void sendAdvancementNotification(Player player, String title, Material iconMaterial) {
              try {
-            PlayerChannels.getInstance().getToastApi().displayCustomToast(player, new ItemStack(iconMaterial), title, AdvancementFrameType.GOAL);
+
+                         PlayerChannels.getInstance().getToastApi().displayCustomToast(player, new ItemStack(iconMaterial), title, com.frengor.toastapi.AdvancementFrameType.GOAL);
                     } catch (ExceptionInInitializerError ex) {
                         Bukkit.getLogger().info("[PlayerChannels] Failed to display advancement notification: " + ex.getMessage());
                         player.sendMessage(title);

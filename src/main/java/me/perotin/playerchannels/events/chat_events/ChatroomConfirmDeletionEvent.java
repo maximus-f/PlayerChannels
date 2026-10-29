@@ -10,15 +10,11 @@ import me.perotin.playerchannels.storage.files.ChannelFile;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ChatroomConfirmDeletionEvent implements Listener {
+public class ChatroomConfirmDeletionEvent {
 
     private PlayerChannels plugin;
     private ChannelFile messages;
@@ -28,22 +24,18 @@ public class ChatroomConfirmDeletionEvent implements Listener {
         this.messages = new ChannelFile(FileType.MESSAGES);
     }
 
-    @EventHandler
-    public void onConfirmDeletion(AsyncPlayerChatEvent event) {
-        Player chatter = event.getPlayer();
+    public void processInput(Player chatter, String message) {
         if (confirmDeletion.containsKey(chatter)) {
-            event.setCancelled(true);
             Chatroom chatroom = confirmDeletion.get(chatter);
             String nameToMatch = ChatColor.stripColor(chatroom.getName());
-            String message = event.getMessage();
             confirmDeletion.remove(chatter);
             if (nameToMatch.equalsIgnoreCase(message)) {
                 // Delete chatroom
                 chatroom.delete();
 
-                openInvSynchronously(null, chatter);
+                new MainMenuPaging(chatter, PlayerChannels.getInstance()).show();
             } else {
-                openInvSynchronously(chatroom, chatter);
+                new ChatroomPager(chatroom, chatter).show();
 
             }
 
@@ -51,16 +43,4 @@ public class ChatroomConfirmDeletionEvent implements Listener {
         }
     }
 
-    private void openInvSynchronously(Chatroom chatroom, Player chatter) {
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                if (chatroom != null) {
-                    new ChatroomPager(chatroom, chatter).show();
-                } else {
-                    new MainMenuPaging(chatter, PlayerChannels.getInstance()).show();
-                }
-            }
-        }.runTask(PlayerChannels.getInstance());
-    }
 }

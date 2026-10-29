@@ -1,9 +1,8 @@
 package me.perotin.playerchannels;
 
-import com.fren_gor.ultimateAdvancementAPI.AdvancementMain;
-import com.fren_gor.ultimateAdvancementAPI.UltimateAdvancementAPI;
-import com.fren_gor.ultimateAdvancementAPI.exceptions.APINotInstantiatedException;
 
+
+import com.frengor.toastapi.ToastAPI;
 import me.perotin.playerchannels.commands.AdminCommand;
 import me.perotin.playerchannels.commands.CancelTutorialCommand;
 import me.perotin.playerchannels.commands.PlayerChannelsCommand;
@@ -68,9 +67,8 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
     private Set<UUID> disableGlobalChat;
 
-    private UltimateAdvancementAPI api;
 
-    private AdvancementMain main;
+    private ToastAPI toastAPI;
 
     private boolean bungeecord, usePermission, createPermission, checkLimit, mySQL;
 
@@ -79,6 +77,8 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
     private SQLHandler sqlHandler;
 
     private ChannelManager channelManager;
+
+    private ChatroomChatEvent chatRouter;
 
 
 
@@ -91,7 +91,6 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         ChannelFile.loadFiles();
        // AdvancementToast.init(this);
 
-
         this.chatrooms = new ArrayList<>();
         this.players = new ArrayList<>();
         this.helper = new InventoryHelper();
@@ -102,15 +101,6 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         int pluginId = 19355;
         Metrics metrics = new Metrics(this, pluginId);
         new UpdateChecker(this).checkForUpdate();
-
-
-
-        main.enableInMemory();
-        try {
-            api = UltimateAdvancementAPI.getInstance(this);
-        } catch (APINotInstantiatedException e) {
-            Bukkit.getLogger().info("[PlayerChannels] Failed to load Ultimate Advancement API. Using default API.");
-        }
 
        this.bungeecord = getConfig().getBoolean("bungeecord");
        this.usePermission = getConfig().contains("use-permission") && getConfig().getBoolean("use-permission");
@@ -128,19 +118,12 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
 
         // Load in player data after channel data
         for (Player player : Bukkit.getOnlinePlayers()) {
-            players.add(PlayerChannelUser.getPlayer(player.getUniqueId()));
+            addPlayer(PlayerChannelUser.getPlayer(player.getUniqueId()));
         }
 
     }
 
 
-
-    @Override
-    public void onLoad() {
-        main = new AdvancementMain(this);
-        main.load();
-
-    }
 
 
     @Override
@@ -174,6 +157,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         this.helper = null;
         instance = null;
         TutorialHelper.inTutorial.clear();
+        if (chatRouter != null) chatRouter.clear();
 
         if (isBungeecord()) {
             this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
@@ -183,14 +167,13 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
     }
 
     private void init(){
-        Bukkit.getPluginManager().registerEvents(new CreateChatroomInputEvent(this), this);
-        Bukkit.getPluginManager().registerEvents(new ChatroomChatEvent(this), this);
-        Bukkit.getPluginManager().registerEvents(new StatusInputEvent(), this);
+        CreateChatroomInputEvent creationInput = new CreateChatroomInputEvent(this);
+        chatRouter = new ChatroomChatEvent(this, creationInput, new StatusInputEvent(),
+                new ChatroomSetNicknameEvent(this), new ChatroomSetDescriptionEvent(this),
+                new ChatroomConfirmDeletionEvent(this));
+        Bukkit.getPluginManager().registerEvents(chatRouter, this);
 
         Bukkit.getPluginManager().registerEvents(new PlayerChannelUserJoinEvent(this), this);
-        Bukkit.getPluginManager().registerEvents(new ChatroomSetNicknameEvent(this), this);
-        Bukkit.getPluginManager().registerEvents(new ChatroomSetDescriptionEvent(this), this);
-        Bukkit.getPluginManager().registerEvents(new ChatroomConfirmDeletionEvent(this), this);
 
 
 
@@ -339,11 +322,28 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         if (!players.contains(player)) {
             players.add(player);
         }
+        refreshChatRouting(player);
+    }
+
+    public void refreshChatRouting(PlayerChannelUser player) {
+        if (chatRouter != null) chatRouter.refresh(player);
+    }
+
+    public void refreshChatRouting(Player player) {
+        if (chatRouter != null) chatRouter.refresh(player);
+    }
+
+    public void forgetChatRouting(Player player) {
+        if (chatRouter != null) chatRouter.forget(player);
+    }
+
+    public void clearPendingChatInput(Player player) {
+        if (chatRouter != null) chatRouter.clearPendingInput(player);
     }
 
     /** @returns toast api for toast messages **/
-    public UltimateAdvancementAPI getToastApi() {
-        return api;
+    public ToastAPI getToastApi() {
+        return toastAPI;
     }
     /**
      * Load all chatrooms stored in chatrooms.yml
