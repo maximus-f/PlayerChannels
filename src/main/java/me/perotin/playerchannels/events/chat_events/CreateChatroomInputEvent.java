@@ -7,6 +7,7 @@ import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.utils.ChannelUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -92,8 +93,13 @@ public class CreateChatroomInputEvent {
      * Shows most updated menu of a chatroom in progress of being created
      */
     public void showUpdatedMenu(Player toShow, PreChatroom view) {
-        InventoryHelper helper = plugin.getHelper();
-        helper.setNavigationBar(helper.getCreationMenu(view), toShow).getFirst().show(toShow);
+        // Click callbacks also use this helper. Open the replacement view after their event finishes.
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            if (!plugin.isEnabled() || !toShow.isOnline()
+                    || inCreation.get(toShow.getUniqueId()) != view) return;
+            InventoryHelper helper = plugin.getHelper();
+            helper.setNavigationBar(helper.getCreationMenu(view), toShow).getFirst().show(toShow);
+        });
     }
 
 

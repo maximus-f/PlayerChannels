@@ -108,6 +108,7 @@ already-in-tutorial: "Already in the tutorial! Type /cancel to leave"
 
 fast-chat-invalid-range: "&cInvalid key. Use keys &e[&f1-$end$&e]&c to fast chat."
 fast-chat-invalid: "&cInvalid key. Use key &e[&f1&e]&c to fast chat."
+chat-input-expired: "&cYour chat destination is no longer available. Please send your message again."
 
 join-subcommand-help: "&cIncorrect usage: /pc join <channel-name>"
 join-subcommand-not-found: "&cThat channel could not be found!"
