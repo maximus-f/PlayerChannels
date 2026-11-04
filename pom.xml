@@ -16,6 +16,16 @@
 
     <repositories>
         <repository>
+            <id>playerchannels-vendored</id>
+            <url>file://${project.basedir}/vendor/maven</url>
+            <releases>
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
@@ -92,14 +102,11 @@
         <sourceDirectory>src/main/java</sourceDirectory>
 
         <plugins>
-            <!-- Build the jar straight into the first server's plugin folder -->
+            <!-- Write build output to target. Deployment uses an explicit copy. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
-                <configuration>
-                    <outputDirectory>/Users/maxfuligni/Desktop/network/bungee_server1/plugins</outputDirectory>
-                </configuration>
             </plugin>
 
             <!-- Shade ToastAPI and IF‑Lite into the final jar -->
@@ -140,28 +147,6 @@
                 </executions>
             </plugin>
 
-            <!-- Copy the finished fat‑jar into the second server folder after packaging -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <id>copy-to-server2</id>
-                        <phase>install</phase>
-                        <configuration>
-                            <target>
-                                <echo message="Copying built JAR to server2…"/>
-                                <copy file="/Users/maxfuligni/Desktop/network/bungee_server1/plugins/${project.artifactId}-${project.version}.jar"
-                                      todir="/Users/maxfuligni/Desktop/network/1.21.5/plugins"/>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 </project>

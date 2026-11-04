@@ -127,12 +127,14 @@ public class SQLHandler  {
                 while (rs.next()) {
                     UUID memberUUID = UUID.fromString(rs.getString("memberUUID"));
                     int rankValue = rs.getInt("rank");
-                    ChatRole role = ChatRole.getRole(rankValue);
+                    // Older releases wrote zero when demoting a moderator.
+                    ChatRole role = rankValue == 0 ? ChatRole.MEMBER : ChatRole.getRole(rankValue);
+                    if (role == null) {
+                        throw new SQLException("Unknown member rank " + rankValue + " in chatroom " + chatroomName);
+                    }
                     members.put(memberUUID, role);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return members;
     }
@@ -157,9 +159,17 @@ public class SQLHandler  {
                 chatrooms.add(chatroom);
             }
         } catch (SQLException e) {
-            if (!e.getSQLState().equals("42S02")) {
-                e.printStackTrace();
+            // A fresh database has no channels yet. Other failures must not publish a partial load.
+            if (!"42S02".equals(e.getSQLState())) throw e;
+        }
+        for (Chatroom chatroom : chatrooms) {
+            Map<UUID, ChatRole> members = getChatroomMembers(chatroom.getName());
+            if (!chatroom.isServerOwned()) {
+                // The channel row identifies the current owner. Older transfers left stale owner ranks.
+                members.replaceAll((id, role) -> role == ChatRole.OWNER ? ChatRole.MODERATOR : role);
             }
+            members.put(chatroom.getOwner(), ChatRole.OWNER);
+            chatroom.setMembers(members);
         }
         return chatrooms;
     }
@@ -291,6 +301,7 @@ public class SQLHandler  {
                     statement.setString(1, chatroom);
                     statement.setString(2, memberUUID);
                     statement.setInt(3, rank);
+                    break;
 
                 case REMOVE:
                     // Remove the member
@@ -298,12 +309,14 @@ public class SQLHandler  {
                     statement = connection.prepareStatement(query);
                     statement.setString(1, chatroom);
                     statement.setString(2, memberUUID);
+                    break;
                 case RANK_CHANGE:
                     query = "UPDATE members SET `rank` = (?) WHERE memberUUID = ? AND chatroomName = ? ";
                     statement = connection.prepareStatement(query);
                     statement.setInt(1, rank);
                     statement.setString(2, memberUUID);
                     statement.setString(3, chatroom);
+                    break;
             }
 
             statement.executeUpdate();

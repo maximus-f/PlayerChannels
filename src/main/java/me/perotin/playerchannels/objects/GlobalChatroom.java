@@ -69,7 +69,7 @@ public class GlobalChatroom extends Chatroom {
             }
         }
 
-        if (isSavedInDatabase()) manager.addMemberToChannel(getName(), value.getFirst().toString());
+        if (isSavedInDatabase()) manager.addMemberToChannel(getName(), value.getFirst().toString(), value.getSecond().getValue());
         super.addMember(value, name);
         sendBungeeWrite("AddMember", getName(), value.getFirst().toString(), value.getSecond().getValue(), name);
 
@@ -127,7 +127,7 @@ public class GlobalChatroom extends Chatroom {
     @Override
     public void promoteMemberToModerator(UUID member) {
         if (isSavedInDatabase()) {
-            manager.rankChange(getName(), member.toString(), 1);
+            manager.rankChange(getName(), member.toString(), ChatRole.MODERATOR.getValue());
         }
         super.promoteMemberToModerator(member);
         sendBungeeWrite("PromoteToMod", getName(), member.toString());
@@ -135,7 +135,7 @@ public class GlobalChatroom extends Chatroom {
     @Override
     public void demoteModeratorToMember(UUID member) {
         if (isSavedInDatabase()) {
-            manager.rankChange(getName(), member.toString(), 0);
+            manager.rankChange(getName(), member.toString(), ChatRole.MEMBER.getValue());
         }
         super.demoteModeratorToMember(member);
         sendBungeeWrite("DemoteToMember", getName(), member.toString());
@@ -157,7 +157,9 @@ public class GlobalChatroom extends Chatroom {
     @Override
     public void promoteModeratorToOwner(UUID member, UUID oldOwner) {
         if (isSavedInDatabase()) {
-            manager.rankChange(getName(), member.toString(), 2);
+            manager.rankChange(getName(), member.toString(), ChatRole.OWNER.getValue());
+            manager.rankChange(getName(), oldOwner.toString(), ChatRole.MODERATOR.getValue());
+            manager.changeFieldStatus(getName());
         }
         super.promoteModeratorToOwner(member, oldOwner);
         sendBungeeWrite("PromoteModToOwner", getName(), member.toString(), oldOwner.toString());

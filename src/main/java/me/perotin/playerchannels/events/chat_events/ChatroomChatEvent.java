@@ -174,7 +174,9 @@ public class ChatroomChatEvent implements Listener {
                 message);
 
         if (route == ChatRoutingPolicy.Route.NORMAL) {
-            event.getRecipients().removeAll(filteredRecipients);
+            Set<Player> recipientsToFilter = filteredRecipients;
+            // Leave lazy or read-only event recipients untouched when filtering is unnecessary.
+            if (!recipientsToFilter.isEmpty()) event.getRecipients().removeAll(recipientsToFilter);
             return;
         }
 

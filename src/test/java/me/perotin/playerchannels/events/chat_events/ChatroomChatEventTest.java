@@ -29,6 +29,7 @@ import org.mockito.MockedStatic;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
@@ -365,6 +366,45 @@ public class ChatroomChatEventTest {
         runNextTask();
         verifyNoInteractions(descriptions);
         assertFalse(ChatroomSetDescriptionEvent.setDescription.containsKey(player));
+    }
+
+    @Test
+    public void ordinaryChatLeavesReadOnlyRecipientsUntouchedWithoutFiltering() {
+        Set<Player> recipients = Collections.unmodifiableSet(Collections.singleton(player));
+        AsyncPlayerChatEvent event = new AsyncPlayerChatEvent(true, player, "hello", recipients);
+
+        router.onChatroomChat(event);
+
+        assertFalse(event.isCancelled());
+        assertSame(recipients, event.getRecipients());
+        assertEquals(Collections.singleton(player), recipients);
+        assertTrue(tasks.isEmpty());
+    }
+
+    @Test
+    public void ordinaryChatDoesNotAccessLazyRecipientsWithoutFiltering() {
+        AsyncPlayerChatEvent event = spy(new AsyncPlayerChatEvent(false, player, "hello", new HashSet<>()));
+
+        router.onChatroomChat(event);
+
+        verify(event, never()).getRecipients();
+        assertFalse(event.isCancelled());
+        assertTrue(tasks.isEmpty());
+    }
+
+    @Test
+    public void ordinaryChatFiltersListenersAndKeepsOtherRecipients() {
+        listening.add(staff);
+        router.refresh(user);
+        Player other = mock(Player.class);
+        Set<Player> recipients = new HashSet<>(Arrays.asList(player, other));
+        AsyncPlayerChatEvent event = new AsyncPlayerChatEvent(true, player, "hello", recipients);
+
+        router.onChatroomChat(event);
+
+        assertFalse(event.isCancelled());
+        assertEquals(Collections.singleton(other), recipients);
+        assertTrue(tasks.isEmpty());
     }
 
     @Test
