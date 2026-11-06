@@ -410,9 +410,10 @@ public class BungeeMessageHandler {
             Chatroom channel = plugin.getChatroom(channelName);
             if (channel.isInChatroom(toOwner) && channel.isInChatroom(toMod) && channel.getMemberMap().get(toOwner) == ChatRole.MODERATOR) {
                 channel.promoteModeratorToOwner(toOwner, toMod);
-                if (channel.isSaved()) {
-                    manager.rankChange(channelName, toOwner.toString(), 2);
-                    manager.rankChange(channelName, toMod.toString(), 1);
+                if (channel.isSaved() && plugin.isMySQL() && !(channel instanceof GlobalChatroom)) {
+                    manager.rankChange(channelName, toOwner.toString(), ChatRole.OWNER.getValue());
+                    manager.rankChange(channelName, toMod.toString(), ChatRole.MODERATOR.getValue());
+                    manager.changeFieldStatus(channelName);
 
                 }
             }
@@ -433,8 +434,8 @@ public class BungeeMessageHandler {
             Chatroom channel = plugin.getChatroom(channelName);
             if (channel.isInChatroom(key) && channel.getMemberMap().get(key) == ChatRole.MODERATOR) {
                 channel.demoteModeratorToMember(key);
-                if (channel.isSaved()) {
-                    manager.rankChange(channelName, key.toString(), 0);
+                if (channel.isSaved() && plugin.isMySQL() && !(channel instanceof GlobalChatroom)) {
+                    manager.rankChange(channelName, key.toString(), ChatRole.MEMBER.getValue());
                 }
             }
         } catch (IOException ex) {
@@ -454,8 +455,8 @@ public class BungeeMessageHandler {
             Chatroom channel = plugin.getChatroom(channelName); // How to ensure this is Chatroom obj and not GlobalChatroom?
             if (channel.isInChatroom(key) && channel.getMemberMap().get(key) == ChatRole.MEMBER) {
                 channel.promoteMemberToModerator(key);
-                if (channel.isSaved()) {
-                    manager.rankChange(channelName, key.toString(), 1);
+                if (channel.isSaved() && plugin.isMySQL() && !(channel instanceof GlobalChatroom)) {
+                    manager.rankChange(channelName, key.toString(), ChatRole.MODERATOR.getValue());
                 }
 
             }
@@ -482,7 +483,7 @@ public class BungeeMessageHandler {
                 channel.removeMember(key);
                PlayerChannelUser.getPlayer(key).leaveChatroom(channel);
 
-                if (channel.isSaved()) { // issue here
+                if (channel.isSaved() && plugin.isMySQL() && !(channel instanceof GlobalChatroom)) {
 
                     manager.removeMemberFromChannel(channelName, key.toString());
                 }
@@ -524,8 +525,9 @@ public class BungeeMessageHandler {
                 if (!user.isMemberOf(channel)) {
                     user.addChatroom(channel);
                 }
-                if (channel.isSaved()) {
-                    manager.addMemberToChannel(channelName, id.toString());
+                // GlobalChatroom records its own member changes with the supplied role.
+                if (channel.isSaved() && plugin.isMySQL() && !(channel instanceof GlobalChatroom)) {
+                    manager.addMemberToChannel(channelName, id.toString(), role);
                 }
 
             }

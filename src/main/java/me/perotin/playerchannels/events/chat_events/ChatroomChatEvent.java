@@ -2,137 +2,320 @@ package me.perotin.playerchannels.events.chat_events;
 
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.Chatroom;
+import me.perotin.playerchannels.objects.ChatRole;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
-import me.perotin.playerchannels.storage.files.FileType;
+import me.perotin.playerchannels.objects.PreChatroom;
+import me.perotin.playerchannels.storage.Pair;
 import me.perotin.playerchannels.storage.files.ChannelFile;
+import me.perotin.playerchannels.storage.files.FileType;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
-/**
- * @author Perotin
- * Class for when a player is chatting within their chatroom.
- * Chatting in a chatroom can be done in a various amount of ways, so long
- * as the player is in their chat mode, it will occur
- */
+/** Owns chat routing. Event-thread work is limited to immutable routing data and the event itself. */
 public class ChatroomChatEvent implements Listener {
 
-    private PlayerChannels plugin;
-    private ChannelFile messages;
+    private final PlayerChannels plugin;
+    private final CreateChatroomInputEvent creationInput;
+    private final StatusInputEvent statusInput;
+    private final ChatroomSetNicknameEvent nicknameInput;
+    private final ChatroomSetDescriptionEvent descriptionInput;
+    private final ChatroomConfirmDeletionEvent deletionInput;
+    private final ChannelFile messages;
+    private final ConcurrentMap<UUID, RouteState> routes = new ConcurrentHashMap<>();
+    // Only accessed on the main thread. Each object identifies one particular prompt session.
+    private final Map<UUID, PromptSession> activePrompts = new HashMap<>();
+    private volatile Set<Player> filteredRecipients = Collections.emptySet();
 
-    public ChatroomChatEvent(PlayerChannels plugin) {
+    private static final class RouteState {
+        private final PromptSession prompt;
+        private final Chatroom focused;
+        private final List<Chatroom> channels;
+
+        private RouteState(PromptSession prompt, Chatroom focused, List<Chatroom> channels) {
+            this.prompt = prompt;
+            this.focused = focused;
+            // The async callback may select references, but never reads the channels' mutable fields.
+            this.channels = Collections.unmodifiableList(new ArrayList<>(channels));
+        }
+    }
+
+    private enum PromptType {
+        DELETION, DESCRIPTION, NICKNAME, STATUS, CREATION_NAME, CREATION_DESCRIPTION
+    }
+
+    private static final class PromptSession {
+        private final PromptType type;
+        private final Chatroom channel;
+        private final UUID nicknameTarget;
+        private final PreChatroom draft;
+
+        private PromptSession(PromptType type, Chatroom channel, UUID nicknameTarget, PreChatroom draft) {
+            this.type = type;
+            this.channel = channel;
+            this.nicknameTarget = nicknameTarget;
+            this.draft = draft;
+        }
+
+        private boolean hasSameTarget(PromptSession other) {
+            return other != null && type == other.type && channel == other.channel
+                    && Objects.equals(nicknameTarget, other.nicknameTarget) && draft == other.draft;
+        }
+    }
+
+    public ChatroomChatEvent(PlayerChannels plugin, CreateChatroomInputEvent creationInput,
+                             StatusInputEvent statusInput, ChatroomSetNicknameEvent nicknameInput,
+                             ChatroomSetDescriptionEvent descriptionInput,
+                             ChatroomConfirmDeletionEvent deletionInput) {
         this.plugin = plugin;
+        this.creationInput = creationInput;
+        this.statusInput = statusInput;
+        this.nicknameInput = nicknameInput;
+        this.descriptionInput = descriptionInput;
+        this.deletionInput = deletionInput;
         this.messages = new ChannelFile(FileType.MESSAGES);
     }
 
+    /** Call on the main thread after changing a player's route or pending input. */
+    public void refresh(PlayerChannelUser user) {
+        UUID id = user.getUuid();
+        Player player = Bukkit.getPlayer(id);
+        if (player == null) {
+            routes.remove(id);
+            refreshFilteredRecipients();
+            return;
+        }
+        PromptSession prompt = findPrompt(player);
+        if (prompt == null) {
+            activePrompts.remove(id);
+        } else {
+            PromptSession previous = activePrompts.get(id);
+            if (prompt.hasSameTarget(previous)) prompt = previous;
+            activePrompts.put(id, prompt);
+        }
+        // Reconstruct live filtering from the cached preference, including after a reconnect.
+        if (user.getListeningChatrooms().isEmpty()) plugin.getListeningPlayers().remove(id);
+        else plugin.getListeningPlayers().add(id);
+        routes.put(id, new RouteState(prompt, user.getFocusedChatroom(), user.getChatrooms()));
+        refreshFilteredRecipients();
+    }
 
-    /**
-     * Checks for chat event occuring in chatroom and cancels event and sends message to members
-     * of chatroom. This approach is the focused chat which players opt into on the chatroom menu
-     *
-     * Prefix with configurable symbol is the other approach
-     * @param event
-     */
-    @EventHandler
+    public void refresh(Player player) {
+        refresh(PlayerChannelUser.getPlayer(player.getUniqueId()));
+    }
+
+    public void forget(Player player) {
+        routes.remove(player.getUniqueId());
+        activePrompts.remove(player.getUniqueId());
+        refreshFilteredRecipients();
+    }
+
+    /** Replace a pending text prompt while keeping any in-progress channel draft. */
+    public void clearPendingInput(Player player) {
+        activePrompts.remove(player.getUniqueId());
+        StatusInputEvent.enteringStatus.remove(player);
+        ChatroomSetNicknameEvent.setNickname.remove(player);
+        ChatroomSetDescriptionEvent.setDescription.remove(player);
+        ChatroomConfirmDeletionEvent.confirmDeletion.remove(player);
+        UUID id = player.getUniqueId();
+        creationInput.getSetName().remove(id);
+        creationInput.getSetDescription().remove(id);
+    }
+
+    public void clear() {
+        routes.clear();
+        activePrompts.clear();
+        filteredRecipients = Collections.emptySet();
+        StatusInputEvent.enteringStatus.clear();
+        ChatroomSetNicknameEvent.setNickname.clear();
+        ChatroomSetDescriptionEvent.setDescription.clear();
+        ChatroomConfirmDeletionEvent.confirmDeletion.clear();
+        creationInput.getSetName().clear();
+        creationInput.getSetDescription().clear();
+        creationInput.getInCreation().clear();
+    }
+
+    private void refreshFilteredRecipients() {
+        Set<Player> recipients = new HashSet<>();
+        for (UUID id : plugin.getListeningPlayers()) {
+            Player player = Bukkit.getPlayer(id);
+            if (player != null) recipients.add(player);
+        }
+        filteredRecipients = Collections.unmodifiableSet(recipients);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChatroomChat(AsyncPlayerChatEvent event) {
-        Player chatter = event.getPlayer();
-        // Should be able to retrieve private player without issue
-        PlayerChannelUser playerChannelUser = PlayerChannelUser.getPlayer(chatter.getUniqueId());
+        UUID id = event.getPlayer().getUniqueId();
         String message = event.getMessage();
-        // Player is opted into one singular chatroom and every message goes as such
+        RouteState state = routes.get(id);
+        String prefix = PlayerChannels.QUICK_CHAT_PREFIX;
+        ChatRoutingPolicy.Route route = ChatRoutingPolicy.route(
+                state != null && state.prompt != null,
+                state != null && state.focused != null,
+                state == null ? 0 : state.channels.size(),
+                prefix,
+                message);
 
-        // Remove players listening to any chatroom
-        plugin.getListeningPlayers().stream().map(Bukkit::getPlayer).collect(Collectors.toList()).forEach(event.getRecipients()::remove);
-
-       if (playerChannelUser.getFocusedChatroom() != null) {
-           event.setCancelled(true);
-           Chatroom focusedChatroom = playerChannelUser.getFocusedChatroom();
-           if (focusedChatroom.isMuted(chatter.getUniqueId())) {
-               // Player is muted within the chatroom
-               chatter.sendMessage(messages.getString("muted-message")
-                       .replace("$chatroom$", focusedChatroom.getName()));
-               return;
-           }
-
-           if (!playerChannelUser.getListeningChatrooms().isEmpty() && !playerChannelUser.isListeningTo(focusedChatroom)) {
-               // Sending a message in a channel they are not lsitening to
-               // Add them to the listening
-               playerChannelUser.addChannelToListen(focusedChatroom);
-
-           }
-           focusedChatroom.chat(chatter.getName(), event.getMessage(), chatter.getUniqueId());
-
-       }
-
-       // Player used a special prefix and is only in one chatroom
-        else if (message.startsWith(PlayerChannels.QUICK_CHAT_PREFIX) && playerChannelUser.getChatrooms().size() == 1){
-           event.setCancelled(true);
-
-           Chatroom quickChatroom = playerChannelUser.getChatrooms().get(0);
-           if (quickChatroom.isMuted(chatter.getUniqueId())) {
-               // Player is muted within the chatroom
-               chatter.sendMessage(messages.getString("muted-message")
-                       .replace("$chatroom$", quickChatroom.getName()));
-               return;
-           }
-
-           if (!playerChannelUser.getListeningChatrooms().isEmpty() && !playerChannelUser.isListeningTo(quickChatroom)) {
-               // Sending a message in a channel they are not lsitening to
-               // Add them to the listening
-               playerChannelUser.addChannelToListen(quickChatroom);
-
-           }
-           quickChatroom.chat(chatter.getName(), event.getMessage().substring(1), chatter.getUniqueId());
-           return;
-       }
-
-       // Player is using their index keys to "fast chat" in multiple chatrooms
-      else  if (message.matches("^[1-9][0-9]?:.*$")) {
-            event.setCancelled(true);
-
-            String[] parts = message.split(":", 2);
-            int chatroomIndex;
-            try {
-                chatroomIndex = Integer.parseInt(parts[0]) - 1;
-            } catch (NumberFormatException e) {
-                chatter.sendMessage("Invalid chatroom index");
-                return;
-            }
-
-            int chatroomsSize = playerChannelUser.getChatrooms().size();
-            if (chatroomIndex < 0 || chatroomIndex >= chatroomsSize) {
-                String errorMessage;
-                if (chatroomsSize == 1) {
-                    errorMessage = messages.getString("fast-chat-invalid");
-                } else {
-                    errorMessage = messages.getString("fast-chat-invalid-range")
-                            .replace("$end$", Integer.toString(chatroomsSize));
-                }
-                chatter.sendMessage(errorMessage);
-                return;
-            }
-
-            Chatroom fastChatroom = playerChannelUser.getChatrooms().get(chatroomIndex);
-            if (fastChatroom.isMuted(chatter.getUniqueId())) {
-                // Player is muted within the chatroom
-                chatter.sendMessage(messages.getString("muted-message")
-                        .replace("$chatroom$", fastChatroom.getName()));
-                return;
-            }
-            if (!playerChannelUser.getListeningChatrooms().isEmpty() && !playerChannelUser.isListeningTo(fastChatroom)) {
-                // Sending a message in a channel they are not lsitening to
-                // Add them to the listening
-                playerChannelUser.addChannelToListen(fastChatroom);
-
-            }
-            fastChatroom.chat(chatter.getName(), parts[1].trim(), chatter.getUniqueId());
+        if (route == ChatRoutingPolicy.Route.NORMAL) {
+            Set<Player> recipientsToFilter = filteredRecipients;
+            // Leave lazy or read-only event recipients untouched when filtering is unnecessary.
+            if (!recipientsToFilter.isEmpty()) event.getRecipients().removeAll(recipientsToFilter);
+            return;
         }
 
+        event.setCancelled(true);
+        Player player = event.getPlayer();
+        Runnable action = () -> process(player, message, route, state, prefix);
+        if (event.isAsynchronous()) Bukkit.getScheduler().runTask(plugin, action);
+        else action.run();
+    }
 
+    private void process(Player player, String message, ChatRoutingPolicy.Route route,
+                         RouteState state, String prefix) {
+        if (!plugin.isEnabled() || !player.isOnline()) return;
+        try {
+            if (route == ChatRoutingPolicy.Route.PROMPT) {
+                processPrompt(player, message, state.prompt);
+                return;
+            }
+            PlayerChannelUser user = PlayerChannelUser.getPlayer(player.getUniqueId());
+            Chatroom channel;
+            String content = message;
+            if (route == ChatRoutingPolicy.Route.FOCUSED) {
+                channel = state.focused;
+            } else if (route == ChatRoutingPolicy.Route.QUICK) {
+                channel = state.channels.get(0);
+                content = message.substring(prefix.length());
+            } else {
+                String[] parts = message.split(":", 2);
+                int index = Integer.parseInt(parts[0]) - 1;
+                int size = state == null ? 0 : state.channels.size();
+                if (index < 0 || index >= size) {
+                    String key = size == 1 ? "fast-chat-invalid" : "fast-chat-invalid-range";
+                    String error = messages.getString(key);
+                    player.sendMessage(size == 1 ? error : error.replace("$end$", Integer.toString(size)));
+                    return;
+                }
+                channel = state.channels.get(index);
+                content = parts[1].trim();
+            }
+            if (!isAvailable(channel) || !user.isMemberOf(channel) || !channel.isInChatroom(player.getUniqueId())) {
+                sendExpiredMessage(player);
+                return;
+            }
+            if (channel.isMuted(player.getUniqueId())) {
+                player.sendMessage(messages.getString("muted-message").replace("$chatroom$", channel.getName()));
+                return;
+            }
+            if (!user.getListeningChatrooms().isEmpty() && !user.isListeningTo(channel)) {
+                user.addChannelToListen(channel);
+            }
+            channel.chat(player.getName(), content, player.getUniqueId());
+        } finally {
+            if (player.isOnline()) refresh(player);
+        }
+    }
 
+    private PromptSession findPrompt(Player player) {
+        UUID id = player.getUniqueId();
+        if (ChatroomConfirmDeletionEvent.confirmDeletion.containsKey(player)) {
+            return new PromptSession(PromptType.DELETION,
+                    ChatroomConfirmDeletionEvent.confirmDeletion.get(player), null, null);
+        }
+        if (ChatroomSetDescriptionEvent.setDescription.containsKey(player)) {
+            return new PromptSession(PromptType.DESCRIPTION,
+                    ChatroomSetDescriptionEvent.setDescription.get(player), null, null);
+        }
+        if (ChatroomSetNicknameEvent.setNickname.containsKey(player)) {
+            Pair<Chatroom, UUID> target = ChatroomSetNicknameEvent.setNickname.get(player);
+            return new PromptSession(PromptType.NICKNAME, target.getFirst(), target.getSecond(), null);
+        }
+        if (StatusInputEvent.enteringStatus.contains(player)) {
+            return new PromptSession(PromptType.STATUS, null, null, null);
+        }
+        if (creationInput.isEnteringText(id)) {
+            PromptType type = creationInput.getSetName().contains(id)
+                    ? PromptType.CREATION_NAME : PromptType.CREATION_DESCRIPTION;
+            return new PromptSession(type, null, null, creationInput.getInCreation().get(id));
+        }
+        return null;
+    }
+
+    private void processPrompt(Player player, String message, PromptSession prompt) {
+        UUID id = player.getUniqueId();
+        if (activePrompts.get(id) != prompt || !prompt.hasSameTarget(findPrompt(player))) {
+            sendExpiredMessage(player);
+            return;
+        }
+        if (prompt.channel != null) {
+            boolean permitted = isAvailable(prompt.channel)
+                    && PlayerChannelUser.getPlayer(id).isMemberOf(prompt.channel)
+                    && prompt.channel.isInChatroom(id);
+            switch (prompt.type) {
+                case DELETION:
+                    permitted = permitted && prompt.channel.getRole(id) == ChatRole.OWNER && !prompt.channel.isServerOwned();
+                    break;
+                case DESCRIPTION:
+                    permitted = permitted && prompt.channel.hasModeratorPermissions(id);
+                    break;
+                case NICKNAME:
+                    permitted = permitted && (id.equals(prompt.nicknameTarget) || prompt.channel.hasModeratorPermissions(id))
+                            && prompt.channel.isInChatroom(prompt.nicknameTarget);
+                    break;
+                default:
+                    break;
+            }
+            if (!permitted) {
+                clearPendingInput(player);
+                sendExpiredMessage(player);
+                return;
+            }
+        }
+        switch (prompt.type) {
+            case DELETION:
+                deletionInput.processInput(player, message);
+                break;
+            case DESCRIPTION:
+                descriptionInput.processInput(player, message);
+                break;
+            case NICKNAME:
+                nicknameInput.processInput(player, message);
+                break;
+            case STATUS:
+                statusInput.processInput(player, message);
+                break;
+            case CREATION_NAME:
+            case CREATION_DESCRIPTION:
+                creationInput.processInput(player, message);
+                break;
+        }
+    }
+
+    private boolean isAvailable(Chatroom channel) {
+        // Compare object identity so a deleted channel cannot be replaced by another with the same name.
+        return channel != null && plugin.getChatrooms().stream().anyMatch(current -> current == channel);
+    }
+
+    private void sendExpiredMessage(Player player) {
+        String message = messages.getConfiguration().getString("chat-input-expired",
+                "&cYour chat destination is no longer available. Please send your message again.");
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
     }
 }

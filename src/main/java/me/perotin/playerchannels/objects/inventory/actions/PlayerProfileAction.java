@@ -1,5 +1,6 @@
 package me.perotin.playerchannels.objects.inventory.actions;
 
+import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.events.chat_events.StatusInputEvent;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
 import me.perotin.playerchannels.objects.inventory.static_inventories.PlayerProfileMenu;
@@ -29,7 +30,9 @@ public class PlayerProfileAction {
                 // TODO look into maybe using anvil GUI's for user input, however, looks overly
                 // complicated for the scope that I am looking for. Going native route first
                event.setCancelled(true);
+                PlayerChannels.getInstance().clearPendingChatInput(clicker);
                 StatusInputEvent.enteringStatus.add(clicker);
+                PlayerChannels.getInstance().refreshChatRouting(clicker);
                 clicker.closeInventory();
                 clicker.updateInventory();
                 // send message

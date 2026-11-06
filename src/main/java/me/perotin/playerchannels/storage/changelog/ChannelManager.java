@@ -2,6 +2,7 @@ package me.perotin.playerchannels.storage.changelog;
 
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.Chatroom;
+import me.perotin.playerchannels.objects.ChatRole;
 import me.perotin.playerchannels.objects.GlobalChatroom;
 import me.perotin.playerchannels.storage.mysql.SQLHandler;
 import org.bukkit.Bukkit;
@@ -25,9 +26,13 @@ public class ChannelManager {
 
 
     public void addMemberToChannel(String channelName, String memberUUID) {
+        addMemberToChannel(channelName, memberUUID, ChatRole.MEMBER.getValue());
+    }
+
+    public void addMemberToChannel(String channelName, String memberUUID, int rank) {
 
         Bukkit.getConsoleSender().sendMessage("[PlayerChannels] [ChangeLog] Add " + memberUUID + " to channel " + channelName);
-        changeLog.logChange(ChangeType.ADD_MEMBER, channelName, memberUUID);
+        changeLog.logChange(ChangeType.ADD_MEMBER, channelName, memberUUID, rank);
     }
 
     public void removeMemberFromChannel(String channelName, String memberUUID) {
@@ -87,7 +92,7 @@ public class ChannelManager {
             if (!PlayerChannels.getInstance().isMySQL()) return;
             switch (change.getChangeType()) {
                 case ADD_MEMBER:
-                    sqlHandler.updateMemberInDatabase(change.getChannelName(), change.getMemberUUID(), 1, SQLHandler.OperationType.ADD);
+                    sqlHandler.updateMemberInDatabase(change.getChannelName(), change.getMemberUUID(), change.getRank(), SQLHandler.OperationType.ADD);
                     break;
                 case REMOVE_MEMBER:
                     sqlHandler.updateMemberInDatabase(change.getChannelName(), change.getMemberUUID(), 1, SQLHandler.OperationType.REMOVE);

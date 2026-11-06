@@ -775,6 +775,7 @@ public class Chatroom {
             if (player.getFocusedChatroom() != null && player.getFocusedChatroom().equals(this)){
                 player.setFocusedChatroom(null);
             }
+            PlayerChannels.getInstance().refreshChatRouting(player);
 
         }
         PlayerChannels.getInstance().getChatrooms().remove(this);

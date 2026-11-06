@@ -7,11 +7,8 @@ import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.utils.ChannelUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,7 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /* Created by Perotin on 9/19/19 */
-public class CreateChatroomInputEvent implements Listener {
+public class CreateChatroomInputEvent {
 
     private static CreateChatroomInputEvent instance;
     private HashSet<UUID> setName = new HashSet<>();
@@ -34,16 +31,13 @@ public class CreateChatroomInputEvent implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
-    public void onChat(AsyncPlayerChatEvent event) {
-        Player chatter = event.getPlayer();
+    public void processInput(Player chatter, String input) {
         ChannelFile messages = new ChannelFile(FileType.MESSAGES);
 
         if (inCreation.containsKey(chatter.getUniqueId())) {
             PreChatroom preChatroom = inCreation.get(chatter.getUniqueId());
-            event.setCancelled(true);
             if (setName.contains(chatter.getUniqueId())) {
-                String name = event.getMessage();
+                String name = input;
                 // check if name is more than 1 word
                 if (name.split(" ").length > 1) {
                     //too many words TODO come up with way to show messages, maybe big text on screen y'know what I mean
@@ -63,7 +57,7 @@ public class CreateChatroomInputEvent implements Listener {
 
 
             } else if (setDescription.contains(chatter.getUniqueId())) {
-                String description = ChannelUtils.addColor(event.getMessage());
+                String description = ChannelUtils.addColor(input);
                 // no error conditions so continue
 
                 preChatroom.setDescription(description);
@@ -89,18 +83,23 @@ public class CreateChatroomInputEvent implements Listener {
         return inCreation;
     }
 
+    public boolean isEnteringText(UUID playerId) {
+        return inCreation.containsKey(playerId)
+                && (setName.contains(playerId) || setDescription.contains(playerId));
+    }
+
 
     /**
      * Shows most updated menu of a chatroom in progress of being created
      */
     public void showUpdatedMenu(Player toShow, PreChatroom view) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                InventoryHelper helper = plugin.getHelper();
-                helper.setNavigationBar(helper.getCreationMenu(view), toShow).getFirst().show(toShow);
-            }
-        }.runTask(plugin);
+        // Click callbacks also use this helper. Open the replacement view after their event finishes.
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            if (!plugin.isEnabled() || !toShow.isOnline()
+                    || inCreation.get(toShow.getUniqueId()) != view) return;
+            InventoryHelper helper = plugin.getHelper();
+            helper.setNavigationBar(helper.getCreationMenu(view), toShow).getFirst().show(toShow);
+        });
     }
 
 

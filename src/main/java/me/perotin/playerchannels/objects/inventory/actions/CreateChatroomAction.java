@@ -86,7 +86,10 @@ public class CreateChatroomAction {
             clickEvent.setCancelled(true);
 
             ChannelFile messages = new ChannelFile(FileType.MESSAGES);
-            CreateChatroomInputEvent.getInstance().getSetName().add(clickEvent.getWhoClicked().getUniqueId());
+            UUID playerId = clickEvent.getWhoClicked().getUniqueId();
+            PlayerChannels.getInstance().clearPendingChatInput((Player) clickEvent.getWhoClicked());
+            CreateChatroomInputEvent.getInstance().getSetName().add(playerId);
+            PlayerChannels.getInstance().refreshChatRouting((Player) clickEvent.getWhoClicked());
             clickEvent.getWhoClicked().closeInventory();
 
 
@@ -104,7 +107,10 @@ public class CreateChatroomAction {
         return clickEvent -> {
             clickEvent.setCancelled(true);
 
-            CreateChatroomInputEvent.getInstance().getSetDescription().add(clickEvent.getWhoClicked().getUniqueId());
+            UUID playerId = clickEvent.getWhoClicked().getUniqueId();
+            PlayerChannels.getInstance().clearPendingChatInput((Player) clickEvent.getWhoClicked());
+            CreateChatroomInputEvent.getInstance().getSetDescription().add(playerId);
+            PlayerChannels.getInstance().refreshChatRouting((Player) clickEvent.getWhoClicked());
             ChannelFile messages = new ChannelFile(FileType.MESSAGES);
             clickEvent.getWhoClicked().closeInventory();
             clickEvent.getWhoClicked().sendMessage(messages.getString("set-description-message")
@@ -227,6 +233,9 @@ public class CreateChatroomAction {
 //            playerChannelUser.addChatroom(addedChatroom);
 //            clicker.playSound(clicker.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 5, 5);
             input.getInCreation().remove(clicker.getUniqueId());
+            input.getSetName().remove(clicker.getUniqueId());
+            input.getSetDescription().remove(clicker.getUniqueId());
+            PlayerChannels.getInstance().refreshChatRouting(clicker);
 //            new MainMenuPaging(clicker, PlayerChannels.getInstance()).show();
 
             if (TutorialHelper.inTutorial.contains(clicker.getUniqueId())) {

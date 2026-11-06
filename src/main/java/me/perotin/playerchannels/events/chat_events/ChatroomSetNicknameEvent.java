@@ -7,14 +7,10 @@ import me.perotin.playerchannels.storage.Pair;
 import me.perotin.playerchannels.storage.files.FileType;
 import me.perotin.playerchannels.storage.files.ChannelFile;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
-public class ChatroomSetNicknameEvent implements Listener {
+public class ChatroomSetNicknameEvent {
 
     private PlayerChannels plugin;
     private ChannelFile messages;
@@ -30,34 +26,22 @@ public class ChatroomSetNicknameEvent implements Listener {
      * of who they are setting a nickname for and which chatroom it is occuring in
      */
     public static Map<Player, Pair<Chatroom, UUID>> setNickname = new HashMap<>();
-    @EventHandler
-    public void onSetNick(AsyncPlayerChatEvent event) {
-        Player chatter = event.getPlayer();
+    public void processInput(Player chatter, String nickname) {
         if (setNickname.containsKey(chatter)){
-            event.setCancelled(true);
-            String nickname = event.getMessage();
             Chatroom chatroom = setNickname.get(chatter).getFirst();
             UUID toSetFor = setNickname.get(chatter).getSecond();
 
             setNickname.remove(chatter);
             if (messages.getString("cancel").equalsIgnoreCase(nickname)){
                 // cancel setting the nickname
-                openInvSynchronously(chatroom, chatter);
+                new ChatroomNicknameManagerPager(chatroom, chatter).show();
                 return;
 
             }
             chatroom.setNickname(toSetFor, nickname);
             // Show them the nickname menu again
-            openInvSynchronously(chatroom, chatter);
+            new ChatroomNicknameManagerPager(chatroom, chatter).show();
         }
     }
 
-    private void openInvSynchronously(Chatroom chatroom, Player chatter) {
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                new ChatroomNicknameManagerPager(chatroom, chatter).show();
-            }
-        }.runTask(PlayerChannels.getInstance());
-    }
 }

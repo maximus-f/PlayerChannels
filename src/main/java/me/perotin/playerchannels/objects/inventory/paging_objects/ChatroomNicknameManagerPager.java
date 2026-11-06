@@ -98,7 +98,9 @@ public class ChatroomNicknameManagerPager extends PagingMenu {
                 getViewer().closeInventory();
                 getViewer().updateInventory();
                 getViewer().sendMessage(setNicknameMsg);
+                PlayerChannels.getInstance().clearPendingChatInput(getViewer());
                 ChatroomSetNicknameEvent.setNickname.put(getViewer(), new Pair<>(chatroom, uuid));
+                PlayerChannels.getInstance().refreshChatRouting(getViewer());
 
             } else {
                 // member setting so only allow for them to click their own
@@ -107,7 +109,9 @@ public class ChatroomNicknameManagerPager extends PagingMenu {
                     getViewer().closeInventory();
                     getViewer().sendMessage(setNicknameMsg);
                     getViewer().updateInventory();
+                    PlayerChannels.getInstance().clearPendingChatInput(getViewer());
                     ChatroomSetNicknameEvent.setNickname.put(getViewer(), new Pair<>(chatroom, uuid));
+                    PlayerChannels.getInstance().refreshChatRouting(getViewer());
                 }
             }
 

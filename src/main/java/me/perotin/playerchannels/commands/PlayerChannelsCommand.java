@@ -183,6 +183,7 @@ public class PlayerChannelsCommand implements CommandExecutor {
                       // Remove the player from any blockers and let them view normal global chat again
                       playerChannelUser.getListeningChatrooms().clear();
                       plugin.getListeningPlayers().remove(player.getUniqueId());
+                      plugin.refreshChatRouting(playerChannelUser);
                       player.sendMessage(messages.getString("listen-off"));
                       return true;
                   }

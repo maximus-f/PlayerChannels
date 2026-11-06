@@ -2,57 +2,58 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
-
-    <properties>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
-    </properties>
-
 
     <groupId>me.perotin.playerchannels</groupId>
     <artifactId>PlayerChannels</artifactId>
-    <version>3.8.1</version>
+    <version>3.8.2</version>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
 
     <repositories>
+        <repository>
+            <id>playerchannels-vendored</id>
+            <url>file://${project.basedir}/vendor/maven</url>
+            <releases>
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
-
-<!--        Ultimate Adcancement api repo-->
-            <repository>
-                <id>fren_gor</id>
-                <url>https://nexus.frengor.com/repository/public/</url>
-            </repository>
-
-        <!--Bungeecord Repo-->
         <repository>
             <id>bungeecord-repo</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
     </repositories>
-    <dependencies>
 
-        <!--Spigot API-->
+    <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.20.6-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <!-- Inventory Framework Dependency-->
-<!--        <dependency>-->
-<!--            <groupId>com.github.stefvanschie.inventoryframework</groupId>-->
-<!--            <artifactId>IF</artifactId>-->
-<!--            <version>0.10.9</version>-->
-<!--            <scope>compile</scope>-->
-<!--        </dependency>-->
+
+        <dependency>
+            <groupId>com.frengor</groupId>
+            <artifactId>toastapi</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
+        <!-- InventoryFramework Lite -->
         <dependency>
             <groupId>com.github.stefvanschie.inventoryframework</groupId>
             <artifactId>IF-Lite</artifactId>
-            <version>0.10.19</version>
-            <scope>compile</scope>
+            <version>0.11.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.github.stefvanschie.inventoryframework</groupId>
@@ -60,26 +61,29 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- JetBrains annotations -->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>23.0.0</version>
-            <scope>compile</scope>
         </dependency>
-
-
-<!-- Ultimate Advancement API for Toast messages -->
         <dependency>
-            <groupId>com.frengor</groupId>
-            <artifactId>ultimateadvancementapi-shadeable</artifactId>
-            <version>2.4.3</version>
-            <scope>compile</scope>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
         </dependency>
-
-
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.14.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-    <!-- Shading in IF -->
+
     <build>
+        <!-- Include only resource files that Bukkit/Spigot plugins need -->
         <resources>
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
@@ -91,68 +95,53 @@
                     <include>menus.yml</include>
                     <include>chatrooms.yml</include>
                     <include>players.yml</include>
-
                 </includes>
             </resource>
         </resources>
+
         <sourceDirectory>src/main/java</sourceDirectory>
+
         <plugins>
+            <!-- Write build output to target. Deployment uses an explicit copy. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
-                <configuration>
-                    <outputDirectory>/Users/maxfuligni/Desktop/network/bungee_server1/plugins</outputDirectory>
-                    <outputDirectory>/Users/maxfuligni/Desktop/network/bungee_server2/plugins</outputDirectory>
-
-                </configuration>
             </plugin>
+
+            <!-- Shade ToastAPI and IF‑Lite into the final jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.1</version> <!-- Use the latest version -->
+                <version>3.5.1</version>
                 <configuration>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
                     <minimizeJar>false</minimizeJar>
-                    <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+
                     <relocations>
                         <relocation>
-                            <pattern>com.fren_gor.ultimateAdvancementAPI</pattern>
-                            <shadedPattern>me.perotin.playerchannels.libs.com.fren_gor.ultimateAdvancementAPI</shadedPattern>
+                            <pattern>com.frengor.toastapi</pattern>
+                            <shadedPattern>me.perotin.playerchannels.libs.com.frengor.toastapi</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.github.stefvanschie.inventoryframework</pattern>
                             <shadedPattern>me.perotin.playerchannels.inventoryframework</shadedPattern>
                         </relocation>
                     </relocations>
+
+                    <!-- Limit shaded contents to the two libraries so the jar stays lean -->
+                    <artifactSet>
+                        <includes>
+                            <include>com.frengor:toastapi</include>
+                            <include>com.github.stefvanschie.inventoryframework:IF-Lite</include>
+                        </includes>
+                    </artifactSet>
                 </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <id>copy-jar</id>
-                        <phase>install</phase>
-                        <configuration>
-                            <target>
-                                <echo message="Copying built JAR to target directories..."/>
-                                <copy file="/Users/maxfuligni/Desktop/network/bungee_server2/plugins/PlayerChannels-3.8.jar"
-                                      todir="/Users/maxfuligni/Desktop/network/bungee_server1/plugins"/>
-
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
                         </goals>
                     </execution>
                 </executions>

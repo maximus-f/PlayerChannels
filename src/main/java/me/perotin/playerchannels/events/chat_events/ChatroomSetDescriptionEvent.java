@@ -8,15 +8,11 @@ import me.perotin.playerchannels.storage.files.ChannelFile;
 import me.perotin.playerchannels.utils.ChannelUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ChatroomSetDescriptionEvent implements Listener {
+public class ChatroomSetDescriptionEvent {
 
     private PlayerChannels plugin;
     private ChannelFile messages;
@@ -26,20 +22,16 @@ public class ChatroomSetDescriptionEvent implements Listener {
         this.messages = new ChannelFile(FileType.MESSAGES);
     }
 
-    @EventHandler
-    public void onSetDescription(AsyncPlayerChatEvent event) {
-        Player chatter = event.getPlayer();
+    public void processInput(Player chatter, String newDescription) {
         if (setDescription.containsKey(chatter)) {
-            event.setCancelled(true);
             String cancel = messages.getString("cancel");
             Chatroom chatroom = setDescription.get(chatter);
-            String newDescription = event.getMessage();
             setDescription.remove(chatter);
             if (ChatColor.stripColor(cancel).equalsIgnoreCase(newDescription)) {
-                openInvSynchronously(chatroom, chatter);
+                new ChatroomPager(chatroom, chatter).show();
             } else {
                 chatroom.setDescription(ChannelUtils.addColor(newDescription));
-                openInvSynchronously(chatroom, chatter);
+                new ChatroomPager(chatroom, chatter).show();
 
             }
 
@@ -47,12 +39,4 @@ public class ChatroomSetDescriptionEvent implements Listener {
         }
     }
 
-    private void openInvSynchronously(Chatroom chatroom, Player chatter) {
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                new ChatroomPager(chatroom, chatter).show();
-            }
-        }.runTask(PlayerChannels.getInstance());
-    }
 }

@@ -48,6 +48,7 @@ public class ListenSubCommand extends SubCommand {
         if (action.equals("off") && args.length == 2) {
             user.getListeningChatrooms().clear();
             plugin.getListeningPlayers().remove(player.getUniqueId());
+            plugin.refreshChatRouting(user);
             player.sendMessage(messages.getString("listen-off"));
             return;
         }
