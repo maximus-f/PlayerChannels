@@ -68,8 +68,6 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
     private Set<UUID> disableGlobalChat;
 
 
-    private ToastAPI toastAPI;
-
     private boolean bungeecord, usePermission, createPermission, checkLimit, mySQL;
 
     private int defaultChannelLimit;
@@ -89,7 +87,7 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         instance = this;
         saveDefaultConfig();
         ChannelFile.loadFiles();
-       // AdvancementToast.init(this);
+        ToastAPI.initialize(this);
 
         this.chatrooms = new ArrayList<>();
         this.players = new ArrayList<>();
@@ -341,10 +339,6 @@ public class PlayerChannels extends JavaPlugin implements PluginMessageListener 
         if (chatRouter != null) chatRouter.clearPendingInput(player);
     }
 
-    /** @returns toast api for toast messages **/
-    public ToastAPI getToastApi() {
-        return toastAPI;
-    }
     /**
      * Load all chatrooms stored in chatrooms.yml
      */
