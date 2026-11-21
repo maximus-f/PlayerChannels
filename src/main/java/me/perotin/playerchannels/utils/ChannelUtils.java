@@ -1,6 +1,8 @@
 package me.perotin.playerchannels.utils;
 
 
+import com.frengor.toastapi.AdvancementFrameType;
+import com.frengor.toastapi.ToastAPI;
 import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.events.chat_events.ChatroomConfirmDeletionEvent;
@@ -109,14 +111,13 @@ public class ChannelUtils {
      * @param message of error
      */
     public static void sendMenuMessage(String message, Player player, Menu nextMenu){
-        if (canSendMessage(player, message)) {
+        if (canSendMessage(player, message) && ToastAPI.isSupported()) {
             try {
-                sendAdvancementNotification(player, message, Material.WRITABLE_BOOK);
-            } catch (Exception ex) {
+                ToastAPI.displayCustomToast(player, new ItemStack(Material.WRITABLE_BOOK),
+                        message, AdvancementFrameType.GOAL);
+            } catch (RuntimeException ex) {
                 player.sendMessage(message);
             }
-
-
         } else {
             player.sendMessage(message);
         }
@@ -213,17 +214,6 @@ public class ChannelUtils {
             player.sendMessage(ChatColor.RED + "There was an error loading the message for: " + message);
         }
     }
-    private static void sendAdvancementNotification(Player player, String title, Material iconMaterial) {
-             try {
-
-                         PlayerChannels.getInstance().getToastApi().displayCustomToast(player, new ItemStack(iconMaterial), title, com.frengor.toastapi.AdvancementFrameType.GOAL);
-                    } catch (ExceptionInInitializerError ex) {
-                        Bukkit.getLogger().info("[PlayerChannels] Failed to display advancement notification: " + ex.getMessage());
-                        player.sendMessage(title);
-                }
-
-    }
-
 
     /**
      * Adds color to any given message provided that they are allowed
