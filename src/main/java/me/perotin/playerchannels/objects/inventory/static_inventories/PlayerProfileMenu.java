@@ -109,7 +109,7 @@ public class PlayerProfileMenu extends PagingMenu {
         GuiItem toggleInvitesItem = new GuiItem(togglesInvites, PlayerProfileAction.toggleInviteStatus(viewer, player));
         ItemStack invitePlayer = invites.getFirst();
 
-        GuiItem invPlayerItem = new GuiItem(invitePlayer, PlayerProfileAction.invitePlayerToChatroom(viewer, player));
+        GuiItem invPlayerItem = new GuiItem(invitePlayer, PlayerProfileAction.invitePlayerToChatroom(viewer, player, getMenu()));
         playerControlPane.addItem(statusItem, status.getSecond(), 0);
 
         // Need to check if the person viewing is themselves

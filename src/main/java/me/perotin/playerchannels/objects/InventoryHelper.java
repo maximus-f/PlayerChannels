@@ -41,8 +41,6 @@ import java.util.stream.Collectors;
  */
 public class InventoryHelper {
 
-    private ChannelFile file;
-    private StaticPane navBar;
     private final StaticPane pagingNavigationBar;
     private StaticPane creationMenu;
     private StaticPane rightSideDecoSlots;
@@ -54,11 +52,8 @@ public class InventoryHelper {
 
 
     public InventoryHelper() {
-        this.file = new ChannelFile(FileType.MENUS);
-        this.navBar = new StaticPane(9, 1);
         this.pagingNavigationBar = new StaticPane(9, 1);
         this.doNothing = (event) -> event.setCancelled(true);
-        setNavBar();
         setSideDecoSlots();
     }
 
@@ -70,6 +65,7 @@ public class InventoryHelper {
      * @return sets the nav bar for any given inventory
      */
     public Pair<Gui, StaticPane> setNavigationBar(ChestGui inventory, OfflinePlayer owner) {
+        StaticPane navBar = createNavigationBar();
         Pair<ItemStack, Integer> playerHead = getItem("nav-bar.player-profile-head", owner);
         Pair<ItemStack, Integer> helpItem = getItem("nav-bar.help-item", null);
         Pair<ItemStack, Integer> adminMenu = getItem("nav-bar.admin-menu", null);
@@ -83,7 +79,7 @@ public class InventoryHelper {
         } else {
             navBar.addItem(DECO_ITEM(), helpItem.getSecond(), 0);
         }
-        navBar.addItem(new GuiItem(playerHeadItem, clickOnOwnHead(owner.getUniqueId())), getItem( "nav-bar.player-profile-head", owner).getSecond(), 0);
+        navBar.addItem(new GuiItem(playerHeadItem, clickOnOwnHead(owner.getUniqueId())), playerHead.getSecond(), 0);
         Pair<ItemStack, Integer> invites = getItem( "nav-bar.manage-invites", null);
         navBar.addItem(new GuiItem(invites.getFirst(), event -> {
             event.setCancelled(true);
@@ -112,20 +108,18 @@ public class InventoryHelper {
     /**
      * Sets the navigation bar that appears in most menus at the very top
      */
-    private void setNavBar() {
+    private StaticPane createNavigationBar() {
+        StaticPane navBar = new StaticPane(9, 1);
         ChannelFile file = new ChannelFile(FileType.MENUS);
-        Pair<ItemStack, Integer> head = getItemFrom(Material.PLAYER_HEAD, "nav-bar.player-profile-head", null);
-        Pair<ItemStack, Integer> invites = getItemFrom(Material.WRITABLE_BOOK, "nav-bar.manage-invites", null);
         Pair<ItemStack, Integer> createChatroom = getItemFrom(Material.ANVIL, "nav-bar.create-chatroom", null);
 
-        navBar.addItem(new GuiItem(head.getFirst()), head.getSecond(), 0);
         navBar.addItem(new GuiItem(createChatroom.getFirst(), CreateChatroomAction.createChatroomConsumer()), (int) createChatroom.getSecond(), 0);
-        navBar.addItem(new GuiItem(invites.getFirst()),  invites.getSecond(), 0);
         GuiItem deco = DECO_ITEM();
         List<Integer> slots = getAsInts(file.getConfiguration().getStringList("nav-bar.deco-item.slots"));
         for (int x : slots) {
             navBar.addItem(deco, x, 0);
         }
+        return navBar;
 
     }
 

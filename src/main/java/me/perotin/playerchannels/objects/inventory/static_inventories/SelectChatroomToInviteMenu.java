@@ -1,8 +1,10 @@
 package me.perotin.playerchannels.objects.inventory.static_inventories;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
-import com.github.stefvanschie.inventoryframework.pane.StaticPane;
-import com.github.stefvanschie.inventoryframework.pane.util.Slot;
+import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
+import me.perotin.playerchannels.PlayerChannels;
+import me.perotin.playerchannels.objects.InventoryHelper;
+import me.perotin.playerchannels.objects.inventory.paging_objects.PagingMenu;
 import me.perotin.playerchannels.objects.ChatRole;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
@@ -13,30 +15,37 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
  * Class for when a player invites another player and is selecting which of their chatrooms to invite them too
  * since multiple possible candidates for a chatroom can exist
  */
-public class SelectChatroomToInviteMenu extends StaticMenu {
-    private StaticPane chatrooms;
-    public SelectChatroomToInviteMenu(Player inviter, PlayerChannelUser inRoom, PlayerChannelUser invited) {
-        super(inviter, ChannelUtils.getMessageString("select-chatroom-to-invite-menu-title"));
-        chatrooms = new StaticPane(9, 6);
-        int slot = 0;
-        for (Chatroom chat : inRoom.getChatrooms()){
-            ChatRole role = chat.getRole(inviter.getUniqueId());
+public class SelectChatroomToInviteMenu extends PagingMenu {
+    private final PlayerChannelUser invited;
+
+    public SelectChatroomToInviteMenu(Player inviter, PlayerChannelUser invited, Gui backMenu) {
+        super(ChannelUtils.getMessageString("select-chatroom-to-invite-menu-title"), 6, inviter, backMenu);
+        this.invited = invited;
+        InventoryHelper helper = PlayerChannels.getInstance().getHelper();
+        helper.setNavigationBar(getMenu(), inviter);
+        helper.setSideDecorationSlots(getMenu());
+        getPaginatedPane().populateWithGuiItems(generatePages());
+    }
+
+    @Override
+    protected List<GuiItem> generatePages() {
+        List<GuiItem> items = new ArrayList<>();
+        PlayerChannelUser inviter = PlayerChannelUser.getPlayer(getViewer().getUniqueId());
+        for (Chatroom chat : inviter.getChatrooms()) {
+            ChatRole role = chat.getRole(inviter.getUuid());
             if (role == ChatRole.MODERATOR || role == ChatRole.OWNER) {
-                chatrooms.addItem(new GuiItem(chat.getItem(), inviteTo(invited, chat)), Slot.fromIndex(slot++));
-                if (slot == chatrooms.getLength() * chatrooms.getHeight()) {
-                    break;
-                }
+                items.add(new GuiItem(chat.getItem(), inviteTo(invited, chat)));
             }
-
         }
-        getMenu().addPane(Slot.fromXY(0, 0), chatrooms);
-
+        return items;
     }
 
     /**

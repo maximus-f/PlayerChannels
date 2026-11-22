@@ -71,9 +71,6 @@ public abstract class PagingMenu extends Menu {
             getMenu().update();
         } else {
             if (backMenu != null) {
-                // Set the nav bar again
-                PlayerChannels.getInstance().getHelper().setNavigationBar((ChestGui) backMenu, getViewer());
-
                 backMenu.show(viewer);
             } else {
                 getViewer().closeInventory();
