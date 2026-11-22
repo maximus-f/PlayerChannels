@@ -2,6 +2,7 @@ package me.perotin.playerchannels.objects.inventory.static_inventories;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.InventoryHelper;
@@ -37,9 +38,9 @@ public class AdminMenu extends StaticMenu {
         helper.setNavigationBar(getMenu(), getViewer());
         helper.setSideDecorationSlots(getMenu());
         helper.setPagingNavBar(getMenu());
-        this.adminTools = new StaticPane(2, 2, 5, 2);
+        this.adminTools = new StaticPane(5, 2);
         setAdminTools();
-        getMenu().addPane(adminTools);
+        getMenu().addPane(Slot.fromXY(2, 2), adminTools);
     }
 
     private void setAdminTools() {

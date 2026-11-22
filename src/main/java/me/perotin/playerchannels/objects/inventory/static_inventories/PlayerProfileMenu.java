@@ -5,6 +5,7 @@ import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.InventoryHelper;
@@ -51,16 +52,12 @@ public class PlayerProfileMenu extends PagingMenu {
                 .build();
         getNavBar().addItem(new GuiItem(playerHead, event -> event.setCancelled(true)), 4, 0);
         this.player = player;
-        helper.setPagingNavBar(getMenu());
-        playerControlPane = new StaticPane(3, 1, 3, 1);
+
+        playerControlPane = new StaticPane(3, 1);
         playerControlPane.setPriority(Pane.Priority.HIGHEST);
-        pane.setY(2); // Change from 1 to 2 so we can have the row for the control pane
-        pane.setHeight(3);
-        getMenu().getPanes().removeIf(pane -> pane instanceof PaginatedPane);
-        getMenu().addPane(pane);
         getPaginatedPane().populateWithGuiItems(generatePages());
         setPlayerControlPane();
-        addPane(playerControlPane);
+        getMenu().addPane(Slot.fromXY(3, 1), playerControlPane);
 
 
 
@@ -68,6 +65,12 @@ public class PlayerProfileMenu extends PagingMenu {
 
 
 
+
+    @Override
+    protected void setPaginatedPane() {
+        pane = new PaginatedPane(7, 3);
+        getMenu().addPane(Slot.fromXY(1, 2), pane);
+    }
 
     @Override
     protected List<GuiItem> generatePages() {

@@ -7,6 +7,7 @@ import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.inventory.actions.CreateChatroomAction;
 import me.perotin.playerchannels.objects.inventory.paging_objects.ChatroomInvitationListPager;
@@ -54,8 +55,8 @@ public class InventoryHelper {
 
     public InventoryHelper() {
         this.file = new ChannelFile(FileType.MENUS);
-        this.navBar = new StaticPane(0, 0, 9, 1);
-        this.pagingNavigationBar = new StaticPane(0, 5, 9, 1);
+        this.navBar = new StaticPane(9, 1);
+        this.pagingNavigationBar = new StaticPane(9, 1);
         this.doNothing = (event) -> event.setCancelled(true);
         setNavBar();
         setSideDecoSlots();
@@ -101,7 +102,7 @@ public class InventoryHelper {
         }
 
 
-        inventory.addPane(navBar);
+        inventory.addPane(Slot.fromXY(0, 0), navBar);
         return new Pair<>(inventory, navBar);
     }
 
@@ -136,11 +137,11 @@ public class InventoryHelper {
      */
     private ChestGui setCreationMenu(ChestGui toSet, PreChatroom chatroom) {
         setCreationMenu(chatroom);
-        toSet.addPane(creationMenu);
-        StaticPane bottomRow =  new StaticPane(0, 5, 9, 1);
+        toSet.addPane(Slot.fromXY(1, 1), creationMenu);
+        StaticPane bottomRow =  new StaticPane(9, 1);
         bottomRow.addItem(BACK_ITEM(), 0, 0);
         bottomRow.fillWith(DECO_ITEM().getItem(), doNothing);
-        toSet.addPane(bottomRow);
+        toSet.addPane(Slot.fromXY(0, 5), bottomRow);
         return toSet;
     }
 
@@ -153,7 +154,7 @@ public class InventoryHelper {
         ChannelFile messages = new ChannelFile(FileType.MESSAGES);
 
 
-        this.creationMenu = new StaticPane(1, 1, 7, 4);
+        this.creationMenu = new StaticPane(7, 4);
         Pair<ItemStack, Integer> name = getItemFrom(Material.valueOf(menus.getString("creation-menu.name.material")), "creation-menu.name", null);
 
         Pair<ItemStack, Integer> global = getItemFrom(Material.valueOf(menus.getString("creation-menu.global.material")), "creation-menu.global", null);
@@ -260,8 +261,8 @@ public class InventoryHelper {
      * @return inventory set with side decoration slotsss
      */
     public Gui setSideDecorationSlots(ChestGui inv) {
-        inv.addPane(leftSideDecoSlots);
-        inv.addPane(rightSideDecoSlots);
+        inv.addPane(Slot.fromXY(0, 1), leftSideDecoSlots);
+        inv.addPane(Slot.fromXY(8, 1), rightSideDecoSlots);
         return inv;
 
     }
@@ -270,8 +271,8 @@ public class InventoryHelper {
      * @apiNote sets the side decoration slots
      */
     private void setSideDecoSlots() {
-        this.rightSideDecoSlots = new StaticPane(8, 1, 1, 4);
-        this.leftSideDecoSlots = new StaticPane(0, 1, 1, 4);
+        this.rightSideDecoSlots = new StaticPane(1, 4);
+        this.leftSideDecoSlots = new StaticPane(1, 4);
         rightSideDecoSlots.fillWith(DECO_ITEM().getItem(), doNothing);
         leftSideDecoSlots.fillWith(DECO_ITEM().getItem(), doNothing);
 
@@ -301,7 +302,7 @@ public class InventoryHelper {
             pagingNavigationBar.addItem(decoItem, x, 0);
 
         }
-        inventory.addPane(pagingNavigationBar);
+        inventory.addPane(Slot.fromXY(0, 5), pagingNavigationBar);
         return pagingNavigationBar;
     }
 

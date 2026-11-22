@@ -4,6 +4,7 @@ import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.InventoryHelper;
@@ -31,8 +32,7 @@ public class AdminDeleteChatroomPager extends PagingMenu {
         helper = PlayerChannels.getInstance().getHelper();
         helper.setNavigationBar(getMenu(), viewer);
         helper.setSideDecorationSlots(getMenu());
-        helper.setPagingNavBar(getMenu());
-        setPaginatedPane();
+
         getPaginatedPane().populateWithGuiItems(generatePages());
 
 
@@ -40,8 +40,8 @@ public class AdminDeleteChatroomPager extends PagingMenu {
 
     @Override
     protected void setPaginatedPane() {
-        this.pane = new PaginatedPane(1, 1, 7, 3);
-        getMenu().addPane(pane);
+        this.pane = new PaginatedPane(7, 3);
+        getMenu().addPane(Slot.fromXY(1, 1), pane);
 
     }
 

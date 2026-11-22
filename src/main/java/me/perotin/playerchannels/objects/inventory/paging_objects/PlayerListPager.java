@@ -22,7 +22,6 @@ public class PlayerListPager extends PagingMenu {
 
     public PlayerListPager(Player viewer) {
         super(ChannelUtils.getMessageString("player-list-menu-title"), 6, viewer, new MainMenuPaging(viewer, PlayerChannels.getInstance()).getMenu());
-        setPaginatedPane();
         getPaginatedPane().populateWithGuiItems(generatePages());
         setPlayerListPage();
 

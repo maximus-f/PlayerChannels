@@ -34,7 +34,7 @@ public class ChatroomInvitationListPager extends PagingMenu {
         this.player = player;
         this.helper = PlayerChannels.getInstance().getHelper();
         this.helper.setNavigationBar(getMenu(), viewer);
-        this.helper.setPagingNavBar(getMenu());
+
         this.helper.setSideDecorationSlots(getMenu());
         getPaginatedPane().populateWithGuiItems(generatePages());
 

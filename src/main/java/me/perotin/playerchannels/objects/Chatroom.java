@@ -193,13 +193,12 @@ public class Chatroom {
             itemMeta.setDisplayName(displayName);
 
             List<String> lores = new ArrayList<>();
-            if (!(getDescription().trim().isEmpty() || getDescription() == null)) {
+            if (getDescription() != null && !getDescription().trim().isEmpty()) {
                 lores.add(description.replace("$description$", getDescription()));
-            } else {
-
             }
-           lores.add(status.replace("$status$", getStringStatus()));
-            lores.add(owner.replace("$owner$", Bukkit.getOfflinePlayer(getOwner()).getName()));
+            lores.add(status.replace("$status$", getStringStatus()));
+            String ownerName = Bukkit.getOfflinePlayer(getOwner()).getName();
+            lores.add(owner.replace("$owner$", ownerName == null ? getOwner().toString() : ownerName));
             lores.add(members.replace("$member_count$", getMembers().size() + ""));
             itemMeta.setLore(lores);
         } else {
@@ -209,7 +208,7 @@ public class Chatroom {
             itemMeta.setDisplayName(displayName);
 
             List<String> lores = new ArrayList<>();
-            if (!(getDescription().trim().isEmpty() || getDescription() == null)) {
+            if (getDescription() != null && !getDescription().trim().isEmpty()) {
                 lores.add(messages.getString("server-chatroom-items.description").replace("$description$", getDescription()));
             } else {
 

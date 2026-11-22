@@ -2,6 +2,7 @@ package me.perotin.playerchannels.objects.inventory.static_inventories;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import me.perotin.playerchannels.objects.ChatRole;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
@@ -22,23 +23,19 @@ public class SelectChatroomToInviteMenu extends StaticMenu {
     private StaticPane chatrooms;
     public SelectChatroomToInviteMenu(Player inviter, PlayerChannelUser inRoom, PlayerChannelUser invited) {
         super(inviter, ChannelUtils.getMessageString("select-chatroom-to-invite-menu-title"));
-        chatrooms = new StaticPane(0, 0, 6, 7);
-        // TODO Doing this is a prototype manner to see if done, needs to be refactored
-        int x = 0, y = 0;
+        chatrooms = new StaticPane(9, 6);
+        int slot = 0;
         for (Chatroom chat : inRoom.getChatrooms()){
             ChatRole role = chat.getRole(inviter.getUniqueId());
             if (role == ChatRole.MODERATOR || role == ChatRole.OWNER) {
-                chatrooms.addItem(new GuiItem(chat.getItem(), inviteTo(invited, chat)), x, y);
-                if (x == 9) {
-                    x = 0;
-                    y++;
-                } else {
-                    x++;
+                chatrooms.addItem(new GuiItem(chat.getItem(), inviteTo(invited, chat)), Slot.fromIndex(slot++));
+                if (slot == chatrooms.getLength() * chatrooms.getHeight()) {
+                    break;
                 }
             }
 
         }
-        getMenu().addPane(chatrooms);
+        getMenu().addPane(Slot.fromXY(0, 0), chatrooms);
 
     }
 
