@@ -4,6 +4,7 @@ import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.events.chat_events.ChatroomConfirmDeletionEvent;
 import me.perotin.playerchannels.events.chat_events.ChatroomSetDescriptionEvent;
@@ -58,18 +59,17 @@ public class ChatroomPager extends PagingMenu {
         super(ChannelUtils.getMessageString(("chatroom-menu-title")).replace("$chatroom$", chatroom.getName()), 6, viewer, new MainMenuPaging(viewer, PlayerChannels.getInstance()).getMenu());
         this.chatroom = chatroom;
          this.messages = new ChannelFile(FileType.MESSAGES);
-         this.chatroomBar = new StaticPane(2, 1, 5, 1);
+         this.chatroomBar = new StaticPane(5, 1);
          chatroomBar.setPriority(Pane.Priority.HIGH);
-        this.bottomRow = new StaticPane(3, 5, 4, 1);
+        this.bottomRow = new StaticPane(4, 1);
         this.bottomRow.setPriority(Pane.Priority.HIGHEST);
         PlayerChannels.getInstance().getHelper().setSideDecorationSlots(getMenu());
         PlayerChannels.getInstance().getHelper().setNavigationBar(getMenu(), getViewer());
-        setPaginatedPane();
 
         getPaginatedPane().populateWithGuiItems(generatePages());
         setChatroomBar();
         setBottomRow();
-        addPaneToGui(bottomRow);
+        getMenu().addPane(Slot.fromXY(3, 5), bottomRow);
       //  getMenu().getPanes().forEach(p -> p.getItems().forEach(i ->
               //  PrivateTalk.getInstance().getLogger().info(i.getItem().toString())));
 
@@ -147,7 +147,7 @@ public class ChatroomPager extends PagingMenu {
 
 
         }
-        addPaneToGui(chatroomBar);
+        getMenu().addPane(Slot.fromXY(2, 1), chatroomBar);
 
     }
 
@@ -217,8 +217,8 @@ public class ChatroomPager extends PagingMenu {
      */
     @Override
     protected void setPaginatedPane(){
-        pane = new PaginatedPane(1, 2, 7, 3);
-        getMenu().addPane(pane);
+        pane = new PaginatedPane(7, 3);
+        getMenu().addPane(Slot.fromXY(1, 2), pane);
     }
 
     /**

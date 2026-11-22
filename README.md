@@ -1,5 +1,5 @@
 # PlayerChannels
-This is a complete rewrite of my plugin PrivateTalkPremium. The rewritten version supports only the latest 1.14 and up. Support for 1.13 will also be added at a later date.
+This is a complete rewrite of my plugin PrivateTalkPremium. The IF-Lite 0.12.2 build has been tested on Paper 1.21.11 and 26.3 for chest menus, channel chat, and toast notifications.
 
 
 ## How to contribute?

@@ -5,8 +5,8 @@ import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
-import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.InventoryHelper;
 import me.perotin.playerchannels.objects.inventory.Menu;
@@ -42,7 +42,7 @@ public abstract class PagingMenu extends Menu {
         this.identifier = identifier;
         this.backMenu = backMenu;
         this.viewer = viewer;
-        this.pagingNavBar = new StaticPane(0, 5, 9, 1);
+        this.pagingNavBar = new StaticPane(9, 1);
 
         setPaginatedPane();
         setPagingNavigation(getMenu()); // Refactor this to main menu perhaps
@@ -66,14 +66,11 @@ public abstract class PagingMenu extends Menu {
     public void previous(Gui backMenu){
         if (pane.getPage() > 0) {
             pane.setPage(pane.getPage() - 1);
-            getMenu().setTitle(identifier + " Page: " + pane.getPage());
+            getMenu().setTitle(identifier + " Page: " + (pane.getPage() + 1));
 
             getMenu().update();
         } else {
             if (backMenu != null) {
-                // Set the nav bar again
-                PlayerChannels.getInstance().getHelper().setNavigationBar((ChestGui) backMenu, getViewer());
-
                 backMenu.show(viewer);
             } else {
                 getViewer().closeInventory();
@@ -109,7 +106,7 @@ public abstract class PagingMenu extends Menu {
         for (int x : decoSlots) {
             getPagingNavBar().addItem(decoItem, x, 0);
         }
-        menu.addPane(getPagingNavBar());
+        menu.addPane(Slot.fromXY(0, 5), getPagingNavBar());
     }
 
     /**
@@ -139,12 +136,6 @@ public abstract class PagingMenu extends Menu {
         return this.pane;
     }
 
-
-
-    public void addPaneToGui(Pane pane) {
-        getMenu().addPane(pane);
-    }
-
     /**
      * @return player viewing the pane
      */
@@ -153,16 +144,9 @@ public abstract class PagingMenu extends Menu {
     }
 
     protected void setPaginatedPane(){
-        this.pane = new PaginatedPane(1, 1, 7, 4);
+        this.pane = new PaginatedPane(7, 4);
 
-        getMenu().addPane(pane);
-    }
-
-    /**
-     * @param pane to add to Gui
-     */
-    public void addPane(Pane pane) {
-        getMenu().addPane(pane);
+        getMenu().addPane(Slot.fromXY(1, 1), pane);
     }
 
     public Gui getBackMenu() {

@@ -3,6 +3,7 @@ package me.perotin.playerchannels.objects.inventory.paging_objects;
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.Chatroom;
 import me.perotin.playerchannels.objects.InventoryHelper;
@@ -35,12 +36,12 @@ public class MainMenuPaging extends PagingMenu {
         super(ChannelUtils.getMessageString("main-menu-title"), 6, viewer, null);
         this.messages = new ChannelFile(FileType.MESSAGES);
         this.plugin = plugin;
-        this.bottomRow = new StaticPane(3, 5, 3, 1);
+        this.bottomRow = new StaticPane(3, 1);
         this.bottomRow.setPriority(Pane.Priority.HIGHEST);
         setMainPage();
         getPaginatedPane().populateWithGuiItems(generatePages());
         setBottomRow();
-        getMenu().addPane(bottomRow);
+        getMenu().addPane(Slot.fromXY(3, 5), bottomRow);
 
 
 

@@ -1,5 +1,6 @@
 package me.perotin.playerchannels.objects.inventory.actions;
 
+import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.events.chat_events.StatusInputEvent;
 import me.perotin.playerchannels.objects.PlayerChannelUser;
@@ -52,15 +53,10 @@ public class PlayerProfileAction {
          };
        }
 
-    public static Consumer<InventoryClickEvent> invitePlayerToChatroom(Player inviter, PlayerChannelUser invited) {
+    public static Consumer<InventoryClickEvent> invitePlayerToChatroom(Player inviter, PlayerChannelUser invited, Gui profileMenu) {
         return event -> {
             event.setCancelled(true);
-            PlayerChannelUser inRoom = PlayerChannelUser.getPlayer(inviter.getUniqueId());
-            // Need to check if in valid chatroom to invite, and if so,
-            // check how many valid chatroom they are in that they can invite to
-            // Only moderators and owners can invite to a chatroom. Just show menu of options
-            // that they have of chatrooms to select from no matter the circumstances
-            new SelectChatroomToInviteMenu(inviter, inRoom, invited).show(inviter);
+            new SelectChatroomToInviteMenu(inviter, invited, profileMenu).show();
         };
     }
 }

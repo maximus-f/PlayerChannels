@@ -2,6 +2,7 @@ package me.perotin.playerchannels.objects.inventory.static_inventories;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import me.perotin.playerchannels.PlayerChannels;
 import me.perotin.playerchannels.objects.ChatRole;
 import me.perotin.playerchannels.objects.Chatroom;
@@ -30,13 +31,13 @@ public class ChatroomModeratorMenu extends StaticMenu {
         super(moderator, "Moderator Actions ");
         this.toPunish = toPunish;
         this.chatroom = chatroom;
-        this.modItems = new StaticPane(2, 2, 5, 2);
+        this.modItems = new StaticPane(5, 2);
         this.helper = PlayerChannels.getInstance().getHelper();
         this.punisher = moderator;
 
         setDecorations();
         setModItems();
-        getMenu().addPane(modItems);
+        getMenu().addPane(Slot.fromXY(2, 2), modItems);
 
     }
 
