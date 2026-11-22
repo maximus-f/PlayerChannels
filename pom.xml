@@ -16,16 +16,6 @@
 
     <repositories>
         <repository>
-            <id>playerchannels-vendored</id>
-            <url>file://${project.basedir}/vendor/maven</url>
-            <releases>
-                <checksumPolicy>fail</checksumPolicy>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
@@ -44,15 +34,15 @@
         </dependency>
 
         <dependency>
-            <groupId>com.frengor</groupId>
+            <groupId>io.github.maximus-f</groupId>
             <artifactId>toastapi</artifactId>
             <version>2.0</version>
         </dependency>
 
         <!-- InventoryFramework Lite -->
         <dependency>
-            <groupId>com.github.stefvanschie.inventoryframework</groupId>
-            <artifactId>IF-Lite</artifactId>
+            <groupId>io.github.maximus-f</groupId>
+            <artifactId>if-lite</artifactId>
             <version>0.12.2</version>
         </dependency>
 
@@ -126,8 +116,8 @@
                     <!-- Limit shaded contents to the two libraries so the jar stays lean -->
                     <artifactSet>
                         <includes>
-                            <include>com.frengor:toastapi</include>
-                            <include>com.github.stefvanschie.inventoryframework:IF-Lite</include>
+                            <include>io.github.maximus-f:toastapi</include>
+                            <include>io.github.maximus-f:if-lite</include>
                         </includes>
                     </artifactSet>
                 </configuration>

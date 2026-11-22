@@ -15,7 +15,7 @@ mvn clean verify
 
 The plugin is written to `target/PlayerChannels-3.8.2.jar`. Copy that shaded JAR to each server's `plugins` directory when you want to deploy it. Builds now use `target/` instead of the previous developer-specific server paths.
 
-ToastAPI and IF-Lite are resolved from the checked-in `vendor/maven` repository. Their exact binaries, provenance and checksums are documented in [vendor/README.md](vendor/README.md). Other dependencies are downloaded by Maven. To check the build with an empty dependency cache, run the following command with a new temporary directory.
+Maven resolves ToastAPI 2.0 and IF-Lite 0.12.2 under the group ID `io.github.maximus-f` and embeds them in the plugin. To check the build with an empty dependency cache, run the following command with a new temporary directory.
 
 ```sh
 mvn -Dmaven.repo.local="$(mktemp -d)" clean verify
