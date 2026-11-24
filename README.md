@@ -13,7 +13,7 @@ Use JDK 17 and Maven 3.9 or newer, then run from the repository root.
 mvn clean verify
 ```
 
-The plugin is written to `target/PlayerChannels-3.8.2.jar`. Copy that shaded JAR to each server's `plugins` directory when you want to deploy it. Builds now use `target/` instead of the previous developer-specific server paths.
+The plugin is written to `target/PlayerChannels-3.9.jar`. Copy that shaded JAR to each server's `plugins` directory when you want to deploy it. Builds now use `target/` instead of the previous developer-specific server paths.
 
 Maven resolves ToastAPI 2.0 and IF-Lite 0.12.2 under the group ID `io.github.maximus-f` and embeds them in the plugin. To check the build with an empty dependency cache, run the following command with a new temporary directory.
 
